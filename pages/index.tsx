@@ -1,50 +1,42 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
 import { useState } from 'react';
-import { combatActions } from '../database/actions';
-import { gameEnemies } from '../database/enemies';
-import { calculateHealthDelta } from '../utils/combat';
+import Battle from '../components/Battle';
+import { Encounter, gameEncounters } from '../database/encounters';
 
 export default function Home() {
-  const [dragonHealth, setDragonHealth] = useState(gameEnemies[5].stats.hp);
-  const [wolfHealth, setWolfHealth] = useState(gameEnemies[0].stats.hp);
-  const blast = combatActions[1];
-  const strike = combatActions[0];
-  const dragon = gameEnemies[5];
-  const wolf = gameEnemies[0];
+  const [encounter, setEncounter] = useState<undefined | Encounter>();
 
-  return (
-    <>
-      dragon: {dragonHealth}
-      <br />
-      wolf: {wolfHealth}
-      <br />
-      <button
-        css={css`
-          color: blue;
-        `}
-        onClick={() =>
-          setWolfHealth(
-            wolfHealth +
-              calculateHealthDelta(blast, dragon.stats, wolf.stats).hpDelta
-          )
-        }
-      >
-        kill wolf
-      </button>
-      <button
-        css={css`
-          color: blue;
-        `}
-        onClick={() =>
-          setDragonHealth(
-            dragonHealth +
-              calculateHealthDelta(strike, wolf.stats, dragon.stats).hpDelta
-          )
-        }
-      >
-        kill dragon
-      </button>
-    </>
-  );
+  function clickHandler(id: number) {
+    const gameEncounter = gameEncounters.find(combatObj => combatObj.id === id);
+    setEncounter(gameEncounter);
+  }
+
+  if (!encounter) {
+    return (
+      <>
+        <button
+          onClick={() => {
+            clickHandler(1);
+          }}
+        >
+          encounter 1
+        </button>
+        <button
+          onClick={() => {
+            clickHandler(2);
+          }}
+        >
+          encounter 2
+        </button>
+        <button
+          onClick={() => {
+            clickHandler(3);
+          }}
+        >
+          encounter 3
+        </button>
+      </>
+    );
+  }
+
+  return <Battle encounter={encounter} />;
 }

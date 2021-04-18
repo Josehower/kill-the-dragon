@@ -1,6 +1,8 @@
-import { CombatAction, DmgSource } from '../database/actions';
-import { CombatStats } from '../database/enemies';
+import { CombatAction, combatActions, DmgSource } from '../database/actions';
+import { CombatStats, Enemy } from '../database/enemies';
 import { GameWeapon } from '../database/inventory';
+import { Ally } from '../database/party';
+import { getRandomFromArray } from './miscelaneous';
 
 type HealthDelta = {
   hpDelta: number;
@@ -79,6 +81,8 @@ export function calculateHealthDelta(
 
   const damageBase = action.isMagic ? performerStats.mDmg : performerStats.pDmg;
 
+  const actionDamageAmplifier = action.dmgMod || 1;
+
   const weaknessMod = foeStats.weakness === action.dmgSource ? 2 : 1;
 
   const weaponMod =
@@ -96,20 +100,10 @@ export function calculateHealthDelta(
     }
   }
 
-  const damageCaused = damageBase * weaponMod * resistanceMod * weaknessMod;
-  console.log({
-    damageBase: damageBase,
-    weaponMod: weaponMod,
-    resistanceMod: resistanceMod,
-    weaknessMod: weaknessMod,
-  });
-  console.log({
-    hpDelta: -damageCaused,
-    isResistent: resistanceMod < 1,
-    isWeak: weaknessMod === 2,
-    isHealed: false,
-    isDodged: false,
-  });
+  const damageCaused = Math.round(
+    damageBase * weaponMod * resistanceMod * weaknessMod * actionDamageAmplifier
+  );
+
   return {
     hpDelta: -damageCaused,
     isResistent: resistanceMod < 1,
@@ -117,4 +111,18 @@ export function calculateHealthDelta(
     isHealed: false,
     isDodged: false,
   };
+}
+
+export function getCombatAction(character: Enemy | Ally): CombatAction {
+  if (character.isAlly) {
+    return getRandomFromArray((character as Ally).actions);
+  }
+  const frequencyMatcher = Math.random();
+
+  const selectedAction = (character as Enemy).actions.find(
+    action => action.frequency > frequencyMatcher
+  )?.action;
+
+  if (!selectedAction) return combatActions[0];
+  return selectedAction;
 }
