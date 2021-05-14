@@ -1,23 +1,30 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { klona } from 'klona';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { CombatAction } from '../database/actions';
 import { Encounter } from '../database/encounters';
 import { Enemy } from '../database/enemies';
 import { Ally } from '../database/party';
 import useParty from '../hooks/useParty';
+import useCombatLoop from '../hooks/useCombatLoop';
 import { calculateHealthDelta, getCombatAction } from '../utils/combat';
 import { getRandomFromArray } from '../utils/miscelaneous';
 import HealthBar from './HealthBar';
 
 export default function Battle({ encounter }: { encounter: Encounter }) {
+  const [enemyArrTest] = useState<number[]>(() => []);
   const { party, setParty } = useParty();
   const [enemiesHpObj, setEnemiesHpObj] = useState<
     { id: number; hp: number; isDead: boolean }[]
   >(
     encounter.enemyTeam.map(enemy => {
       return { id: enemy.id, hp: enemy.stats.hp, isDead: enemy.stats.isDead };
+    })
+  );
+  const { current: enemiesActionCount } = useRef(
+    encounter.enemyTeam.map(enemy => {
+      return { id: enemy.id, speed: enemy.stats.dex + 1, count: 0 };
     })
   );
 
@@ -81,6 +88,44 @@ export default function Battle({ encounter }: { encounter: Encounter }) {
     }
   }
 
+  useCombatLoop((a: number, b: number, c: { current: number }) => {
+    if (
+      party.every(ally => ally.stats.isDead) ||
+      enemiesHpObj.every(enemy => enemy.isDead)
+    ) {
+      return;
+    }
+    // add enemy id to action queue if count is 10000
+    enemiesActionCount.forEach(enemy => {
+      if (enemy.count > 10000) {
+        enemyArrTest.push(enemy.id);
+        enemy.count = 0;
+      }
+      // update enemy action count
+      enemy.count += b * enemy.speed;
+    });
+
+    // trigger action every second
+    c.current += b;
+    if (c.current >= 1000) {
+      console.log(enemyArrTest);
+      const enemy = encounter.enemyTeam.find(opponent => {
+        return opponent.id === enemyArrTest[0];
+      });
+
+      if (enemy) {
+        const action = getCombatAction(enemy);
+        let foe = getRandomFromArray(party.filter(ally => ally.currentHp > 0));
+        if (action.isFriendly) {
+          foe = getRandomFromArray(encounter.enemyTeam);
+        }
+        performAction(action, enemy, foe as Ally | Enemy);
+        enemyArrTest.shift();
+      }
+      c.current = 0;
+    }
+  });
+
   if (party.every(ally => ally.stats.isDead)) {
     return <div>game over</div>;
   }
@@ -110,23 +155,6 @@ export default function Battle({ encounter }: { encounter: Encounter }) {
               }
               maxHealth={enemy.stats.hp}
             />
-            <button
-              disabled={
-                enemiesHpObj.find(hpObj => hpObj.id === enemy.id)?.isDead
-              }
-              onClick={() => {
-                const action = getCombatAction(enemy);
-                let foe = getRandomFromArray(
-                  party.filter(ally => ally.currentHp > 0)
-                );
-                if (action.isFriendly) {
-                  foe = getRandomFromArray(encounter.enemyTeam);
-                }
-                performAction(action, enemy, foe as Ally | Enemy);
-              }}
-            >
-              attack
-            </button>
           </div>
         ))}
       </div>

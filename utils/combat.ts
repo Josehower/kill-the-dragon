@@ -30,6 +30,14 @@ export function calculateHealthDelta(
     );
   }
 
+  const failBaseResult = {
+    hpDelta: 0,
+    isResistent: false,
+    isWeak: false,
+    isHealed: false,
+    isDodged: false,
+  };
+
   if (action.dmgSource === DmgSource.heal) {
     if (!foeStats.isDead) {
       return {
@@ -40,13 +48,7 @@ export function calculateHealthDelta(
         isDodged: false,
       };
     } else {
-      return {
-        hpDelta: 0,
-        isResistent: false,
-        isWeak: false,
-        isHealed: false,
-        isDodged: false,
-      };
+      return failBaseResult;
     }
   }
   if (action.dmgSource === DmgSource.revive) {
@@ -59,22 +61,13 @@ export function calculateHealthDelta(
         isDodged: false,
       };
     } else {
-      return {
-        hpDelta: 0,
-        isResistent: false,
-        isWeak: false,
-        isHealed: false,
-        isDodged: false,
-      };
+      return failBaseResult;
     }
   }
 
   if (isAttackDodged(performerStats.acc, foeStats.dex)) {
     return {
-      hpDelta: 0,
-      isResistent: false,
-      isWeak: false,
-      isHealed: false,
+      ...failBaseResult,
       isDodged: true,
     };
   }
@@ -107,7 +100,7 @@ export function calculateHealthDelta(
   return {
     hpDelta: -damageCaused,
     isResistent: resistanceMod < 1,
-    isWeak: weaknessMod === 2,
+    isWeak: foeStats.weakness === action.dmgSource,
     isHealed: false,
     isDodged: false,
   };

@@ -11,6 +11,8 @@ export default function Home() {
   }
 
   if (!encounter) {
+    // clickHandler(2);
+
     return (
       <>
         <button
