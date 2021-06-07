@@ -12,19 +12,42 @@ import { calculateHealthDelta, getCombatAction } from '../utils/combat';
 import { getRandomFromArray } from '../utils/miscelaneous';
 import HealthBar from './HealthBar';
 
+type ActionCountObj = {
+  id: number;
+  speed: number;
+  count: number;
+};
+
+type CombatEnemyHpObject = {
+  id: number;
+  hp: number;
+  isDead: boolean;
+};
+
 export default function Battle({ encounter }: { encounter: Encounter }) {
-  const [enemyArrTest] = useState<number[]>(() => []);
-  const { party, setParty } = useParty();
-  const [enemiesHpObj, setEnemiesHpObj] = useState<
-    { id: number; hp: number; isDead: boolean }[]
-  >(
+  const enemiesHpInitializer = () =>
     encounter.enemyTeam.map(enemy => {
       return { id: enemy.id, hp: enemy.stats.hp, isDead: enemy.stats.isDead };
+    });
+
+  // HP management variables
+  const { party, setParty } = useParty(); // Uses the global party state. info should be persisted even out of encounter.
+  const [enemiesHpObj, setEnemiesHpObj] =
+    useState<CombatEnemyHpObject[]>(enemiesHpInitializer); // Uses shallow copy of enemies to recreate encounter multiple times.
+
+  // Action Queues that manage turn system
+  const { current: activeEnemiesIdsQueue } = useRef<number[]>([]);
+  const { current: activeAlliesIdsQueue } = useRef<number[]>([]);
+
+  const { current: partyActionCount } = useRef<ActionCountObj[]>(
+    party.map(ally => {
+      return { id: ally.id, speed: ally.stats.speed, count: 0 };
     })
   );
-  const { current: enemiesActionCount } = useRef(
+
+  const { current: enemiesActionCount } = useRef<ActionCountObj[]>(
     encounter.enemyTeam.map(enemy => {
-      return { id: enemy.id, speed: enemy.stats.dex + 1, count: 0 };
+      return { id: enemy.id, speed: enemy.stats.speed, count: 0 };
     })
   );
 
@@ -96,9 +119,19 @@ export default function Battle({ encounter }: { encounter: Encounter }) {
       return;
     }
     // add enemy id to action queue if count is 10000
+    partyActionCount.forEach(ally => {
+      if (ally.count > 10000) {
+        console.log(activeAlliesIdsQueue);
+        activeAlliesIdsQueue.push(ally.id);
+        ally.count = 0;
+      }
+      // update enemy action count
+      ally.count += b * ally.speed;
+    });
+
     enemiesActionCount.forEach(enemy => {
       if (enemy.count > 10000) {
-        enemyArrTest.push(enemy.id);
+        activeEnemiesIdsQueue.push(enemy.id);
         enemy.count = 0;
       }
       // update enemy action count
@@ -108,9 +141,9 @@ export default function Battle({ encounter }: { encounter: Encounter }) {
     // trigger action every second
     c.current += b;
     if (c.current >= 1000) {
-      console.log(enemyArrTest);
+      console.log(activeEnemiesIdsQueue);
       const enemy = encounter.enemyTeam.find(opponent => {
-        return opponent.id === enemyArrTest[0];
+        return opponent.id === activeEnemiesIdsQueue[0];
       });
 
       if (enemy) {
@@ -120,7 +153,7 @@ export default function Battle({ encounter }: { encounter: Encounter }) {
           foe = getRandomFromArray(encounter.enemyTeam);
         }
         performAction(action, enemy, foe as Ally | Enemy);
-        enemyArrTest.shift();
+        activeEnemiesIdsQueue.shift();
       }
       c.current = 0;
     }
@@ -145,18 +178,21 @@ export default function Battle({ encounter }: { encounter: Encounter }) {
       `}
     >
       <div>
-        {encounter.enemyTeam.map(enemy => (
-          <div key={enemy.id}>
-            <div>{enemy.name}</div>
-            <div>{enemiesHpObj.find(hpObj => hpObj.id === enemy.id)?.hp}</div>
-            <HealthBar
-              currentHealth={
-                enemiesHpObj.find(hpObj => hpObj.id === enemy.id)?.hp || 0
-              }
-              maxHealth={enemy.stats.hp}
-            />
-          </div>
-        ))}
+        {encounter.enemyTeam.map(enemy => {
+          const enemyHpObjRef = enemiesHpObj.find(
+            hpObj => hpObj.id === enemy.id
+          );
+          return (
+            <div key={enemy.id}>
+              <div>{enemy.name}</div>
+              <div>{enemyHpObjRef?.hp}</div>
+              <HealthBar
+                currentHealth={enemyHpObjRef?.hp || 0}
+                maxHealth={enemy.stats.hp}
+              />
+            </div>
+          );
+        })}
       </div>
       <div>
         {party.map(ally => (
@@ -167,26 +203,37 @@ export default function Battle({ encounter }: { encounter: Encounter }) {
               currentHealth={ally.currentHp}
               maxHealth={ally.stats.hp}
             />
-            <button
-              disabled={ally.stats.isDead}
-              onClick={() => {
-                const action = getCombatAction(ally);
-                let foe = getRandomFromArray(
-                  encounter.enemyTeam.filter(enemy => {
-                    const hpRef = enemiesHpObj.find(
-                      hpObj => hpObj.id === enemy.id
+            {ally.actions.map(action => {
+              return (
+                <button
+                  onClick={() => {
+                    let foe = getRandomFromArray(
+                      encounter.enemyTeam.filter(enemy => {
+                        const hpRef = enemiesHpObj.find(
+                          hpObj => hpObj.id === enemy.id
+                        );
+                        return hpRef && hpRef.hp > 0;
+                      })
                     );
-                    return hpRef && hpRef.hp > 0;
-                  })
-                );
-                if (action.isFriendly) {
-                  foe = getRandomFromArray(party);
-                }
-                performAction(action, ally, foe as Ally | Enemy);
-              }}
-            >
-              attack
-            </button>
+                    if (action.isFriendly) {
+                      foe = getRandomFromArray(party);
+                    }
+                    performAction(action, ally, foe as Ally | Enemy);
+                    activeAlliesIdsQueue.splice(
+                      activeAlliesIdsQueue.findIndex(id => id === ally.id),
+                      1
+                    );
+                  }}
+                  css={css`
+                    display: ${activeAlliesIdsQueue[0] === ally.id
+                      ? 'auto'
+                      : 'none'};
+                  `}
+                >
+                  {action.name}
+                </button>
+              );
+            })}
           </div>
         ))}
       </div>

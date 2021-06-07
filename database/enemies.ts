@@ -17,6 +17,7 @@ export type CombatStats = {
   // percentage of damage caused when apply eg. 80% === 0.8
   pDef: number;
   mDef: number;
+  speed: number;
   isDead: boolean;
   weakness?: DmgSource;
 };
@@ -43,6 +44,7 @@ export const gameEnemies: Enemy[] = [
       acc: 0,
       pDef: 1,
       mDef: 1,
+      speed: 1,
       weakness: DmgSource.physic,
       isDead: false,
     },
@@ -50,7 +52,7 @@ export const gameEnemies: Enemy[] = [
   },
   {
     id: 2,
-    name: 'Ella Jarvis',
+    name: 'Mage initiate',
     actions: [
       { action: combatActions[1], frequency: 0.4 },
       { action: combatActions[2], frequency: 0.8 },
@@ -65,6 +67,7 @@ export const gameEnemies: Enemy[] = [
       acc: 0,
       pDef: 0.95,
       mDef: 0.95,
+      speed: 1,
       weakness: DmgSource.fire,
       isDead: false,
     },
@@ -72,7 +75,7 @@ export const gameEnemies: Enemy[] = [
   },
   {
     id: 3,
-    name: 'Maggie Ortega',
+    name: 'Mage adept',
     actions: [
       { action: combatActions[0], frequency: 0.8 },
       { action: combatActions[3], frequency: 1 },
@@ -86,6 +89,7 @@ export const gameEnemies: Enemy[] = [
       acc: 0,
       pDef: 1,
       mDef: 1,
+      speed: 1,
       weakness: DmgSource.thunder,
       isDead: false,
     },
@@ -108,6 +112,7 @@ export const gameEnemies: Enemy[] = [
       acc: 0.2,
       pDef: 1,
       mDef: 0.9,
+      speed: 1,
       weakness: DmgSource.earth,
       isDead: false,
     },
@@ -130,6 +135,7 @@ export const gameEnemies: Enemy[] = [
       acc: 0.15,
       pDef: 0.9,
       mDef: 1,
+      speed: 1,
       weakness: DmgSource.water,
       isDead: false,
     },
@@ -153,6 +159,7 @@ export const gameEnemies: Enemy[] = [
       acc: 0.2,
       pDef: 0.75,
       mDef: 0.75,
+      speed: 3,
       weakness: DmgSource.physic,
       isDead: false,
     },

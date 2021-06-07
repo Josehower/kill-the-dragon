@@ -20,21 +20,21 @@ export default function Home() {
             clickHandler(1);
           }}
         >
-          encounter 1
+          easy
         </button>
         <button
           onClick={() => {
             clickHandler(2);
           }}
         >
-          encounter 2
+          medium
         </button>
         <button
           onClick={() => {
             clickHandler(3);
           }}
         >
-          encounter 3
+          Dragon
         </button>
       </>
     );
