@@ -1,4 +1,4 @@
-import { CombatAction, combatActions, DmgSource } from './actions';
+import { actions, CombatAction, DmgSource } from './actions';
 
 type EnemyActions = {
   action: CombatAction;
@@ -34,7 +34,7 @@ export const gameEnemies: Enemy[] = [
   {
     id: 1,
     name: 'Wolf',
-    actions: [{ action: combatActions[0], frequency: 1 }],
+    actions: [{ action: actions.strike, frequency: 1 }],
     stats: {
       lvl: 1,
       hp: 20,
@@ -54,9 +54,9 @@ export const gameEnemies: Enemy[] = [
     id: 2,
     name: 'Mage initiate',
     actions: [
-      { action: combatActions[1], frequency: 0.4 },
-      { action: combatActions[2], frequency: 0.8 },
-      { action: combatActions[0], frequency: 1 },
+      { action: actions.blast, frequency: 0.4 },
+      { action: actions.tsunami, frequency: 0.8 },
+      { action: actions.strike, frequency: 1 },
     ],
     stats: {
       lvl: 2,
@@ -77,8 +77,8 @@ export const gameEnemies: Enemy[] = [
     id: 3,
     name: 'Mage adept',
     actions: [
-      { action: combatActions[0], frequency: 0.8 },
-      { action: combatActions[3], frequency: 1 },
+      { action: actions.strike, frequency: 0.8 },
+      { action: actions.shock, frequency: 1 },
     ],
     stats: {
       lvl: 2,
@@ -99,9 +99,9 @@ export const gameEnemies: Enemy[] = [
     id: 4,
     name: 'Sorcerer adept',
     actions: [
-      { action: combatActions[3], frequency: 0.4 },
-      { action: combatActions[4], frequency: 0.8 },
-      { action: combatActions[0], frequency: 1 },
+      { action: actions.shock, frequency: 0.4 },
+      { action: actions.earthquake, frequency: 0.8 },
+      { action: actions.strike, frequency: 1 },
     ],
     stats: {
       lvl: 3,
@@ -122,9 +122,9 @@ export const gameEnemies: Enemy[] = [
     id: 5,
     name: 'Crusader adept',
     actions: [
-      { action: combatActions[0], frequency: 0.4 },
-      { action: combatActions[4], frequency: 0.8 },
-      { action: combatActions[5], frequency: 1 },
+      { action: actions.strike, frequency: 0.4 },
+      { action: actions.earthquake, frequency: 0.8 },
+      { action: actions.usePotion, frequency: 1 },
     ],
     stats: {
       lvl: 4,
@@ -145,10 +145,10 @@ export const gameEnemies: Enemy[] = [
     id: 6,
     name: 'Dragon',
     actions: [
-      { action: combatActions[1], frequency: 0.4 },
-      { action: combatActions[4], frequency: 0.8 },
-      { action: combatActions[8], frequency: 0.9 },
-      { action: combatActions[9], frequency: 1 },
+      { action: actions.blast, frequency: 0.4 },
+      { action: actions.earthquake, frequency: 0.8 },
+      { action: actions.dragonBite, frequency: 0.9 },
+      { action: actions.fireBreath, frequency: 1 },
     ],
     stats: {
       lvl: 5,

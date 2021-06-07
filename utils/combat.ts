@@ -1,4 +1,4 @@
-import { CombatAction, combatActions, DmgSource } from '../database/actions';
+import { actions, CombatAction, DmgSource } from '../database/actions';
 import { CombatStats, Enemy } from '../database/enemies';
 import { GameWeapon } from '../database/inventory';
 import { Ally } from '../database/party';
@@ -116,6 +116,6 @@ export function getCombatAction(character: Enemy | Ally): CombatAction {
     action => action.frequency > frequencyMatcher
   )?.action;
 
-  if (!selectedAction) return combatActions[0];
+  if (!selectedAction) return actions.strike;
   return selectedAction;
 }

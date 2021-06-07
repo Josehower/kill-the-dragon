@@ -1,6 +1,6 @@
-import { CombatAction, combatActions } from './actions';
+import { actions, CombatAction } from './actions';
 import { CombatStats } from './enemies';
-import { gameLvlStats } from './stats';
+import { levelStats } from './stats';
 
 export type Ally = {
   id: number;
@@ -17,30 +17,30 @@ export const playerParty: Ally[] = [
     id: 1,
     exp: 0,
     name: 'Tidus',
-    currentHp: gameLvlStats[0].stats.hp,
+    currentHp: levelStats.lvl1.stats.hp,
     actions: [
-      combatActions[0],
-      combatActions[1],
-      combatActions[4],
-      combatActions[5],
-      combatActions[6],
+      actions.strike,
+      actions.blast,
+      actions.shock,
+      actions.usePotion,
+      actions.flee,
     ],
-    stats: gameLvlStats[0].stats,
+    stats: levelStats.lvl1.stats,
     isAlly: true,
   },
   {
     id: 2,
     exp: 0,
     name: 'Silvia',
-    currentHp: gameLvlStats[0].stats.hp,
+    currentHp: levelStats.lvl1.stats.hp,
     actions: [
-      combatActions[0],
-      combatActions[2],
-      combatActions[3],
-      combatActions[5],
-      combatActions[6],
+      actions.strike,
+      actions.earthquake,
+      actions.useRevive,
+      actions.usePotion,
+      actions.flee,
     ],
-    stats: gameLvlStats[0].stats,
+    stats: levelStats.lvl1.stats,
     isAlly: true,
   },
 ];

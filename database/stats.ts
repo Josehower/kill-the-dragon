@@ -5,8 +5,16 @@ type PlayerLvlStats = {
   stats: CombatStats;
 };
 
-export const gameLvlStats: PlayerLvlStats[] = [
-  {
+type StatsByLevel = {
+  lvl1: PlayerLvlStats;
+  lvl2: PlayerLvlStats;
+  lvl3: PlayerLvlStats;
+  lvl4: PlayerLvlStats;
+  lvl5: PlayerLvlStats;
+};
+
+export const levelStats: StatsByLevel = {
+  lvl1: {
     id: 1,
     stats: {
       lvl: 1,
@@ -21,7 +29,7 @@ export const gameLvlStats: PlayerLvlStats[] = [
       isDead: false,
     },
   },
-  {
+  lvl2: {
     id: 2,
     stats: {
       lvl: 2,
@@ -36,7 +44,7 @@ export const gameLvlStats: PlayerLvlStats[] = [
       isDead: false,
     },
   },
-  {
+  lvl3: {
     id: 3,
     stats: {
       lvl: 3,
@@ -51,7 +59,7 @@ export const gameLvlStats: PlayerLvlStats[] = [
       isDead: false,
     },
   },
-  {
+  lvl4: {
     id: 4,
     stats: {
       lvl: 4,
@@ -66,7 +74,7 @@ export const gameLvlStats: PlayerLvlStats[] = [
       isDead: false,
     },
   },
-  {
+  lvl5: {
     id: 5,
     stats: {
       lvl: 5,
@@ -81,4 +89,4 @@ export const gameLvlStats: PlayerLvlStats[] = [
       isDead: false,
     },
   },
-];
+};
