@@ -1,6 +1,8 @@
-import { useContext } from 'react';
+import { Dispatch, SetStateAction, useContext } from 'react';
+import { Ally } from '../database/party';
 import { partyContext, PartyContextType } from '../pages/_app';
 
 export default function useParty() {
-  return useContext(partyContext) as PartyContextType;
+  const { party, setParty } = useContext(partyContext) as PartyContextType;
+  return [party, setParty] as [Ally[], Dispatch<SetStateAction<Ally[]>>];
 }

@@ -1,31 +1,35 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 
-export default function HealthBar({
-  currentHealth,
-  maxHealth,
+type Colors = string[];
+
+export default function ProgressBar({
+  current,
+  max,
   barName,
+  colors,
 }: {
-  currentHealth: number;
-  maxHealth: number;
+  current: number;
+  max: number;
   barName?: string;
+  colors?: Colors;
 }) {
-  const width = (currentHealth * 100) / maxHealth;
+  const width = (current * 100) / max;
 
   return (
     <div
       css={css`
-        background-color: blue;
+        background-color: ${colors?.[0] || 'blue'};
         width: ${200}px;
         height: 1em;
         overflow: hidden;
-        border: green solid 3px;
-        color: white;
+        border: ${colors?.[3] || 'green'} solid 3px;
+        color: ${colors?.[2] || 'white'};
       `}
     >
       <div
         css={css`
-          background-color: red;
+          background-color: ${colors?.[1] || 'magenta'};
           width: ${width}%;
           height: 1em;
         `}
