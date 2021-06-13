@@ -14,7 +14,7 @@ export type Ally = {
 
 export const playerParty: Ally[] = [
   {
-    id: 1,
+    id: 101,
     exp: 0,
     name: 'Tidus',
     currentHp: levelStats.lvl1.stats.hp,
@@ -29,7 +29,7 @@ export const playerParty: Ally[] = [
     isAlly: true,
   },
   {
-    id: 2,
+    id: 102,
     exp: 0,
     name: 'Silvia',
     currentHp: levelStats.lvl1.stats.hp,
