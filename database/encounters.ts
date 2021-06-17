@@ -12,23 +12,23 @@ export const gameEncounters: Encounter[] = [
     id: 1,
     enemyTeam: [
       {
-        ...gameEnemies[0],
+        ...gameEnemies.wolf,
         name: 'wolf 1',
         id: 1,
       },
       {
-        ...gameEnemies[0],
+        ...gameEnemies.wolf,
         name: 'wolf 2',
         id: 2,
       },
       {
-        ...gameEnemies[1],
+        ...gameEnemies.mageInitiate,
         name: 'mage 1',
         id: 3,
       },
       {
-        ...gameEnemies[2],
-        name: 'wolf 2',
+        ...gameEnemies.wolf,
+        name: 'wolf 3',
         id: 4,
       },
     ],
@@ -39,22 +39,22 @@ export const gameEncounters: Encounter[] = [
     id: 2,
     enemyTeam: [
       {
-        ...gameEnemies[3],
+        ...gameEnemies.mageAdept,
         name: 'Fiona',
         id: 1,
       },
       {
-        ...gameEnemies[3],
+        ...gameEnemies.sorcererAdept,
         name: 'Louis',
         id: 2,
       },
       {
-        ...gameEnemies[4],
+        ...gameEnemies.sorcererAdept,
         name: 'Martha',
         id: 3,
       },
       {
-        ...gameEnemies[4],
+        ...gameEnemies.mageAdept,
         name: 'Peter',
         id: 4,
       },
@@ -64,7 +64,7 @@ export const gameEncounters: Encounter[] = [
   },
   {
     id: 3,
-    enemyTeam: [{ ...gameEnemies[5] }],
+    enemyTeam: [{ ...gameEnemies.dragon }],
     expReward: 40,
     goldReward: 20,
   },

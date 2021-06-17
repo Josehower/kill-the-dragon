@@ -25,16 +25,30 @@ export type CombatStats = {
 export type Enemy = {
   id: number;
   name: string;
+  currentHp: number;
   isAlly: boolean;
   actions: EnemyActions;
   stats: CombatStats;
 };
 
-export const gameEnemies: Enemy[] = [
-  {
+export type GameEnemies = {
+  wolf: Enemy;
+  mageInitiate: Enemy;
+  mageAdept: Enemy;
+  sorcererAdept: Enemy;
+  crusaderAdept: Enemy;
+  dragon: Enemy;
+};
+
+export const gameEnemies: GameEnemies = {
+  wolf: {
     id: 1,
     name: 'Wolf',
-    actions: [{ action: actions.strike, frequency: 1 }],
+    currentHp: 20,
+    actions: [
+      { action: actions.flee, frequency: 0.05 },
+      { action: actions.strike, frequency: 1 },
+    ],
     stats: {
       lvl: 1,
       hp: 20,
@@ -50,9 +64,10 @@ export const gameEnemies: Enemy[] = [
     },
     isAlly: false,
   },
-  {
+  mageInitiate: {
     id: 2,
     name: 'Mage initiate',
+    currentHp: 50,
     actions: [
       { action: actions.blast, frequency: 0.4 },
       { action: actions.tsunami, frequency: 0.8 },
@@ -73,9 +88,10 @@ export const gameEnemies: Enemy[] = [
     },
     isAlly: false,
   },
-  {
+  mageAdept: {
     id: 3,
     name: 'Mage adept',
+    currentHp: 50,
     actions: [
       { action: actions.strike, frequency: 0.8 },
       { action: actions.shock, frequency: 1 },
@@ -95,9 +111,10 @@ export const gameEnemies: Enemy[] = [
     },
     isAlly: false,
   },
-  {
+  sorcererAdept: {
     id: 4,
     name: 'Sorcerer adept',
+    currentHp: 80,
     actions: [
       { action: actions.shock, frequency: 0.4 },
       { action: actions.earthquake, frequency: 0.8 },
@@ -112,15 +129,16 @@ export const gameEnemies: Enemy[] = [
       acc: 0.2,
       pDef: 1,
       mDef: 0.9,
-      speed: 1,
+      speed: 1.2,
       weakness: DmgSource.earth,
       isDead: false,
     },
     isAlly: false,
   },
-  {
+  crusaderAdept: {
     id: 5,
     name: 'Crusader adept',
+    currentHp: 100,
     actions: [
       { action: actions.strike, frequency: 0.4 },
       { action: actions.earthquake, frequency: 0.8 },
@@ -141,9 +159,10 @@ export const gameEnemies: Enemy[] = [
     },
     isAlly: false,
   },
-  {
+  dragon: {
     id: 6,
     name: 'Dragon',
+    currentHp: 700,
     actions: [
       { action: actions.blast, frequency: 0.4 },
       { action: actions.earthquake, frequency: 0.8 },
@@ -165,4 +184,4 @@ export const gameEnemies: Enemy[] = [
     },
     isAlly: false,
   },
-];
+};
