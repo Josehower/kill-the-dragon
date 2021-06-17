@@ -1,5 +1,6 @@
 import { actions, CombatAction } from './actions';
 import { CombatStats } from './enemies';
+import { GameWeapon } from './inventory';
 import { levelStats } from './stats';
 
 export type Ally = {
@@ -10,6 +11,7 @@ export type Ally = {
   isAlly: boolean;
   actions: CombatAction[];
   stats: CombatStats;
+  weapon: GameWeapon | null;
 };
 
 export const playerParty: Ally[] = [
@@ -27,6 +29,7 @@ export const playerParty: Ally[] = [
     ],
     stats: levelStats.lvl1.stats,
     isAlly: true,
+    weapon: null,
   },
   {
     id: 102,
@@ -42,14 +45,6 @@ export const playerParty: Ally[] = [
     ],
     stats: levelStats.lvl1.stats,
     isAlly: true,
-  },
-  {
-    id: 103,
-    exp: 0,
-    name: 'Janos',
-    currentHp: levelStats.lvl1.stats.hp,
-    actions: [actions.fireBreath, actions.blast],
-    stats: levelStats.lvl1.stats,
-    isAlly: true,
+    weapon: null,
   },
 ];

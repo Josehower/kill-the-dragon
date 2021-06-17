@@ -1,4 +1,5 @@
 import { actions, CombatAction, DmgSource } from './actions';
+import { GameWeapon } from './inventory';
 
 type EnemyActions = {
   action: CombatAction;
@@ -29,6 +30,7 @@ export type Enemy = {
   isAlly: boolean;
   actions: EnemyActions;
   stats: CombatStats;
+  weapon?: GameWeapon;
 };
 
 export type GameEnemies = {

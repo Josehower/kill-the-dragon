@@ -1,21 +1,37 @@
 import { css, Global } from '@emotion/react';
 import { AppProps } from 'next/app';
 import { createContext, Dispatch, SetStateAction, useState } from 'react';
+import { GameItem, GameWeapon } from '../database/inventory';
 import { Ally, playerParty } from '../database/party';
+
+export type PlayerInventory = {
+  gold: number;
+  items: { item: GameItem; qty: number }[];
+  weapons: { weapon: GameWeapon; qty: number }[];
+};
 
 export type PartyContextType = {
   party: Ally[];
   setParty: Dispatch<SetStateAction<Ally[]>>;
+  partyInventory: PlayerInventory;
+  setPartyInventory: Dispatch<SetStateAction<PlayerInventory>>;
 };
 
 export const partyContext = createContext<PartyContextType | null>(null);
 
 function App({ Component, pageProps }: AppProps) {
-  const [party, setParty] = useState(() => playerParty);
+  const [party, setParty] = useState<Ally[]>(() => playerParty);
+  const [partyInventory, setPartyInventory] = useState<PlayerInventory>({
+    gold: 0,
+    items: [],
+    weapons: [],
+  });
 
   const partyContextValue: PartyContextType = {
     party,
     setParty,
+    partyInventory,
+    setPartyInventory,
   };
 
   return (

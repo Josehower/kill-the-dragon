@@ -1,7 +1,15 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { klona } from 'klona';
-import { createContext, useCallback, useEffect, useRef, useState } from 'react';
+import {
+  createContext,
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+  useState
+} from 'react';
 import { CombatAction } from '../database/actions';
 import { Encounter } from '../database/encounters';
 import { Enemy } from '../database/enemies';
@@ -14,12 +22,6 @@ import { getRandomFromArray } from '../utils/miscelaneous';
 import { wait } from '../utils/wait';
 import ActiveBar from './ActiveBar';
 import ProgressBar from './ProgressBar';
-
-// se remueve el enemyid action array para crear un nuevo basado general en state
-// se representa el id de allies by 10 prefix 101, 102 etc
-// se modifica el objeto de conteo para anadir la propiedad isActive
-// se remueven varios extra voidrenders que ya no son necesarios
-// se modifica el action trigger para ser controlado por use Effect en lugar del game loop.
 
 type ActionCountObj = {
   id: number;
@@ -35,7 +37,13 @@ export type CountContextType = {
 
 export const battleContext = createContext<CountContextType | null>(null);
 
-export default function Battle({ encounter }: { encounter: Encounter }) {
+export default function Battle({
+  encounter,
+  setEncounter,
+}: {
+  encounter: Encounter;
+  setEncounter: Dispatch<SetStateAction<Encounter | undefined>>;
+}) {
   const isActionRunning = useRef(false);
   const [reRender, setReRender] = useState<boolean | undefined>();
   const [isPartyFleeing, setIsPartyFleeing] = useState<boolean>(false);
@@ -267,13 +275,31 @@ export default function Battle({ encounter }: { encounter: Encounter }) {
   });
 
   // render if combat is over
-  if (isPartyFleeing) return <div>you are the coward</div>;
+  if (isPartyFleeing) {
+    return (
+      <div>
+        <h1> you are the coward</h1>
+        <button onClick={() => setEncounter(undefined)}>main</button>
+      </div>
+    );
+  }
   if (party.every(ally => ally.stats.isDead)) {
-    return <div>game over</div>;
+    return (
+      <div>
+        <h1>game over</h1>
+        <button onClick={() => window.location.reload()}>restart</button>
+      </div>
+    );
   }
   if (enemyTeam.every(enemy => enemy.stats.isDead)) {
-    concedeRewards();
-    return <div>you win</div>;
+    const rewards = concedeRewards();
+    return (
+      <div>
+        <h1> you win</h1>
+        {JSON.stringify(rewards)}
+        <button onClick={() => setEncounter(undefined)}>main</button>
+      </div>
+    );
   }
 
   // render if combat is on
