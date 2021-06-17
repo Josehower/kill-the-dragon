@@ -16,6 +16,7 @@ export type CombatAction = {
   isFriendly?: true;
   isMagic?: true;
   fromItem?: true;
+  isFlee?: true;
   dmgSource?: DmgSource;
   dmgMod?: number;
 };
@@ -88,6 +89,7 @@ export const actions: ActionsObject = {
     id: 8,
     name: 'Flee',
     description: 'Escape is smart... sometimes',
+    isFlee: true,
   },
   dragonBite: {
     id: 9,

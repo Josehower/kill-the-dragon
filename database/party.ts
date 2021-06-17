@@ -43,4 +43,13 @@ export const playerParty: Ally[] = [
     stats: levelStats.lvl1.stats,
     isAlly: true,
   },
+  {
+    id: 103,
+    exp: 0,
+    name: 'Janos',
+    currentHp: levelStats.lvl1.stats.hp,
+    actions: [actions.fireBreath, actions.blast],
+    stats: levelStats.lvl1.stats,
+    isAlly: true,
+  },
 ];

@@ -38,6 +38,7 @@ export const battleContext = createContext<CountContextType | null>(null);
 export default function Battle({ encounter }: { encounter: Encounter }) {
   const isActionRunning = useRef(false);
   const [reRender, setReRender] = useState<boolean | undefined>();
+  const [isPartyFleeing, setIsPartyFleeing] = useState<boolean>(false);
 
   // Actions Queue that manage game turn system
   const [actionArray, setActionArray] = useState<
@@ -46,6 +47,8 @@ export default function Battle({ encounter }: { encounter: Encounter }) {
 
   // party Id Queue that manage players Input interface
   const [allyIdQueue, setAllyIdQueue] = useState<number[]>([]);
+  const [selectedAction, setSelectedAction] =
+    useState<{ action: CombatAction; performer: Ally | Enemy } | null>(null);
 
   // HP management variables
   const [party, setParty] = useParty(); // Uses the global party state. info should be persisted even out of encounter.
@@ -78,6 +81,39 @@ export default function Battle({ encounter }: { encounter: Encounter }) {
     enemiesActionCount,
   };
 
+  function enemyEscape(enemy: Enemy) {
+    const actionObjIndex = enemiesActionCount.findIndex(
+      obj => obj.id === enemy.id
+    );
+    if (actionObjIndex > -1) {
+      enemiesActionCount[actionObjIndex].count = 0;
+      enemiesActionCount[actionObjIndex].isActive = false;
+      enemiesActionCount.splice(actionObjIndex, 1);
+      setActionArray(oldArray =>
+        oldArray.filter((_, index) => {
+          return index !== 0;
+        })
+      );
+      setEnemyTeam(
+        enemyTeam.filter(opp =>
+          enemiesActionCount.some(obj => obj.id === opp.id)
+        )
+      );
+      killCharacter(enemy);
+    }
+  }
+
+  function killCharacter(char: Enemy | Ally) {
+    char.currentHp = 0;
+    char.stats.isDead = true;
+    if (char.isAlly) {
+      setAllyIdQueue(idArray => idArray.filter(id => id !== char.id));
+      if (selectedAction?.performer.id === char.id) {
+        setSelectedAction(null);
+      }
+    }
+  }
+
   // This use Effect manage the turn based system performing one action at the time
   useEffect(() => {
     if (!isActionRunning.current && actionArray[0]) {
@@ -99,6 +135,16 @@ export default function Battle({ encounter }: { encounter: Encounter }) {
     isActionRunning.current = true;
 
     await wait(2000);
+
+    if (action.isFlee) {
+      isActionRunning.current = false;
+      if (performer.isAlly) {
+        setIsPartyFleeing(true);
+      } else {
+        enemyEscape(performer as Enemy);
+      }
+      return;
+    }
 
     const healthDelta = calculateHealthDelta(
       action,
@@ -122,8 +168,7 @@ export default function Battle({ encounter }: { encounter: Encounter }) {
     if (foeCopy) {
       foeCopy.currentHp += healthDelta.hpDelta;
       if (foeCopy.currentHp <= 0) {
-        foeCopy.currentHp = 0;
-        foeCopy.stats.isDead = true;
+        killCharacter(foeCopy);
       } else {
         foeCopy.stats.isDead = false;
       }
@@ -140,12 +185,20 @@ export default function Battle({ encounter }: { encounter: Encounter }) {
       : enemiesActionCount.find(countObj => countObj.id === performer.id);
 
     isActionRunning.current = false;
-    setActionArray(oldArray => oldArray.filter((_, index) => index !== 0));
+    setActionArray(oldArray =>
+      oldArray.filter((action, index) => {
+        if (foeCopy?.stats.isDead && action.performer.id === foeCopy.id) {
+          return false;
+        } else {
+          return index !== 0;
+        }
+      })
+    );
 
-    // ----------------
-
-    if (countObjRef) countObjRef.isActive = false;
-    // ----------------
+    if (countObjRef) {
+      countObjRef.isActive = false;
+      countObjRef.count = 0;
+    }
   }
 
   useCombatLoop((a: number, b: number, c: { current: number }) => {
@@ -176,6 +229,7 @@ export default function Battle({ encounter }: { encounter: Encounter }) {
       if (allyObjRef && !allyObjRef.stats.isDead && !ally.isActive) {
         ally.count += b * ally.speed;
       }
+      if (allyObjRef?.stats.isDead) ally.count = 0;
     });
 
     // add enemy id to action queue if count is 10000
@@ -205,14 +259,15 @@ export default function Battle({ encounter }: { encounter: Encounter }) {
         enemy.count = 0;
       }
       // update enemy action count
-
       if (enemyObjRef && !enemyObjRef.stats.isDead && !enemy.isActive) {
         enemy.count += b * enemy.speed;
       }
+      if (enemyObjRef?.stats.isDead) enemy.count = 0;
     });
   });
 
   // render if combat is over
+  if (isPartyFleeing) return <div>you are the coward</div>;
   if (party.every(ally => ally.stats.isDead)) {
     return <div>game over</div>;
   }
@@ -225,7 +280,8 @@ export default function Battle({ encounter }: { encounter: Encounter }) {
   return (
     <div
       css={css`
-        display: flex;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
         justify-content: space-around;
         align-items: center;
         gap: 10px;
@@ -247,6 +303,10 @@ export default function Battle({ encounter }: { encounter: Encounter }) {
                 ${actionArray[0]?.performer.id === enemy.id
                   ? 'background-color: red'
                   : ''};
+                ${enemy.stats.isDead ? 'background-color: #505050' : ''};
+                ${actionArray[0]?.foe.id === enemy.id
+                  ? 'background-color: #51d6ee'
+                  : ''};
               `}
             >
               <div>{enemy.name}</div>
@@ -257,15 +317,36 @@ export default function Battle({ encounter }: { encounter: Encounter }) {
                 barName={'HP'}
               />
               <battleContext.Provider value={battleCountContext}>
-                <ActiveBar id={enemy.id} max={10000} barName={'action'} />
+                <ActiveBar id={enemy.id} max={10000} />
               </battleContext.Provider>
             </div>
           );
         })}
       </div>
-      <div>
+      <div
+        css={css`
+          display: grid;
+          grid-template-rows: 1fr 1fr;
+        `}
+      >
         {party.map(ally => (
-          <div key={ally.id}>
+          <div
+            key={ally.id}
+            css={css`
+              ${actionArray.some(
+                actionObj => actionObj.performer.id === ally.id
+              )
+                ? 'background-color: green'
+                : ''};
+              ${actionArray[0]?.performer.id === ally.id
+                ? 'background-color: red'
+                : ''};
+              ${ally.stats.isDead ? 'background-color: #575757' : ''};
+              ${actionArray[0]?.foe.id === ally.id
+                ? 'background-color: #51d6ee'
+                : ''};
+            `}
+          >
             <div>{ally.name}</div>
             <div>{ally.currentHp}</div>
             <ProgressBar
@@ -274,47 +355,105 @@ export default function Battle({ encounter }: { encounter: Encounter }) {
               barName={'HP'}
             />
             <battleContext.Provider value={battleCountContext}>
-              <ActiveBar
-                id={ally.id}
-                max={10000}
-                barName={'action'}
-                isAlly={true}
-              />
+              <ActiveBar id={ally.id} max={10000} isAlly={true} />
             </battleContext.Provider>
-            {ally.actions.map(action => {
-              return (
-                <button
-                  key={action.id}
-                  onClick={() => {
-                    let foe = getRandomFromArray(
-                      enemyTeam.filter(enemy => {
-                        return !enemy.stats.isDead;
-                      })
-                    );
-                    if (action.isFriendly) {
-                      foe = getRandomFromArray(party);
-                    }
-
-                    setActionArray(oldArray => [
-                      ...oldArray,
-                      { action, performer: ally, foe },
-                    ]);
-                    setAllyIdQueue(oldQueue =>
-                      oldQueue.filter((_, index) => index !== 0)
-                    );
-                  }}
-                  css={css`
-                    display: ${allyIdQueue[0] === ally.id ? 'auto' : 'none'};
-                  `}
-                >
-                  {action.name}
-                </button>
-              );
-            })}
+            <div>
+              {!selectedAction &&
+                ally.actions.map(action => {
+                  return (
+                    <button
+                      key={action.id}
+                      onClick={() => {
+                        if (!action.isFlee) {
+                          setSelectedAction({ action, performer: ally });
+                        } else {
+                          setActionArray(oldArray => [
+                            ...oldArray,
+                            { action, performer: ally, foe: ally },
+                          ]);
+                          setAllyIdQueue(oldQueue =>
+                            oldQueue.filter((_, index) => index !== 0)
+                          );
+                        }
+                      }}
+                      css={css`
+                        height: 20px;
+                        ${allyIdQueue[0] === ally.id
+                          ? 'display: auto'
+                          : 'display: none'};
+                        ${ally.stats.isDead
+                          ? 'display: none'
+                          : 'display: auto'};
+                      `}
+                    >
+                      {action.name}
+                    </button>
+                  );
+                })}
+              {selectedAction &&
+                !selectedAction.action.isFriendly &&
+                enemyTeam
+                  .filter(enemy => !enemy.stats.isDead)
+                  .map(enemy => (
+                    <button
+                      key={enemy.id}
+                      onClick={() => {
+                        setActionArray(oldArray => [
+                          ...oldArray,
+                          { ...selectedAction, foe: enemy },
+                        ]);
+                        setAllyIdQueue(oldQueue =>
+                          oldQueue.filter((_, index) => index !== 0)
+                        );
+                        setSelectedAction(null);
+                      }}
+                      css={css`
+                        height: 20px;
+                        ${allyIdQueue[0] === ally.id
+                          ? 'display: auto'
+                          : 'display: none'};
+                        ${ally.stats.isDead
+                          ? 'display: none'
+                          : 'display: auto'};
+                      `}
+                    >
+                      {enemy.name}
+                    </button>
+                  ))}
+              {selectedAction?.action.isFriendly &&
+                party.map(foeAlly => (
+                  <button
+                    key={foeAlly.id}
+                    onClick={() => {
+                      setActionArray(oldArray => [
+                        ...oldArray,
+                        { ...selectedAction, foe: foeAlly },
+                      ]);
+                      setAllyIdQueue(oldQueue =>
+                        oldQueue.filter((_, index) => index !== 0)
+                      );
+                      setSelectedAction(null);
+                    }}
+                    css={css`
+                      height: 20px;
+                      ${allyIdQueue[0] === ally.id
+                        ? 'display: auto'
+                        : 'display: none'};
+                      ${ally.stats.isDead ? 'display: none' : 'display: auto'};
+                    `}
+                  >
+                    {foeAlly.name}
+                  </button>
+                ))}
+            </div>
           </div>
         ))}
       </div>
-      <ul>
+      <ul
+        css={css`
+          display: block;
+        `}
+      >
         {actionArray.map(action => {
           return (
             <li key={action.performer.id}>

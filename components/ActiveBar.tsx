@@ -52,19 +52,24 @@ export default function ActiveBar({
   return (
     <div
       css={css`
-        background-color: ${colors?.[0] || 'blue'};
+        background-color: ${colors?.[0] || '#000000'};
         width: ${200}px;
-        height: 1em;
+        padding: 0;
+        height: 0.5em;
         overflow: hidden;
-        border: ${colors?.[3] || 'green'} solid 3px;
+        border: ${colors?.[3] || 'black'} solid 1px;
         color: ${colors?.[2] || 'white'};
       `}
     >
       <div
         css={css`
-          background-color: ${colors?.[1] || 'magenta'};
+          background-color: ${colors?.[1] || 'white'};
+          border: ${colors?.[1] || 'white'} solid 1px;
           width: ${width}%;
-          height: 1em;
+          padding: 0;
+          margin: 0;
+          height: 4em;
+          font-size: 0.3em;
         `}
       >
         {barName || ''}

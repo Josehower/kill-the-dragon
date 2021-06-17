@@ -45,7 +45,10 @@ export const gameEnemies: GameEnemies = {
     id: 1,
     name: 'Wolf',
     currentHp: 20,
-    actions: [{ action: actions.strike, frequency: 1 }],
+    actions: [
+      { action: actions.flee, frequency: 0.05 },
+      { action: actions.strike, frequency: 1 },
+    ],
     stats: {
       lvl: 1,
       hp: 20,
