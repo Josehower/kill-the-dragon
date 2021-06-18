@@ -3,13 +3,15 @@ import { css } from '@emotion/react';
 import { useState } from 'react';
 import Battle from '../components/Battle';
 import { Encounter, gameEncounters } from '../database/encounters';
+import { GameItem, gameItems, GameWeapon } from '../database/inventory';
 import useInventory from '../hooks/useInventory';
 import useParty from '../hooks/useParty';
 
 export default function Home() {
   const [encounter, setEncounter] = useState<undefined | Encounter>();
   const [party, setParty] = useParty();
-  const [inventory] = useInventory();
+  const [inventory, setInventory] = useInventory();
+  console.log(inventory);
 
   function clickHandler(id: number) {
     const gameEncounter = gameEncounters.find(combatObj => combatObj.id === id);
@@ -21,8 +23,68 @@ export default function Home() {
       <>
         <div>
           <span>--- GOLD: {inventory.gold} ---</span>
-          <span>--- ITEMS: {JSON.stringify(inventory.items)} ---</span>
-          <span>--- WEAPONS: {JSON.stringify(inventory.weapons)}</span>
+          <span>
+            --- ITEMS:
+            {inventory.items.map(
+              itemObj => ` ${itemObj.item.name}: ${itemObj.qty}  `
+            )}
+            ---
+          </span>
+          <span>
+            --- WEAPONS:{' '}
+            {inventory.weapons.map(
+              itemObj => ` ${itemObj.weapon.name}: ${itemObj.qty}  `
+            )}
+          </span>
+          <hr />
+          <hr />
+          {Object.entries(gameItems).map(([item, object]) => (
+            <button
+              key={object.id}
+              onClick={() =>
+                setInventory(old => {
+                  const item = object.isWeapon
+                    ? []
+                    : [{ item: object as GameItem, qty: 1 }];
+                  const weapon = object.isWeapon
+                    ? [{ weapon: object as GameWeapon, qty: 1 }]
+                    : [];
+                  return {
+                    ...old,
+                    items: [...old.items, ...item].reduce((acc, current) => {
+                      const currentFirstInstance = acc.find(
+                        obj => current.item.id === obj.item.id
+                      );
+
+                      if (currentFirstInstance) {
+                        currentFirstInstance.qty += current.qty;
+                        return [...acc];
+                      }
+
+                      return [...acc, current];
+                    }, [] as { item: GameItem; qty: number }[]),
+                    weapons: [...old.weapons, ...weapon].reduce(
+                      (acc, current) => {
+                        const currentFirstInstance = acc.find(
+                          obj => current.weapon.id === obj.weapon.id
+                        );
+
+                        if (currentFirstInstance) {
+                          currentFirstInstance.qty += current.qty;
+                          return [...acc];
+                        }
+
+                        return [...acc, current];
+                      },
+                      [] as { weapon: GameWeapon; qty: number }[]
+                    ),
+                  };
+                })
+              }
+            >
+              Add {item}
+            </button>
+          ))}
           <div
             css={css`
               display: flex;
