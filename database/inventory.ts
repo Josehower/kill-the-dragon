@@ -1,4 +1,7 @@
-import { DmgSource } from './actions';
+import { Dispatch, SetStateAction } from 'react';
+import { PlayerInventory } from '../pages/_app';
+import { getUseItemFunc } from '../utils/inventory';
+import { actions, CombatAction, DmgSource } from './actions';
 
 export interface GameItem {
   id: number;
@@ -6,9 +9,12 @@ export interface GameItem {
   price: number;
   description: string;
   isWeapon?: true;
+  useItem: (
+    inventory: [PlayerInventory, Dispatch<SetStateAction<PlayerInventory>>]
+  ) => CombatAction | null;
 }
 
-export interface GameWeapon extends GameItem {
+export interface GameWeapon extends Omit<GameItem, 'useItem'> {
   dmgAffinity: DmgSource[];
   // damage multiplier eg. 1.2 makes 20% more damage amd 1 makes 0% more damage
   dmgMod: number;
@@ -16,7 +22,7 @@ export interface GameWeapon extends GameItem {
 
 export type GameItems = {
   potion: GameItem;
-  Revive: GameItem;
+  revive: GameItem;
   Rod: GameWeapon;
   ShortSword: GameWeapon;
 };
@@ -27,12 +33,14 @@ export const gameItems: GameItems = {
     name: 'potion',
     price: 50,
     description: 'Restore 50HP of a party member',
+    useItem: getUseItemFunc(1, actions.usePotion),
   },
-  Revive: {
+  revive: {
     id: 2,
     name: 'Revive',
     price: 100,
     description: 'Revive a dead party member with 40HP',
+    useItem: getUseItemFunc(2, actions.useRevive),
   },
   Rod: {
     id: 3,

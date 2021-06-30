@@ -15,10 +15,10 @@ export type CombatAction = {
   description: string;
   isFriendly?: true;
   isMagic?: true;
-  fromItem?: true;
   isFlee?: true;
   dmgSource?: DmgSource;
   dmgMod?: number;
+  fromItem?: true;
 };
 
 export type ActionsObject = {

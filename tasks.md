@@ -4,5 +4,5 @@ https://www.figma.com/file/OB59lY7Hrwgqoy9glV17fa/Arquitecture-of-my-RPG?node-id
 
 ## Problems to solve
 
-- How the actual events will trigger in game actions
-- how to glue all
+- mejorar if else de acciones en combate
+- organizar logica de inventario + asignacion de arma en party

@@ -1,17 +1,22 @@
+import { isNull } from 'node:util';
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import Battle from '../components/Battle';
 import { Encounter, gameEncounters } from '../database/encounters';
 import { GameItem, gameItems, GameWeapon } from '../database/inventory';
 import useInventory from '../hooks/useInventory';
 import useParty from '../hooks/useParty';
+import { useItemOutOfCombat } from '../utils/gameMenuActions';
 
 export default function Home() {
   const [encounter, setEncounter] = useState<undefined | Encounter>();
   const [party, setParty] = useParty();
-  const [inventory, setInventory] = useInventory();
-  console.log(inventory);
+  const gameInventory = useInventory();
+  const [inventory, setInventory] = gameInventory;
+  const [weaponState, setWeaponState] = useState(() =>
+    party.map(ally => (ally.weapon?.id ? `${ally.weapon?.id}` : ''))
+  );
 
   function clickHandler(id: number) {
     const gameEncounter = gameEncounters.find(combatObj => combatObj.id === id);
@@ -91,7 +96,7 @@ export default function Home() {
               gap: 5vw;
             `}
           >
-            {party.map(ally => {
+            {party.map((ally, index) => {
               return (
                 <div key={ally.id}>
                   <h2> {ally.name}</h2>
@@ -107,16 +112,12 @@ export default function Home() {
                   <button
                     onClick={() => {
                       if (ally.stats.isDead) return;
-                      setParty(old =>
-                        old.map(char => {
-                          if (char.id === ally.id) {
-                            return {
-                              ...ally,
-                              currentHp: ally.stats.hp,
-                            };
-                          }
-                          return char;
-                        })
+                      if (ally.currentHp === ally.stats.hp) return;
+                      useItemOutOfCombat(
+                        gameItems.potion,
+                        ally,
+                        setParty,
+                        gameInventory
                       );
                     }}
                   >
@@ -125,22 +126,38 @@ export default function Home() {
                   <button
                     onClick={() => {
                       if (!ally.stats.isDead) return;
-                      setParty(old =>
-                        old.map(char => {
-                          if (char.id === ally.id) {
-                            return {
-                              ...ally,
-                              currentHp: ally.stats.hp / 2,
-                              stats: { ...ally.stats, isDead: false },
-                            };
-                          }
-                          return char;
-                        })
+                      useItemOutOfCombat(
+                        gameItems.revive,
+                        ally,
+                        setParty,
+                        gameInventory
                       );
                     }}
                   >
                     Revive
                   </button>
+                  <select
+                    value={weaponState[index]}
+                    name='weapon'
+                    onChange={e => {
+                      const value = e.currentTarget.value;
+                      setWeaponState(current =>
+                        current.map((wepId, wepIndex) => {
+                          console.log(value);
+                          if (index === wepIndex) {
+                            return value;
+                          } else {
+                            return wepId;
+                          }
+                        })
+                      );
+                    }}
+                  >
+                    <option value=''>equip</option>
+                    {inventory.weapons.map(({ weapon }) => (
+                      <option value={`${weapon.id}`}>{weapon.name}</option>
+                    ))}
+                  </select>
                 </div>
               );
             })}

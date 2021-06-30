@@ -74,10 +74,12 @@ export function calculateHealthDelta(
 
   const damageBase = action.isMagic ? performerStats.mDmg : performerStats.pDmg;
 
+  // extra damage from special action
   const actionDamageAmplifier = action.dmgMod || 1;
 
   const weaknessMod = foeStats.weakness === action.dmgSource ? 2 : 1;
 
+  // extra damage from weapon equipment
   const weaponMod =
     weapon &&
     weapon.dmgAffinity.some((source: DmgSource) => action.dmgSource === source)
