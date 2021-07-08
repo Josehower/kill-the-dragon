@@ -1,7 +1,6 @@
-import { isNull } from 'node:util';
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { useState } from 'react';
 import Battle from '../components/Battle';
 import { Encounter, gameEncounters } from '../database/encounters';
 import { GameItem, gameItems, GameWeapon } from '../database/inventory';
@@ -14,9 +13,34 @@ export default function Home() {
   const [party, setParty] = useParty();
   const gameInventory = useInventory();
   const [inventory, setInventory] = gameInventory;
-  const [weaponState, setWeaponState] = useState(() =>
-    party.map(ally => (ally.weapon?.id ? `${ally.weapon?.id}` : ''))
+  const weaponState = party.map(ally =>
+    ally.weapon?.id ? `${ally.weapon?.id}` : ''
   );
+
+  const equipedWeapon = weaponState
+    .filter(wep => wep !== '')
+    .reduce((acc: any[], current) => {
+      const id = Number(current);
+      let obj = acc.find(obj => obj.id === id);
+      if (obj) {
+        obj.qty += 1;
+      } else {
+        obj = { id: id, qty: 1 };
+        acc.push(obj);
+      }
+
+      return acc;
+    }, []);
+  const restInv = inventory.weapons
+    .map(obj => {
+      const equiped = equipedWeapon.find(wep => wep.id === obj.weapon.id);
+      let newObj;
+      if (equiped) {
+        newObj = { ...obj, qty: obj.qty - equiped.qty };
+      }
+      return newObj || obj;
+    })
+    .filter(obj => obj.qty !== 0);
 
   function clickHandler(id: number) {
     const gameEncounter = gameEncounters.find(combatObj => combatObj.id === id);
@@ -38,7 +62,11 @@ export default function Home() {
           <span>
             --- WEAPONS:{' '}
             {inventory.weapons.map(
-              itemObj => ` ${itemObj.weapon.name}: ${itemObj.qty}  `
+              itemObj =>
+                ` ${itemObj.weapon.name}: ${
+                  restInv.find(obj => itemObj.weapon.id === obj.weapon.id)
+                    ?.qty || 0
+                }/${itemObj.qty}  `
             )}
           </span>
           <hr />
@@ -101,6 +129,7 @@ export default function Home() {
                 <div key={ally.id}>
                   <h2> {ally.name}</h2>
                   <h3>{ally.currentHp}</h3>
+                  <h3>{ally.weapon?.name}</h3>
                   <ul>
                     <li>exp:{ally.exp}</li>
                     {Object.entries(ally.stats).map(stat => (
@@ -109,6 +138,7 @@ export default function Home() {
                       </li>
                     ))}
                   </ul>
+
                   <button
                     onClick={() => {
                       if (ally.stats.isDead) return;
@@ -141,21 +171,35 @@ export default function Home() {
                     name='weapon'
                     onChange={e => {
                       const value = e.currentTarget.value;
-                      setWeaponState(current =>
-                        current.map((wepId, wepIndex) => {
-                          console.log(value);
-                          if (index === wepIndex) {
-                            return value;
-                          } else {
-                            return wepId;
+                      setParty(current =>
+                        current.map(currentAlly => {
+                          if (currentAlly.id === ally.id) {
+                            currentAlly.weapon =
+                              (Object.values(gameItems).find(
+                                wep => wep.id === Number(value)
+                              ) as GameWeapon) || null;
+                            return currentAlly;
                           }
+                          return currentAlly;
                         })
                       );
                     }}
                   >
-                    <option value=''>equip</option>
-                    {inventory.weapons.map(({ weapon }) => (
-                      <option value={`${weapon.id}`}>{weapon.name}</option>
+                    <option value=''>none</option>
+                    {ally.weapon ? (
+                      <option value={`${ally.weapon.id}`}>
+                        {ally.weapon.name}
+                      </option>
+                    ) : (
+                      ''
+                    )}
+                    {restInv.map(({ weapon }) => (
+                      <option
+                        key={`${weapon.id}-${ally.name}`}
+                        value={`${weapon.id}`}
+                      >
+                        {weapon.name}
+                      </option>
                     ))}
                   </select>
                 </div>

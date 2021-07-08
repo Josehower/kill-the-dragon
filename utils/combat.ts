@@ -22,7 +22,7 @@ export function calculateHealthDelta(
   action: CombatAction,
   performerStats: CombatStats,
   foeStats: CombatStats,
-  weapon?: GameWeapon
+  weapon: GameWeapon | null
 ): HealthDelta {
   if (!action.dmgSource) {
     throw Error(
@@ -85,6 +85,8 @@ export function calculateHealthDelta(
     weapon.dmgAffinity.some((source: DmgSource) => action.dmgSource === source)
       ? weapon.dmgMod
       : 1;
+
+  console.log('wep MOD', weaponMod * 100 - 100);
 
   let resistanceMod = 1;
   if (foeStats.lvl > performerStats.lvl) {

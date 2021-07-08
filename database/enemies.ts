@@ -30,7 +30,7 @@ export type Enemy = {
   isAlly: boolean;
   actions: EnemyActions;
   stats: CombatStats;
-  weapon?: GameWeapon;
+  weapon: GameWeapon | null;
 };
 
 export type GameEnemies = {
@@ -65,6 +65,7 @@ export const gameEnemies: GameEnemies = {
       isDead: false,
     },
     isAlly: false,
+    weapon: null,
   },
   mageInitiate: {
     id: 2,
@@ -89,6 +90,7 @@ export const gameEnemies: GameEnemies = {
       isDead: false,
     },
     isAlly: false,
+    weapon: null,
   },
   mageAdept: {
     id: 3,
@@ -112,6 +114,7 @@ export const gameEnemies: GameEnemies = {
       isDead: false,
     },
     isAlly: false,
+    weapon: null,
   },
   sorcererAdept: {
     id: 4,
@@ -136,6 +139,7 @@ export const gameEnemies: GameEnemies = {
       isDead: false,
     },
     isAlly: false,
+    weapon: null,
   },
   crusaderAdept: {
     id: 5,
@@ -160,6 +164,7 @@ export const gameEnemies: GameEnemies = {
       isDead: false,
     },
     isAlly: false,
+    weapon: null,
   },
   dragon: {
     id: 6,
@@ -185,5 +190,6 @@ export const gameEnemies: GameEnemies = {
       isDead: false,
     },
     isAlly: false,
+    weapon: null,
   },
 };
