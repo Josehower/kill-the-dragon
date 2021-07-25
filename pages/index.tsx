@@ -1,5 +1,5 @@
-/** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { addEffect, Canvas } from '@react-three/fiber';
 import { useState } from 'react';
 import Battle from '../components/Battle';
 import { Encounter, gameEncounters } from '../database/encounters';
@@ -46,6 +46,35 @@ export default function Home() {
     const gameEncounter = gameEncounters.find(combatObj => combatObj.id === id);
     setEncounter(gameEncounter);
   }
+
+  // const pRef = useRef<HTMLParagraphElement>(null);
+
+  // useEffect(() => {
+  //   addEffect(text => {
+  //     if (pRef.current !== null) {
+  //       pRef.current.innerText = `${Math.floor(text / 1000) % 60}`;
+  //     }
+  //   });
+  // }, []);
+  // return (
+  //   <div css={canvas}>
+  //     <Canvas
+  //       camera={{
+  //         position: [0, 0, 32],
+  //         zoom: 90,
+  //         near: 0.1,
+  //         far: 64,
+  //       }}
+  //       orthographic
+  //       gl={{ alpha: false, antialias: false }}
+  //     >
+  //       <ambientLight intensity={1} />
+  //       <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
+  //       <pointLight position={[-10, -10, -10]} />
+  //     </Canvas>
+  //     <p ref={pRef}>0</p>
+  //   </div>
+  // );
 
   if (!encounter) {
     return (

@@ -25,22 +25,20 @@ export default function ActiveBar({
 
   const countArray = isAlly ? partyActionCount : enemiesActionCount;
   const countRef = countArray.find(countObj => countObj.id === id)?.count || 0;
-  const [count, setCount] = useState(() => countRef);
+  const barRef = useRef<HTMLDivElement>(null);
   const isMounted = useRef(true);
 
-  const width = (count * 100) / max;
-
-  const animationFrame = useCombatLoop(
-    (a: number, b: number, c: { current: number }) => {
-      c.current += b;
-      if (c.current >= 1000 / 60 && isMounted.current) {
-        setCount(
-          () => countArray.find(countObj => countObj.id === id)?.count || 0
-        );
-        c.current = 0;
-      }
+  console.log('render');
+  useCombatLoop((a: number, b: number, c: { current: number }) => {
+    if (barRef.current !== null) {
+      const myCount =
+        countArray.find(countObj => countObj.id === id)?.count || 0;
+      barRef.current.style.transform = `scaleX(${myCount / max})`;
+      // barRef.current.innerText = `${myCount / max}%`;
     }
-  );
+
+    return 'bar';
+  });
 
   useEffect(() => {
     isMounted.current = true;
@@ -55,21 +53,26 @@ export default function ActiveBar({
         background-color: ${colors?.[0] || '#000000'};
         width: ${200}px;
         padding: 0;
-        height: 0.5em;
+        height: 1.5em;
         overflow: hidden;
         border: ${colors?.[3] || 'black'} solid 1px;
         color: ${colors?.[2] || 'white'};
       `}
     >
       <div
+        ref={barRef}
         css={css`
           background-color: ${colors?.[1] || 'white'};
           border: ${colors?.[1] || 'white'} solid 1px;
-          width: ${width}%;
+          transform-origin: ${isAlly ? '0% 50%' : '100% 50%'};
+          width: 100%;
+          transform: scaleX(0);
           padding: 0;
           margin: 0;
-          height: 4em;
+          height: 1em;
           font-size: 0.3em;
+          color: blue;
+          transition: all 0.3s;
         `}
       >
         {barName || ''}

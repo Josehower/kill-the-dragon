@@ -239,12 +239,15 @@ export default function Battle({
     }
   }
 
-  useCombatLoop((a: number, b: number, c: { current: number }) => {
+  useCombatLoop((a: number, b: number, c: { current: any }) => {
+    // console.log(b);
+    const gameSpeed = 100;
+
     // avoid start the loop too early
     if (endOfCombat.current) return;
     if (reRender === undefined) {
       setReRender(true);
-      return;
+      return 'battle render';
     }
 
     // stop loop if game is finished
@@ -252,7 +255,7 @@ export default function Battle({
       party.every(ally => ally.stats.isDead) ||
       enemyTeam.every(enemy => enemy.stats.isDead)
     ) {
-      return;
+      return 'dead';
     }
 
     // add ally id to action queue if count is 10000
@@ -266,7 +269,8 @@ export default function Battle({
       // update ally action count
 
       if (allyObjRef && !allyObjRef.stats.isDead && !ally.isActive) {
-        ally.count += b * ally.speed;
+        // console.log('a', a, 'speed', a % 10500);
+        ally.count += b * gameSpeed * ally.speed;
       }
       if (allyObjRef?.stats.isDead) ally.count = 0;
     });
@@ -299,10 +303,12 @@ export default function Battle({
       }
       // update enemy action count
       if (enemyObjRef && !enemyObjRef.stats.isDead && !enemy.isActive) {
-        enemy.count += b * enemy.speed;
+        // console.log('up', enemy.count + 1 * enemy.speed);
+        enemy.count += b * gameSpeed * enemy.speed;
       }
       if (enemyObjRef?.stats.isDead) enemy.count = 0;
     });
+    return 'battle';
   });
 
   // render if combat is over
