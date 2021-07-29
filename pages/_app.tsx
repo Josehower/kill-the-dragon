@@ -37,6 +37,8 @@ function App({ Component, pageProps }: AppProps) {
     weapons: [],
   });
 
+  console.log('ok', +Date.now());
+
   const partyContextValue: PartyContextType = {
     party,
     setParty,

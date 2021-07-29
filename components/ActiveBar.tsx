@@ -24,7 +24,7 @@ export default function ActiveBar({
   ) as CountContextType;
 
   const countArray = isAlly ? partyActionCount : enemiesActionCount;
-  const countRef = countArray.find(countObj => countObj.id === id)?.count || 0;
+
   const barRef = useRef<HTMLDivElement>(null);
   const isMounted = useRef(true);
 
@@ -33,8 +33,8 @@ export default function ActiveBar({
     if (barRef.current !== null) {
       const myCount =
         countArray.find(countObj => countObj.id === id)?.count || 0;
+
       barRef.current.style.transform = `scaleX(${myCount / max})`;
-      // barRef.current.innerText = `${myCount / max}%`;
     }
 
     return 'bar';
@@ -72,7 +72,7 @@ export default function ActiveBar({
           height: 1em;
           font-size: 0.3em;
           color: blue;
-          transition: all 0.3s;
+          transition: all 0.05s;
         `}
       >
         {barName || ''}

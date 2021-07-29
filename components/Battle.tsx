@@ -48,7 +48,7 @@ export default function Battle({
   const isActionRunning = useRef(false);
   const endOfCombat = useRef(false);
   const inventory = useInventory();
-  const [reRender, setReRender] = useState<boolean | undefined>();
+
   const [isPartyFleeing, setIsPartyFleeing] = useState<boolean>(false);
 
   // Actions Queue that manage game turn system
@@ -72,7 +72,7 @@ export default function Battle({
   const [enemyTeam, setEnemyTeam] = useEnemyTeam(encounter.enemyTeam); // Uses an instance of the encounter enemy team as state.
 
   // Action management variables
-  const { current: partyActionCount } = useRef<ActionCountObj[]>(
+  const partyActionCount = useRef<ActionCountObj[]>(
     party.map(ally => {
       return {
         id: ally.id,
@@ -83,7 +83,7 @@ export default function Battle({
     })
   );
 
-  const { current: enemiesActionCount } = useRef<ActionCountObj[]>(
+  const enemiesActionCount = useRef<ActionCountObj[]>(
     enemyTeam.map(enemy => {
       return {
         id: enemy.id,
@@ -94,18 +94,18 @@ export default function Battle({
     })
   );
   const battleCountContext = {
-    partyActionCount,
-    enemiesActionCount,
+    partyActionCount: partyActionCount.current,
+    enemiesActionCount: enemiesActionCount.current,
   };
 
   function enemyEscape(enemy: Enemy) {
-    const actionObjIndex = enemiesActionCount.findIndex(
+    const actionObjIndex = enemiesActionCount.current.findIndex(
       obj => obj.id === enemy.id
     );
     if (actionObjIndex > -1) {
-      enemiesActionCount[actionObjIndex].count = 0;
-      enemiesActionCount[actionObjIndex].isActive = false;
-      enemiesActionCount.splice(actionObjIndex, 1);
+      enemiesActionCount.current[actionObjIndex].count = 0;
+      enemiesActionCount.current[actionObjIndex].isActive = false;
+      enemiesActionCount.current.splice(actionObjIndex, 1);
       setActionArray(oldArray =>
         oldArray.filter((_, index) => {
           return index !== 0;
@@ -113,7 +113,7 @@ export default function Battle({
       );
       setEnemyTeam(
         enemyTeam.filter(opp =>
-          enemiesActionCount.some(obj => obj.id === opp.id)
+          enemiesActionCount.current.some(obj => obj.id === opp.id)
         )
       );
       killCharacter(enemy);
@@ -125,7 +125,7 @@ export default function Battle({
     char.stats.isDead = true;
 
     if (char.isAlly) {
-      const countObj = partyActionCount.find(
+      const countObj = partyActionCount.current.find(
         allyCount => allyCount.id === char.id
       );
       if (countObj) {
@@ -142,7 +142,7 @@ export default function Battle({
         setSelectedAction(null);
       }
     } else {
-      const countObj = enemiesActionCount.find(
+      const countObj = enemiesActionCount.current.find(
         enemyCount => enemyCount.id === char.id
       );
       if (countObj) {
@@ -156,7 +156,7 @@ export default function Battle({
     if (!isActionRunning.current && actionArray[0]) {
       const { action, performer, foe } = actionArray[0];
       performAction(action, performer, foe);
-      console.log('action', actionArray[0]?.performer?.name);
+      // console.log('action', actionArray[0]?.performer?.name);
     }
   }, [actionArray]);
 
@@ -219,8 +219,10 @@ export default function Battle({
         : setEnemyTeam(newTeam as Enemy[]);
     }
     const countObjRef = performer.isAlly
-      ? partyActionCount.find(countObj => countObj.id === performer.id)
-      : enemiesActionCount.find(countObj => countObj.id === performer.id);
+      ? partyActionCount.current.find(countObj => countObj.id === performer.id)
+      : enemiesActionCount.current.find(
+          countObj => countObj.id === performer.id
+        );
 
     isActionRunning.current = false;
     setActionArray(oldArray =>
@@ -240,15 +242,15 @@ export default function Battle({
   }
 
   useCombatLoop((a: number, b: number, c: { current: any }) => {
-    // console.log(b);
-    const gameSpeed = 100;
+    //console.log('1');
+    const gameSpeed = 2;
 
     // avoid start the loop too early
     if (endOfCombat.current) return;
-    if (reRender === undefined) {
-      setReRender(true);
-      return 'battle render';
-    }
+    // if (reRender === undefined) {
+    //   setReRender(true);
+    //   return 'battle render';
+    // }
 
     // stop loop if game is finished
     if (
@@ -259,7 +261,7 @@ export default function Battle({
     }
 
     // add ally id to action queue if count is 10000
-    partyActionCount.forEach(ally => {
+    partyActionCount.current.forEach(ally => {
       const allyObjRef = party.find(char => ally.id === char.id);
       if (ally.count > 10000) {
         ally.isActive = true;
@@ -276,7 +278,7 @@ export default function Battle({
     });
 
     // add enemy id to action queue if count is 10000
-    enemiesActionCount.forEach(enemy => {
+    enemiesActionCount.current.forEach(enemy => {
       const enemyObjRef = enemyTeam.find(char => enemy.id === char.id);
 
       if (enemy.count > 10000) {
