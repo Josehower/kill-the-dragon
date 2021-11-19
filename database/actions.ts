@@ -13,6 +13,7 @@ export type CombatAction = {
   id: number;
   name: string;
   description: string;
+  duration: number;
   isFriendly?: true;
   isMagic?: true;
   isFlee?: true;
@@ -40,12 +41,14 @@ export const actions: ActionsObject = {
     name: 'Strike',
     description: 'Attacks the foe using the muscles',
     dmgSource: DmgSource.physic,
+    duration: 2000,
   },
   blast: {
     id: 2,
     name: 'Blast',
     description: 'Burns the foe using magical forces',
     dmgSource: DmgSource.fire,
+    duration: 4000,
     isMagic: true,
   },
   tsunami: {
@@ -53,6 +56,7 @@ export const actions: ActionsObject = {
     name: 'Tsunami',
     description: 'Chokes the foe using magical forces',
     dmgSource: DmgSource.water,
+    duration: 4000,
     isMagic: true,
   },
   shock: {
@@ -60,6 +64,7 @@ export const actions: ActionsObject = {
     name: 'Shock',
     description: 'Electrocutes the foe using magical forces',
     dmgSource: DmgSource.thunder,
+    duration: 4000,
     isMagic: true,
   },
   earthquake: {
@@ -67,6 +72,7 @@ export const actions: ActionsObject = {
     name: 'Earthquake',
     description: 'Demolishes the foe using magical forces',
     dmgSource: DmgSource.earth,
+    duration: 3000,
     isMagic: true,
   },
   usePotion: {
@@ -74,6 +80,7 @@ export const actions: ActionsObject = {
     name: 'Use Potion',
     description: 'Use an item to take tactical advantage',
     dmgSource: DmgSource.heal,
+    duration: 3000,
     isFriendly: true,
     fromItem: true,
   },
@@ -82,6 +89,7 @@ export const actions: ActionsObject = {
     name: 'Use Revive',
     description: 'Use an item to take tactical advantage',
     dmgSource: DmgSource.revive,
+    duration: 2000,
     isFriendly: true,
     fromItem: true,
   },
@@ -89,6 +97,7 @@ export const actions: ActionsObject = {
     id: 8,
     name: 'Flee',
     description: 'Escape is smart... sometimes',
+    duration: 500,
     isFlee: true,
   },
   dragonBite: {
@@ -96,12 +105,14 @@ export const actions: ActionsObject = {
     name: 'Dragon Bite',
     description: 'The end is close!!!',
     dmgSource: DmgSource.physic,
+    duration: 2000,
   },
   fireBreath: {
     id: 10,
     name: 'Fire Breath',
     description: 'What do you expect from a Dragon',
     dmgSource: DmgSource.fire,
+    duration: 5000,
     dmgMod: 1.5,
   },
 };

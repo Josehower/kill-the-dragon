@@ -1,7 +1,7 @@
 import { actions, CombatAction, DmgSource } from './actions';
 import { GameWeapon } from './inventory';
 
-type EnemyActions = {
+export type EnemyActions = {
   action: CombatAction;
   /* number to choose from find >= random num */
   frequency: number;

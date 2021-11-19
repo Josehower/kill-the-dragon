@@ -3,7 +3,7 @@ import { CombatStats } from './enemies';
 import { GameWeapon } from './inventory';
 import { levelStats } from './stats';
 
-type nonItemAction = Omit<CombatAction, 'fromItem'>;
+export type NonItemAction = Omit<CombatAction, 'fromItem'>;
 
 export type Ally = {
   id: number;
@@ -11,7 +11,7 @@ export type Ally = {
   name: string;
   currentHp: number;
   isAlly: boolean;
-  actions: nonItemAction[];
+  actions: NonItemAction[];
   stats: CombatStats;
   weapon: GameWeapon | null;
 };
@@ -59,7 +59,7 @@ export const playerParty: Ally[] = [
   },
 ];
 
-function formatAllyActions(allyActionsArray: nonItemAction[], name: string) {
+function formatAllyActions(allyActionsArray: NonItemAction[], name: string) {
   allyActionsArray.forEach(action => {
     if ('fromItem' in action) throw Error(`illegal action in ${name}`);
   });

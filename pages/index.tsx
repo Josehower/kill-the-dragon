@@ -1,5 +1,4 @@
 import { css } from '@emotion/react';
-import { addEffect, Canvas } from '@react-three/fiber';
 import { useState } from 'react';
 import Battle from '../components/Battle';
 import { Encounter, gameEncounters } from '../database/encounters';
@@ -9,7 +8,7 @@ import useParty from '../hooks/useParty';
 import { useItemOutOfCombat } from '../utils/gameMenuActions';
 
 export default function Home() {
-  const [encounter, setEncounter] = useState<undefined | Encounter>();
+  const [encounter, setEncounter] = useState<Encounter | null>(null);
   const [party, setParty] = useParty();
   const gameInventory = useInventory();
   const [inventory, setInventory] = gameInventory;
@@ -43,7 +42,9 @@ export default function Home() {
     .filter(obj => obj.qty !== 0);
 
   function clickHandler(id: number) {
-    const gameEncounter = gameEncounters.find(combatObj => combatObj.id === id);
+    const gameEncounter = gameEncounters.find(
+      combatObj => combatObj.id === id
+    ) as Encounter;
     setEncounter(gameEncounter);
   }
 
@@ -262,7 +263,7 @@ export default function Home() {
         </button>
       </>
     );
+  } else {
+    return <Battle encounter={encounter} setEncounter={setEncounter} />;
   }
-
-  return <Battle encounter={encounter} setEncounter={setEncounter} />;
 }
