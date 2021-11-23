@@ -30,12 +30,14 @@ export type PartyContextType = {
 export const partyContext = createContext<PartyContextType | null>(null);
 
 function App({ Component, pageProps }: AppProps) {
+  // TODO: move this state outside of the canvas scope to avoid weird rerenders
   const [party, setParty] = useState<Ally[]>(() => playerParty);
   const [partyInventory, setPartyInventory] = useState<PlayerInventory>({
     gold: 0,
     items: [],
     weapons: [],
   });
+  console.log('app render');
 
   const partyContextValue: PartyContextType = {
     party,
