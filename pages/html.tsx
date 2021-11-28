@@ -1,11 +1,12 @@
 import { css } from '@emotion/react';
 import { Html } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
-import { useContext } from 'react';
+import { createContext, Dispatch, SetStateAction, useState } from 'react';
 import BattleControl from '../components/BattleControl';
 import Menu from '../components/Menu';
 import Store from '../components/Store';
-import { partyContext, PartyContextType } from './_app';
+import { GameItem, GameWeapon } from '../database/inventory';
+import { Ally, playerParty } from '../database/party';
 
 const canvas = css`
   width: 100vw;
@@ -15,8 +16,54 @@ const canvas = css`
   left: 0;
 `;
 
+export type PlayerInventory = {
+  gold: number;
+  items: { item: GameItem; qty: number }[];
+  weapons: { weapon: GameWeapon; qty: number }[];
+};
+
+export type PartyContextType = {
+  party: Ally[];
+  setParty: Dispatch<SetStateAction<Ally[]>>;
+  partyInventory: PlayerInventory;
+  setPartyInventory: Dispatch<SetStateAction<PlayerInventory>>;
+};
+
+export const partyContext = createContext<PartyContextType | null>(null);
+
+function GuiComponent() {
+  const [party, setParty] = useState<Ally[]>(() => playerParty);
+  const [partyInventory, setPartyInventory] = useState<PlayerInventory>({
+    gold: 0,
+    items: [],
+    weapons: [],
+  });
+
+  const partyContextValue: PartyContextType = {
+    party,
+    setParty,
+    partyInventory,
+    setPartyInventory,
+  };
+
+  return (
+    <>
+      <Html fullscreen>
+        <partyContext.Provider value={partyContextValue}>
+          <h2>Menu</h2>
+          <Store />
+          <Menu />
+
+          <h2>Go to Combat</h2>
+          <BattleControl />
+        </partyContext.Provider>
+      </Html>
+    </>
+  );
+}
+
 export default function Refactor() {
-  const partyContextValue = useContext(partyContext) as PartyContextType;
+  console.log('canvas render');
   return (
     <div css={canvas}>
       <Canvas
@@ -29,20 +76,7 @@ export default function Refactor() {
         orthographic
         gl={{ alpha: false, antialias: false }}
       >
-        <Html fullscreen>
-          <partyContext.Provider value={partyContextValue}>
-            <>
-              <hr />
-              <hr />
-              <h2>Menu</h2>
-              <Store />
-              <Menu />
-
-              <h2>Go to Combat</h2>
-              <BattleControl />
-            </>
-          </partyContext.Provider>
-        </Html>
+        <GuiComponent />
 
         <ambientLight intensity={1} />
         <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />

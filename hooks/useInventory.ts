@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useContext } from 'react';
-import { partyContext, PartyContextType, PlayerInventory } from '../pages/_app';
+import { partyContext, PartyContextType, PlayerInventory } from '../pages/html';
 
 export default function useInventory() {
   const { partyInventory, setPartyInventory } = useContext(

@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import { useState } from 'react';
-import { GameItem, gameItems, GameWeapon } from '../database/inventory';
+import { gameItems, GameWeapon } from '../database/inventory';
 import useInventory from '../hooks/useInventory';
 import useParty from '../hooks/useParty';
 import { useItemOutOfCombat } from '../utils/gameMenuActions';
