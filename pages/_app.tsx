@@ -1,18 +1,19 @@
 import { css, Global } from '@emotion/react';
+import { Html } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import { AppProps } from 'next/app';
 import { createContext, Dispatch, SetStateAction, useState } from 'react';
 import { GameItem, GameWeapon } from '../database/inventory';
 import { Ally, playerParty } from '../database/party';
 
-const canvas = css`
-  width: 100vw;
-  height: 100vh;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: -1;
-`;
+// const canvas = css`
+//   width: 100vw;
+//   height: 100vh;
+//   position: absolute;
+//   top: 0;
+//   left: 0;
+//   z-index: 0;
+// `;
 
 export type PlayerInventory = {
   gold: number;
@@ -61,22 +62,6 @@ function App({ Component, pageProps }: AppProps) {
         `}
       />
       <partyContext.Provider value={partyContextValue}>
-        <div css={canvas}>
-          <Canvas
-            camera={{
-              position: [0, 0, 32],
-              zoom: 90,
-              near: 0.1,
-              far: 64,
-            }}
-            orthographic
-            gl={{ alpha: false, antialias: false }}
-          >
-            <ambientLight intensity={1} />
-            <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
-            <pointLight position={[-10, -10, -10]} />
-          </Canvas>
-        </div>
         <Component {...pageProps} />
       </partyContext.Provider>
     </>
