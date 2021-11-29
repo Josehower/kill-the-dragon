@@ -50,6 +50,9 @@ export default function Battle({
   const [activeId, setActiveId] = useState<number>();
 
   const isActionHappening = useRef(false);
+  const isBattleActive = useRef(true);
+
+  console.log('outsider current BA', isBattleActive.current);
 
   async function performAction<T extends Persona>({
     action,
@@ -57,11 +60,11 @@ export default function Battle({
     foe,
   }: ActionToPerform<T>) {
     // TODO: avoid the game keep running actions after battle end. Solve this issue better, maybe move battle state to the parent component
-    if (battleState !== BattleState.active) return;
-
+    if (!isBattleActive.current) return;
     if (performer.stats.isDead) return;
 
     isActionHappening.current = true;
+
     setActiveId(performer.id);
 
     if (action.isFlee) {
@@ -96,6 +99,10 @@ export default function Battle({
 
     console.log('waiting ', action.duration / 1000, ' seconds');
     await wait(action.duration);
+    if (!isBattleActive.current) {
+      console.log('ACTION BLOCKED FOR BATTLE END');
+      return;
+    }
 
     if (healthDelta.hpDelta > 0 && !healthDelta.isHealed) {
       healthDelta.hpDelta = 0;
@@ -212,7 +219,12 @@ export default function Battle({
     }
   }, [battleState]);
 
+  useEffect(() => {
+    setBattleState(BattleState.active);
+  }, []);
+
   if (battleState === BattleState.lost) {
+    isBattleActive.current = false;
     return (
       <div>
         YOU LOSE{' '}
@@ -228,12 +240,13 @@ export default function Battle({
   }
 
   if (battleState === BattleState.win) {
+    isBattleActive.current = false;
     return (
       <div>
         YOU WIN{' '}
         <button
           onClick={() => {
-            setBattleState(BattleState.active), setEncounter(null);
+            setEncounter(null);
           }}
         >
           stop
@@ -243,12 +256,13 @@ export default function Battle({
   }
 
   if (battleState === BattleState.flee) {
+    isBattleActive.current = false;
     return (
       <div>
         YOU ARE THE COWARD
         <button
           onClick={() => {
-            setBattleState(BattleState.active), setEncounter(null);
+            setEncounter(null);
           }}
         >
           stop
@@ -291,14 +305,14 @@ export default function Battle({
         />
       </div>
       <button
-        onClick={() =>
+        onClick={() => {
           setEnemyTeam(team =>
             team.map(enemy => {
               enemy.currentHp = 0;
               return enemy;
             })
-          )
-        }
+          );
+        }}
       >
         win
       </button>

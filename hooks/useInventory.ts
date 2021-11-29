@@ -1,10 +1,14 @@
 import { Dispatch, SetStateAction, useContext } from 'react';
-import { partyContext, PartyContextType, PlayerInventory } from '../pages/html';
+import {
+  gameStateContext,
+  GameStateContext,
+  PlayerInventory,
+} from '../components/GameObject';
 
 export default function useInventory() {
   const { partyInventory, setPartyInventory } = useContext(
-    partyContext
-  ) as PartyContextType;
+    gameStateContext
+  ) as GameStateContext;
   return [partyInventory, setPartyInventory] as [
     PlayerInventory,
     Dispatch<SetStateAction<PlayerInventory>>

@@ -1,8 +1,8 @@
 import { Dispatch, SetStateAction, useContext } from 'react';
+import { gameStateContext, GameStateContext } from '../components/GameObject';
 import { Ally } from '../database/party';
-import { partyContext, PartyContextType } from '../pages/html';
 
 export default function useParty() {
-  const { party, setParty } = useContext(partyContext) as PartyContextType;
+  const { party, setParty } = useContext(gameStateContext) as GameStateContext;
   return [party, setParty] as [Ally[], Dispatch<SetStateAction<Ally[]>>];
 }

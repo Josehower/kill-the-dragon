@@ -1,11 +1,11 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { CombatAction } from '../database/actions';
-import { Ally, NonItemAction } from '../database/party';
-import { PlayerInventory } from '../pages/_app';
+import { Ally } from '../database/party';
 import { getCombatAction } from '../utils/combat';
 import { getRandomFromArray } from '../utils/miscelaneous';
 import { ActionToPerform } from './Battle';
 import { Foes, Persona } from './BattlePersona';
+import { PlayerInventory } from './GameObject';
 
 type Props<T, O> = {
   setIsSelectingAction: Dispatch<SetStateAction<boolean>>;

@@ -21,6 +21,7 @@ export default function Store() {
           {Object.entries(gameItems).map(([item, object]) => {
             return (
               <div
+                key={`store-item-${item}-${object.id}`}
                 css={css`
                   display: flex;
                   align-items: center;
