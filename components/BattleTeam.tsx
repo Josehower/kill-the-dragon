@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import { Dispatch, SetStateAction } from 'react';
-import { PlayerInventory } from '../pages/_app';
+import { PlayerInventory } from '../components/GameObject';
 import { ActionToPerform } from './Battle';
 import BattlePersona, { Persona } from './BattlePersona';
 

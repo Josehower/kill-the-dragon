@@ -16,8 +16,8 @@ export default function Game() {
     <div css={canvas}>
       <Canvas
         camera={{
-          position: [0, 0, 32],
-          zoom: 90,
+          position: [0, 0, 1],
+          zoom: 70,
           near: 0.1,
           far: 64,
         }}

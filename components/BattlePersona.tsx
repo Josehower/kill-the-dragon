@@ -1,8 +1,7 @@
-import { css } from '@emotion/react';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { PlayerInventory } from '../components/GameObject';
 import { Enemy } from '../database/enemies';
 import { Ally } from '../database/party';
-import { PlayerInventory } from '../pages/_app';
 import ActionControls from './ActionControls';
 import { ActionToPerform } from './Battle';
 import TimedBar from './TimedBar';
