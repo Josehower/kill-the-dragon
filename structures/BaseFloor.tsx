@@ -1,7 +1,18 @@
-import { MeshProps, useFrame } from '@react-three/fiber';
+import { Color, MeshProps, useFrame, Vector3 } from '@react-three/fiber';
+import { Dispatch, SetStateAction } from 'react';
+import { Encounter } from '../database/encounters';
+import { GameMap } from '../database/maps';
 import { gridGenerator } from '../utils/map';
 
-export default function Tile({ pos = [0, 0, 0], color = 'red', ...props }) {
+function Tile({
+  pos = [0, 0, 0],
+  color = 'red',
+  ...props
+}: {
+  pos: Vector3;
+  color: Color;
+  props?: MeshProps;
+}) {
   return (
     <sprite {...props} position={pos}>
       <planeGeometry />
@@ -10,9 +21,17 @@ export default function Tile({ pos = [0, 0, 0], color = 'red', ...props }) {
   );
 }
 
-export function BaseFloor(props: MeshProps) {
-  const size = 18;
-  const grid = gridGenerator(size, 10);
+export function BaseFloor({
+  map,
+  setEncounter,
+  ...props
+}: {
+  map: GameMap;
+  setEncounter: Dispatch<SetStateAction<Encounter | null>>;
+  props?: MeshProps;
+}) {
+  const size = map.width;
+  const grid = gridGenerator(size, map.height);
 
   let isOff = true;
   useFrame(e => {
@@ -27,12 +46,16 @@ export function BaseFloor(props: MeshProps) {
       {grid.map(([x, y]) => {
         const centeredX = x - size / 2;
         const centeredY = y + 4 - size / 2;
-        if (centeredX === -5 && centeredY === 2) {
-          return <Tile pos={[centeredX, centeredY, 0]} color={'purple'} />;
+        if (
+          map.locations.some(
+            location => location.x === centeredX && location.y === centeredY
+          )
+        ) {
+          return <Tile pos={[centeredX, centeredY, -1]} color={'purple'} />;
         }
         return (
           <Tile
-            pos={[centeredX, centeredY, 0]}
+            pos={[centeredX, centeredY, -1]}
             color={(centeredX + centeredY) % 2 ? 'white' : 'green'}
           />
         );

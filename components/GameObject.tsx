@@ -4,6 +4,7 @@ import { useFrame } from '@react-three/fiber';
 import {
   createContext,
   Dispatch,
+  MutableRefObject,
   SetStateAction,
   useRef,
   useState,
@@ -11,6 +12,7 @@ import {
 import * as three from 'three';
 import { Encounter, gameEncounters } from '../database/encounters';
 import { GameItem, GameWeapon } from '../database/inventory';
+import { GameMap, LocationEvent, MapLocation, maps } from '../database/maps';
 import { Ally, playerParty } from '../database/party';
 import { BaseFloor } from '../structures/BaseFloor';
 import { MainCharacter } from '../structures/MainCharacter';
@@ -18,32 +20,6 @@ import Battle from './Battle';
 import BattleControl from './BattleControl';
 import Menu from './Menu';
 import Store from './Store';
-
-// function Box(props: MeshProps) {
-//   // This reference gives us direct access to the THREE.Mesh object
-//   const ref = useRef<MeshProps>();
-//   // Hold state for hovered and clicked events
-//   const [hovered, hover] = useState(false);
-//   const [clicked, click] = useState(false);
-//   // Subscribe this component to the render-loop, rotate the mesh every frame
-//   useFrame(() => {
-//     if (ref.current) ref.current.rotation.x += 0.01;
-//   });
-//   // Return the view, these are regular Threejs elements expressed in JSX
-//   return (
-//     <mesh
-//       {...props}
-//       ref={ref}
-//       scale={clicked ? 1.5 : 1}
-//       onClick={event => click(!clicked)}
-//       onPointerOver={event => hover(true)}
-//       onPointerOut={event => hover(false)}
-//     >
-//       <boxGeometry args={[1, 1, 1]} />
-//       <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
-//     </mesh>
-//   );
-// }
 
 export type PlayerInventory = {
   gold: number;
@@ -62,6 +38,7 @@ export const gameStateContext = createContext<GameStateContext | null>(null);
 
 export default function GameObject() {
   const charRef = useRef<three.Sprite>();
+  const [currentMap, setCurrentMap] = useState<GameMap>(maps[0]);
   const [party, setParty] = useState<Ally[]>(() => playerParty);
   const [partyInventory, setPartyInventory] = useState<PlayerInventory>({
     gold: 0,
@@ -80,14 +57,33 @@ export default function GameObject() {
   useFrame(() => {
     if (!charRef.current) return;
     if (encounter) return;
-    // console.log(charRef.current.position.y, charRef.current.position.x);
 
     if (
-      Math.round(charRef.current.position.y) === 2 &&
-      Math.round(charRef.current.position.x) === -5
+      currentMap.locations.some(location => {
+        return (
+          location.x === Math.round(charRef.current?.position.x as number) &&
+          location.y === Math.round(charRef.current?.position.y as number)
+        );
+      })
     ) {
       console.log('combat');
-      setEncounter(gameEncounters[1]);
+
+      const currentLocation = currentMap.locations.find(
+        location =>
+          location.x === Math.round(charRef.current?.position.x as number) &&
+          location.y === Math.round(charRef.current?.position.y as number)
+      ) as MapLocation;
+
+      const eventResolvers = {
+        [LocationEvent.encounter]: (id: number) =>
+          setEncounter(gameEncounters.find(enc => enc.id === id) as Encounter),
+        [LocationEvent.portal]: (id: number) =>
+          setCurrentMap(maps.find(map => map.id === id) as GameMap),
+        [LocationEvent.prompt]: (id: number) => setCurrentMap(maps[id]),
+      };
+      const currentEvent = currentLocation.event;
+
+      eventResolvers[currentEvent.type](currentEvent.eventObjectId);
     }
   });
 
@@ -105,7 +101,7 @@ export default function GameObject() {
 
   return (
     <>
-      <BaseFloor />
+      <BaseFloor map={currentMap} setEncounter={setEncounter} />
       <MainCharacter charRef={charRef} />
       <Html
         fullscreen
@@ -122,9 +118,6 @@ export default function GameObject() {
             <h2>Menu</h2>
             <Store />
             <Menu />
-
-            <h2>Go to Combat</h2>
-            <BattleControl encounter={encounter} setEncounter={setEncounter} />
           </div>
         </gameStateContext.Provider>
       </Html>

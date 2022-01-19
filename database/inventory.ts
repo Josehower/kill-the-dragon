@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from 'react';
-import { PlayerInventory } from '../pages/_app';
+import { PlayerInventory } from '../components/GameObject';
 import { getUseItemFunc } from '../utils/inventory';
 import { actions, CombatAction, DmgSource } from './actions';
 
