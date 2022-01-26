@@ -60,10 +60,10 @@ export const playerParty: Ally[] = [
 ];
 
 function formatAllyActions(allyActionsArray: NonItemAction[], name: string) {
-  allyActionsArray.forEach(action => {
+  allyActionsArray.forEach((action) => {
     if ('fromItem' in action) throw Error(`illegal action in ${name}`);
   });
   return allyActionsArray;
 }
 
-playerParty.forEach(ally => formatAllyActions(ally.actions, ally.name));
+playerParty.forEach((ally) => formatAllyActions(ally.actions, ally.name));

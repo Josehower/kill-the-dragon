@@ -22,11 +22,11 @@ export function calculateHealthDelta(
   action: CombatAction,
   performerStats: CombatStats,
   foeStats: CombatStats,
-  weapon: GameWeapon | null
+  weapon: GameWeapon | null,
 ): HealthDelta {
   if (!action.dmgSource) {
     throw Error(
-      'calculateDamage only accept damaging actions as first argument'
+      'calculateDamage only accept damaging actions as first argument',
     );
   }
 
@@ -98,7 +98,11 @@ export function calculateHealthDelta(
   }
 
   const damageCaused = Math.round(
-    damageBase * weaponMod * resistanceMod * weaknessMod * actionDamageAmplifier
+    damageBase *
+      weaponMod *
+      resistanceMod *
+      weaknessMod *
+      actionDamageAmplifier,
   );
 
   return {
@@ -117,7 +121,7 @@ export function getCombatAction(character: Enemy | Ally): CombatAction {
   const frequencyMatcher = Math.random();
 
   const selectedAction = (character as Enemy).actions.find(
-    action => action.frequency > frequencyMatcher
+    (action) => action.frequency > frequencyMatcher,
   )?.action;
 
   if (!selectedAction) return actions.strike;

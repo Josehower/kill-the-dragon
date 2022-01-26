@@ -6,7 +6,7 @@ import { calculateHealthDelta } from './combat';
 export function performOutCombatAllyAction(
   action: CombatAction,
   performer: Ally,
-  foe: Ally = performer
+  foe: Ally = performer,
 ) {
   if (action.isFlee) {
     throw Error('you are not in combat');

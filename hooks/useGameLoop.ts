@@ -5,7 +5,7 @@ import useComponentMountedRef from './useComponentMountedRef';
 type EventLoop<T> = (
   time: number,
   deltaTime: number,
-  secRef: MutableRefObject<T | undefined>
+  secRef: MutableRefObject<T | undefined>,
 ) => void;
 
 export default function useGameLoop<T>(event: EventLoop<T>) {
@@ -14,7 +14,7 @@ export default function useGameLoop<T>(event: EventLoop<T>) {
   const secRef = useRef<T>();
   const isGamePaused = false;
   if (!isGamePaused) {
-    addEffect(time => {
+    addEffect((time) => {
       if (!isMounted.current) return;
       const prevRef = previousTimeRef;
       const now = +Date.now();

@@ -10,7 +10,7 @@ export interface GameItem {
   description: string;
   isWeapon?: true;
   useItem: (
-    inventory: [PlayerInventory, Dispatch<SetStateAction<PlayerInventory>>]
+    inventory: [PlayerInventory, Dispatch<SetStateAction<PlayerInventory>>],
   ) => CombatAction | null;
 }
 

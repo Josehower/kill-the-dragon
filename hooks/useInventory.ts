@@ -7,10 +7,10 @@ import {
 
 export default function useInventory() {
   const { partyInventory, setPartyInventory } = useContext(
-    gameStateContext
+    gameStateContext,
   ) as GameStateContext;
   return [partyInventory, setPartyInventory] as [
     PlayerInventory,
-    Dispatch<SetStateAction<PlayerInventory>>
+    Dispatch<SetStateAction<PlayerInventory>>,
   ];
 }

@@ -25,7 +25,7 @@ export default function useControls() {
 
   const handleKeyDown = (e: globalThis.KeyboardEvent) => {
     if (e.code in keys) {
-      setMovement(m => ({
+      setMovement((m) => ({
         ...m,
         [moveFieldByKey(e.code as keyof typeof keys)]: true,
       }));
@@ -33,7 +33,7 @@ export default function useControls() {
   };
   const handleKeyUp = (e: globalThis.KeyboardEvent) => {
     if (e.code in keys) {
-      setMovement(m => ({
+      setMovement((m) => ({
         ...m,
         [moveFieldByKey(e.code as keyof typeof keys)]: false,
       }));

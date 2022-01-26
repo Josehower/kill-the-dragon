@@ -34,7 +34,7 @@ export function BaseFloor({
   const grid = gridGenerator(size, map.height);
 
   let isOff = true;
-  useFrame(e => {
+  useFrame((e) => {
     if (isOff) {
       console.log(e);
       isOff = false;
@@ -48,13 +48,14 @@ export function BaseFloor({
         const centeredY = y + 4 - size / 2;
         if (
           map.locations.some(
-            location => location.x === centeredX && location.y === centeredY
+            (location) => location.x === centeredX && location.y === centeredY,
           )
         ) {
           return <Tile pos={[centeredX, centeredY, -1]} color={'purple'} />;
         }
         return (
           <Tile
+            key={`${x}-${y}`}
             pos={[centeredX, centeredY, -1]}
             color={(centeredX + centeredY) % 2 ? 'white' : 'green'}
           />
