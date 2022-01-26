@@ -1,7 +1,11 @@
-import { useFrame } from '@react-three/fiber';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import { GameDialog } from '../database/dialogs';
-import useControls from '../hooks/useControls';
 
 export default function Prompt({
   promptDialog,
@@ -14,22 +18,25 @@ export default function Prompt({
 }) {
   const [dialogPosition, setDialogPosition] = useState(0);
 
-  function test() {
+  const test = useCallback(() => {
     console.log(promptDialog);
     if (promptDialog && dialogPosition + 1 === promptDialog.dialog.length) {
       setPromptDialog(undefined);
       setIsCharacterFreezed(false);
       setDialogPosition(0);
     } else {
-      setDialogPosition(current => current + 1);
+      setDialogPosition((current) => current + 1);
     }
-  }
+  }, [dialogPosition, promptDialog, setIsCharacterFreezed, setPromptDialog]);
 
-  function handleKeyUp(e: globalThis.KeyboardEvent) {
-    if (e.code === 'Space') {
-      test();
-    }
-  }
+  const handleKeyUp = useCallback(
+    (e: globalThis.KeyboardEvent) => {
+      if (e.code === 'Space') {
+        test();
+      }
+    },
+    [test],
+  );
 
   useEffect(() => {
     document.addEventListener('keyup', handleKeyUp);
@@ -43,8 +50,8 @@ export default function Prompt({
   return (
     <div>
       {JSON.stringify(promptDialog)}
-      <h1>{promptDialog?.dialog[dialogPosition]?.name}</h1>
-      <div>{promptDialog?.dialog[dialogPosition]?.message}</div>
+      <h1>{promptDialog.dialog[dialogPosition]?.name}</h1>
+      <div>{promptDialog.dialog[dialogPosition]?.message}</div>
       <button
         onClick={() => {
           test();

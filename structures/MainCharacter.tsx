@@ -1,5 +1,5 @@
-import { Color, MeshProps, useFrame } from '@react-three/fiber';
-import { MutableRefObject, useRef } from 'react';
+import { Color, MeshProps } from '@react-three/fiber';
+import { MutableRefObject } from 'react';
 import * as three from 'three';
 
 export default function Sprite({
@@ -37,7 +37,7 @@ export function MainCharacter({
           lastPosition ? [lastPosition.x, lastPosition.y, 0] : [0, 0, 0]
         }
         tileRef={charRef}
-        color={'blue'}
+        color="blue"
       />
     </mesh>
   );

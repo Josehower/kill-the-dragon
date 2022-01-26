@@ -13,13 +13,12 @@ export function activeItemOutOfCombat(
   const action = gameItem.useItem(inventory);
   if (!action) return;
   const newAlly = performOutCombatAllyAction(action, ally);
-  if (!newAlly) return;
   partySetter((old) =>
-    old.map((ally) => {
-      if (ally.id === newAlly.id) {
+    old.map((oldAlly) => {
+      if (oldAlly.id === newAlly.id) {
         return newAlly;
       } else {
-        return ally;
+        return oldAlly;
       }
     }),
   );

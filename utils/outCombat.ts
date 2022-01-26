@@ -11,9 +11,13 @@ export function performOutCombatAllyAction(
   if (action.isFlee) {
     throw Error('you are not in combat');
   }
-  const healthDelta = calculateHealthDelta(action, performer.stats, foe.stats);
+  const healthDelta = calculateHealthDelta(
+    action,
+    performer.stats,
+    foe.stats,
+    null,
+  );
   const newFoe = klona(foe);
-  if (!newFoe) return;
   newFoe.currentHp += healthDelta.hpDelta;
   newFoe.stats.isDead = newFoe.currentHp > 0 ? false : true;
   if (newFoe.currentHp > newFoe.stats.hp) newFoe.currentHp = newFoe.stats.hp;

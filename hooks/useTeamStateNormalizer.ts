@@ -1,6 +1,5 @@
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Persona } from '../components/BattlePersona';
-import { Ally } from '../database/party';
 
 export default function useTeamStateNormalizer<T extends Persona>(
   team: T[],
@@ -33,5 +32,5 @@ export default function useTeamStateNormalizer<T extends Persona>(
         }),
       );
     }
-  }, [team]);
+  }, [team, setTeam]);
 }

@@ -1,14 +1,13 @@
 import { css } from '@emotion/react';
-import { Dispatch, SetStateAction, useState } from 'react';
 import { GameItem, gameItems, GameWeapon } from '../database/inventory';
 import useInventory from '../hooks/useInventory';
 
 export default function Store({
   toggleStore,
-  setToggleStore,
-}: {
+}: // setToggleStore,
+{
   toggleStore: boolean;
-  setToggleStore: Dispatch<SetStateAction<boolean>>;
+  // setToggleStore: Dispatch<SetStateAction<boolean>>;
 }) {
   const [inventory, setInventory] = useInventory();
 
@@ -53,9 +52,9 @@ export default function Store({
                       return;
                     }
 
-                    setInventory(old => {
+                    setInventory((old) => {
                       const gold = old.gold - object.price;
-                      const item = object.isWeapon
+                      const gameItem = object.isWeapon
                         ? []
                         : [{ item: object as GameItem, qty: 1 }];
                       const weapon = object.isWeapon
@@ -63,10 +62,10 @@ export default function Store({
                         : [];
                       return {
                         gold: gold,
-                        items: [...old.items, ...item].reduce(
+                        items: [...old.items, ...gameItem].reduce(
                           (acc, current) => {
                             const currentFirstInstance = acc.find(
-                              obj => current.item.id === obj.item.id
+                              (obj) => current.item.id === obj.item.id,
                             );
 
                             if (currentFirstInstance) {
@@ -76,12 +75,12 @@ export default function Store({
 
                             return [...acc, current];
                           },
-                          [] as { item: GameItem; qty: number }[]
+                          [] as { item: GameItem; qty: number }[],
                         ),
                         weapons: [...old.weapons, ...weapon].reduce(
                           (acc, current) => {
                             const currentFirstInstance = acc.find(
-                              obj => current.weapon.id === obj.weapon.id
+                              (obj) => current.weapon.id === obj.weapon.id,
                             );
 
                             if (currentFirstInstance) {
@@ -91,7 +90,7 @@ export default function Store({
 
                             return [...acc, current];
                           },
-                          [] as { weapon: GameWeapon; qty: number }[]
+                          [] as { weapon: GameWeapon; qty: number }[],
                         ),
                       };
                     });

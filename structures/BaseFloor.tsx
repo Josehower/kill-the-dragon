@@ -51,7 +51,7 @@ export function BaseFloor({
             (location) => location.x === centeredX && location.y === centeredY,
           )
         ) {
-          return <Tile pos={[centeredX, centeredY, -1]} color={'purple'} />;
+          return <Tile pos={[centeredX, centeredY, -1]} color="purple" />;
         }
         return (
           <Tile

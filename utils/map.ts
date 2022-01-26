@@ -6,7 +6,7 @@ export function gridGenerator(col: number = 10, row?: number) {
   const grid: number[][] = [];
 
   for (let r = 0; r < col; r++) {
-    const line = Array.from({ length: row }, (_, i) => [r, i]);
+    const line = Array.from({ length: row }, (a_a, i) => [r, i]);
     line.forEach((arr) => grid.push(arr));
   }
 
