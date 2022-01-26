@@ -8,19 +8,19 @@ export function activeItemOutOfCombat(
   gameItem: GameItem,
   ally: Ally,
   partySetter: Dispatch<SetStateAction<Ally[]>>,
-  inventory: [PlayerInventory, Dispatch<SetStateAction<PlayerInventory>>]
+  inventory: [PlayerInventory, Dispatch<SetStateAction<PlayerInventory>>],
 ) {
   const action = gameItem.useItem(inventory);
   if (!action) return;
   const newAlly = performOutCombatAllyAction(action, ally);
   if (!newAlly) return;
-  partySetter(old =>
-    old.map(ally => {
+  partySetter((old) =>
+    old.map((ally) => {
       if (ally.id === newAlly.id) {
         return newAlly;
       } else {
         return ally;
       }
-    })
+    }),
   );
 }
