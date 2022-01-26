@@ -21,7 +21,6 @@ type Props<T, O> = {
   allyActionQueue?: number[];
   setAllyActionQueue?: Dispatch<SetStateAction<number[]>>;
   inventory?: [PlayerInventory, Dispatch<SetStateAction<PlayerInventory>>];
-  activeId?: number;
 };
 
 export default function BattlePersona<T extends Persona, O extends Persona>({
@@ -50,7 +49,7 @@ export default function BattlePersona<T extends Persona, O extends Persona>({
       setTime(+Date.now());
       setIsGettingReady(true);
     }
-  }, [actionArr]);
+  }, [actionArr, isGettingReady, isSelectingAction, persona.id]);
 
   useEffect(() => {
     // useEffect needed to make sure the getting ready state happen after isSelectingAction is true to avoid weird bugs in the action queue array

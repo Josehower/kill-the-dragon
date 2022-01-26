@@ -3,11 +3,10 @@ import { Dispatch, SetStateAction } from 'react';
 import { Encounter, gameEncounters } from '../database/encounters';
 
 export type Props = {
-  encounter: Encounter | null;
   setEncounter: Dispatch<SetStateAction<Encounter | null>>;
 };
 
-export default function BattleControl({ encounter, setEncounter }: Props) {
+export default function BattleControl({ setEncounter }: Props) {
   function clickHandler(id: number) {
     const gameEncounter = gameEncounters.find(
       combatObj => combatObj.id === id

@@ -6,7 +6,7 @@ import BattlePersona, { Persona } from './BattlePersona';
 
 type Props<T, O> = {
   team: T[];
-  setTeam: Dispatch<SetStateAction<T[]>>;
+  // setTeam: Dispatch<SetStateAction<T[]>>;
   opponentTeam: O[];
   actionArr: ActionToPerform<Persona>[];
   setActionArr: Dispatch<SetStateAction<ActionToPerform<Persona>[]>>;
@@ -54,7 +54,7 @@ export default function BattleTeam<T extends Persona, O extends Persona>({
                 allyActionQueue={allyActionQueue}
                 setAllyActionQueue={setAllyActionQueue}
                 inventory={inventory}
-                activeId={activeId}
+                // activeId={activeId}
               />
             )}
           </div>

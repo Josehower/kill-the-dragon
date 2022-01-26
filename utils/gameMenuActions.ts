@@ -1,10 +1,10 @@
 import { Dispatch, SetStateAction } from 'react';
+import { PlayerInventory } from '../components/GameObject';
 import { GameItem } from '../database/inventory';
 import { Ally } from '../database/party';
-import { PlayerInventory } from '../pages/_app';
 import { performOutCombatAllyAction } from './outCombat';
 
-export function useItemOutOfCombat(
+export function activeItemOutOfCombat(
   gameItem: GameItem,
   ally: Ally,
   partySetter: Dispatch<SetStateAction<Ally[]>>,

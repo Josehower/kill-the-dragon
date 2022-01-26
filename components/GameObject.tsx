@@ -173,7 +173,7 @@ export default function GameObject() {
           await setTimeout(() => {
             flag.current = true;
           }, 100);
-        })();
+        })().catch(console.error);
       }
       if (controls.l_letter && flag.current) {
         // TODO: this is ugly please fix it
@@ -184,20 +184,18 @@ export default function GameObject() {
           await setTimeout(() => {
             flag.current = true;
           }, 100);
-        })();
+        })().catch(console.error);
       }
     }
   });
 
   if (encounter) {
     return (
-      <>
-        <Html fullscreen>
-          <gameStateContext.Provider value={partyContextValue}>
-            <Battle encounter={encounter} setEncounter={setEncounter} />
-          </gameStateContext.Provider>
-        </Html>
-      </>
+      <Html fullscreen>
+        <gameStateContext.Provider value={partyContextValue}>
+          <Battle encounter={encounter} setEncounter={setEncounter} />
+        </gameStateContext.Provider>
+      </Html>
     );
   }
 
@@ -222,7 +220,7 @@ export default function GameObject() {
             `}
           >
             <Store toggleStore={toggleStore} setToggleStore={setToggleStore} />
-            <Menu toggleMenu={toggleMenu} setToggleMenu={setToggleMenu} />
+            <Menu toggleMenu={toggleMenu} />
             <Prompt
               promptDialog={promptDialog}
               setPromptDialog={setPromptDialog}

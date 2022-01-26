@@ -1,4 +1,10 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import { CombatAction } from '../database/actions';
 import { Ally } from '../database/party';
 import { getCombatAction } from '../utils/combat';
@@ -28,20 +34,23 @@ export default function ActionControls<T extends Persona, O extends Persona>({
 }: Props<T, O>) {
   const [selectedAction, setSelectedAction] = useState<CombatAction>();
 
-  function setAction(action: CombatAction, foe: Persona) {
-    setActionArr(current => [
-      ...current,
-      {
-        action,
-        performer: persona,
-        foe: foe,
-      },
-    ]);
-    setIsSelectingAction(false);
-    if (setAllyActionQueue) {
-      setAllyActionQueue(current => current.filter((a, i) => i !== 0));
-    }
-  }
+  const setAction = useCallback(
+    (action: CombatAction, foe: Persona) => {
+      setActionArr(current => [
+        ...current,
+        {
+          action,
+          performer: persona,
+          foe: foe,
+        },
+      ]);
+      setIsSelectingAction(false);
+      if (setAllyActionQueue) {
+        setAllyActionQueue(current => current.filter((a, i) => i !== 0));
+      }
+    },
+    [persona, setActionArr, setAllyActionQueue, setIsSelectingAction]
+  );
 
   useEffect(() => {
     if (!persona.isAlly) {
@@ -58,7 +67,7 @@ export default function ActionControls<T extends Persona, O extends Persona>({
 
       setAction(action, foe);
     }
-  }, []);
+  }, [foeOptions.friendly, persona, foeOptions.unfriendly, setAction]);
 
   if (
     !persona.isAlly ||

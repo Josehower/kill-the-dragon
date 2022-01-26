@@ -1,29 +1,28 @@
 import { css } from '@emotion/react';
-import { Dispatch, SetStateAction, useState } from 'react';
 import { gameItems, GameWeapon } from '../database/inventory';
 import useInventory from '../hooks/useInventory';
 import useParty from '../hooks/useParty';
-import { useItemOutOfCombat } from '../utils/gameMenuActions';
+import { activeItemOutOfCombat } from '../utils/gameMenuActions';
 
 export default function Menu({
   toggleMenu,
-  setToggleMenu,
-}: {
+}: // setToggleMenu,
+{
   toggleMenu: boolean;
-  setToggleMenu: Dispatch<SetStateAction<boolean>>;
+  // setToggleMenu: Dispatch<SetStateAction<boolean>>;
 }) {
   const gameInventory = useInventory();
   const [inventory] = gameInventory;
   const [party, setParty] = useParty();
   const weaponState = party.map(ally =>
-    ally.weapon?.id ? `${ally.weapon?.id}` : ''
+    ally.weapon?.id ? ally.weapon.id : ''
   );
 
-  const equipedWeapon = weaponState
+  const equippedWeapon = weaponState
     .filter(wep => wep !== '')
     .reduce((acc: any[], current) => {
       const id = Number(current);
-      let obj = acc.find(obj => obj.id === id);
+      let obj = acc.find(object => object.id === id);
       if (obj) {
         obj.qty += 1;
       } else {
@@ -36,10 +35,10 @@ export default function Menu({
 
   const restInv = inventory.weapons
     .map(obj => {
-      const equiped = equipedWeapon.find(wep => wep.id === obj.weapon.id);
+      const equipped = equippedWeapon.find(wep => wep.id === obj.weapon.id);
       let newObj;
-      if (equiped) {
-        newObj = { ...obj, qty: obj.qty - equiped.qty };
+      if (equipped) {
+        newObj = { ...obj, qty: obj.qty - equipped.qty };
       }
       return newObj || obj;
     })
@@ -103,7 +102,7 @@ export default function Menu({
                     onClick={() => {
                       if (ally.stats.isDead) return;
                       if (ally.currentHp === ally.stats.hp) return;
-                      useItemOutOfCombat(
+                      activeItemOutOfCombat(
                         gameItems.potion,
                         ally,
                         setParty,
@@ -116,7 +115,7 @@ export default function Menu({
                   <button
                     onClick={() => {
                       if (!ally.stats.isDead) return;
-                      useItemOutOfCombat(
+                      activeItemOutOfCombat(
                         gameItems.revive,
                         ally,
                         setParty,
@@ -134,10 +133,9 @@ export default function Menu({
                       setParty(current =>
                         current.map(currentAlly => {
                           if (currentAlly.id === ally.id) {
-                            currentAlly.weapon =
-                              (Object.values(gameItems).find(
-                                wep => wep.id === Number(value)
-                              ) as GameWeapon) || null;
+                            currentAlly.weapon = Object.values(gameItems).find(
+                              wep => wep.id === Number(value)
+                            ) as GameWeapon;
                             return currentAlly;
                           }
                           return currentAlly;
@@ -147,16 +145,14 @@ export default function Menu({
                   >
                     <option value=''>none</option>
                     {ally.weapon ? (
-                      <option value={`${ally.weapon.id}`}>
-                        {ally.weapon.name}
-                      </option>
+                      <option value={ally.weapon.id}>{ally.weapon.name}</option>
                     ) : (
                       ''
                     )}
                     {restInv.map(({ weapon }) => (
                       <option
                         key={`${weapon.id}-${ally.name}`}
-                        value={`${weapon.id}`}
+                        value={weapon.id}
                       >
                         {weapon.name}
                       </option>

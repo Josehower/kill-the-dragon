@@ -99,10 +99,10 @@ export default function Battle({
 
     console.log('waiting ', action.duration / 1000, ' seconds');
     await wait(action.duration);
-    if (!isBattleActive.current) {
-      console.log('ACTION BLOCKED FOR BATTLE END');
-      return;
-    }
+    // if (!isBattleActive.current) {
+    //   console.log('ACTION BLOCKED FOR BATTLE END');
+    //   return;
+    // }
 
     if (healthDelta.hpDelta > 0 && !healthDelta.isHealed) {
       healthDelta.hpDelta = 0;
@@ -111,30 +111,28 @@ export default function Battle({
     console.log(healthDelta);
 
     if (foe.isAlly) {
-      setParty(
-        old =>
-          old.map(persona => {
-            if (persona.id === foe.id) {
-              return {
-                ...persona,
-                currentHp: persona.currentHp + healthDelta.hpDelta,
-              };
-            }
-            return persona;
-          }) as Ally[]
+      setParty(old =>
+        old.map(persona => {
+          if (persona.id === foe.id) {
+            return {
+              ...persona,
+              currentHp: persona.currentHp + healthDelta.hpDelta,
+            };
+          }
+          return persona;
+        })
       );
     } else {
-      setEnemyTeam(
-        old =>
-          old.map(persona => {
-            if (persona.id === foe.id) {
-              return {
-                ...persona,
-                currentHp: persona.currentHp + healthDelta.hpDelta,
-              };
-            }
-            return persona;
-          }) as Enemy[]
+      setEnemyTeam(old =>
+        old.map(persona => {
+          if (persona.id === foe.id) {
+            return {
+              ...persona,
+              currentHp: persona.currentHp + healthDelta.hpDelta,
+            };
+          }
+          return persona;
+        })
       );
     }
 
@@ -159,8 +157,8 @@ export default function Battle({
 
       setActionArr(current => {
         if (current.length === 0) return current;
-        performAction(current[0]);
-        return current.filter((a, i) => i !== 0);
+        performAction(current[0]).catch(console.log);
+        return current.filter((a_a, i) => i !== 0);
       });
     }
   });
@@ -174,7 +172,7 @@ export default function Battle({
     // filter out ids that are dead from the select action queue
     setAllyActionQueue(current => {
       const newArr = current.filter(allyId => {
-        const partyRef = party.find(Ally => allyId === Ally.id);
+        const partyRef = party.find(singleAlly => allyId === singleAlly.id);
         if (!partyRef) return false;
         return !partyRef.stats.isDead;
       });
@@ -195,8 +193,8 @@ export default function Battle({
     // set state when game win
     if (battleState === BattleState.win) {
       console.log(party);
-      function calculateReward(expOrGold: number, enemyTeam: Enemy[]) {
-        return expOrGold * enemyTeam.length;
+      function calculateReward(expOrGold: number, enemyTeamRef: Enemy[]) {
+        return expOrGold * enemyTeamRef.length;
       }
       const exp = calculateReward(encounter.expReward, enemyTeam);
       const gold = calculateReward(encounter.goldReward, enemyTeam);
@@ -217,7 +215,15 @@ export default function Battle({
       );
       return;
     }
-  }, [battleState]);
+  }, [
+    battleState,
+    encounter.expReward,
+    encounter.goldReward,
+    enemyTeam,
+    party,
+    partyInventory,
+    setParty,
+  ]);
 
   useEffect(() => {
     setBattleState(BattleState.active);
@@ -280,7 +286,7 @@ export default function Battle({
       >
         <BattleTeam
           team={enemyTeam}
-          setTeam={setEnemyTeam}
+          // setTeam={setEnemyTeam}
           opponentTeam={party}
           actionArr={actionArr}
           setActionArr={setActionArr}
@@ -294,7 +300,7 @@ export default function Battle({
       >
         <BattleTeam
           team={party}
-          setTeam={setParty}
+          // setTeam={setParty}
           opponentTeam={enemyTeam}
           actionArr={actionArr}
           setActionArr={setActionArr}
