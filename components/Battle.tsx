@@ -1,5 +1,12 @@
 import { css } from '@emotion/react';
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { CombatAction } from '../database/actions';
 import { Encounter } from '../database/encounters';
 import { Enemy } from '../database/enemies';
@@ -44,15 +51,13 @@ export default function Battle({
   const [allyActionQueue, setAllyActionQueue] = useState<number[]>([]);
 
   const [battleState, setBattleState] = useState<BattleState>(
-    BattleState.active
+    BattleState.active,
   );
 
   const [activeId, setActiveId] = useState<number>();
 
   const isActionHappening = useRef(false);
   const isBattleActive = useRef(true);
-
-  console.log('outsider current BA', isBattleActive.current);
 
   async function performAction<T extends Persona>({
     action,
@@ -72,8 +77,8 @@ export default function Battle({
         console.log('team flee');
         setBattleState(BattleState.flee);
       } else {
-        setEnemyTeam(enemy =>
-          enemy.filter(person => person.id !== performer.id)
+        setEnemyTeam((enemy) =>
+          enemy.filter((person) => person.id !== performer.id),
         );
         console.log(performer.name + ' is scared and scaped!');
       }
@@ -85,7 +90,7 @@ export default function Battle({
       action,
       performer.stats,
       foe.stats,
-      performer.weapon
+      performer.weapon,
     );
 
     console.log(
@@ -94,11 +99,13 @@ export default function Battle({
       action.name,
       'over',
       foe.name,
-      '...'
+      '...',
     );
 
     console.log('waiting ', action.duration / 1000, ' seconds');
     await wait(action.duration);
+    // TODO: solve this in a better way
+    // This is indeed necessary but the pattern is weird
     // if (!isBattleActive.current) {
     //   console.log('ACTION BLOCKED FOR BATTLE END');
     //   return;
@@ -111,8 +118,8 @@ export default function Battle({
     console.log(healthDelta);
 
     if (foe.isAlly) {
-      setParty(old =>
-        old.map(persona => {
+      setParty((old) =>
+        old.map((persona) => {
           if (persona.id === foe.id) {
             return {
               ...persona,
@@ -120,11 +127,11 @@ export default function Battle({
             };
           }
           return persona;
-        })
+        }),
       );
     } else {
-      setEnemyTeam(old =>
-        old.map(persona => {
+      setEnemyTeam((old) =>
+        old.map((persona) => {
           if (persona.id === foe.id) {
             return {
               ...persona,
@@ -132,7 +139,7 @@ export default function Battle({
             };
           }
           return persona;
-        })
+        }),
       );
     }
 
@@ -155,7 +162,7 @@ export default function Battle({
     if (!c.current || c.current + (interval - 1) < halfSecond) {
       c.current = halfSecond;
 
-      setActionArr(current => {
+      setActionArr((current) => {
         if (current.length === 0) return current;
         performAction(current[0]).catch(console.log);
         return current.filter((a_a, i) => i !== 0);
@@ -165,14 +172,14 @@ export default function Battle({
 
   useEffect(() => {
     // set state when game loss
-    if (party.every(ally => ally.stats.isDead)) {
+    if (party.every((ally) => ally.stats.isDead) && isBattleActive.current) {
       setBattleState(BattleState.lost);
       return;
     }
     // filter out ids that are dead from the select action queue
-    setAllyActionQueue(current => {
-      const newArr = current.filter(allyId => {
-        const partyRef = party.find(singleAlly => allyId === singleAlly.id);
+    setAllyActionQueue((current) => {
+      const newArr = current.filter((allyId) => {
+        const partyRef = party.find((singleAlly) => allyId === singleAlly.id);
         if (!partyRef) return false;
         return !partyRef.stats.isDead;
       });
@@ -183,44 +190,43 @@ export default function Battle({
 
   useEffect(() => {
     // set state when game win
-    if (enemyTeam.every(enemy => enemy.stats.isDead)) {
+    if (enemyTeam.every((enemy) => enemy.stats.isDead)) {
       setBattleState(BattleState.win);
       return;
     }
   }, [enemyTeam]);
 
+  const calculateReward = useCallback(
+    (expOrGold: number) => {
+      return expOrGold * enemyTeam.length;
+    },
+    [enemyTeam.length],
+  );
+
   useEffect(() => {
     // set state when game win
-    if (battleState === BattleState.win) {
-      console.log(party);
-      function calculateReward(expOrGold: number, enemyTeamRef: Enemy[]) {
-        return expOrGold * enemyTeamRef.length;
-      }
-      const exp = calculateReward(encounter.expReward, enemyTeam);
-      const gold = calculateReward(encounter.goldReward, enemyTeam);
-      partyInventory[1](current => {
+    if (battleState === BattleState.win && isBattleActive.current) {
+      const exp = calculateReward(encounter.expReward);
+      const gold = calculateReward(encounter.goldReward);
+      partyInventory[1]((current) => {
         return { ...current, gold: current.gold + gold };
       });
-      setParty(current =>
-        current.map(ally => {
+      setParty((current) =>
+        current.map((ally) => {
           if (ally.stats.isDead) return ally;
           return { ...ally, exp: ally.exp + exp };
-        })
-      );
-      party.forEach(ally =>
-        console.log(ally.name, ally.stats.isDead, ally.exp)
+        }),
       );
       console.log(
-        `the team earned ${gold} gold and each alive ally earned ${exp} exp`
+        `the team earned ${gold} gold and each alive ally earned ${exp} exp`,
       );
       return;
     }
   }, [
     battleState,
+    calculateReward,
     encounter.expReward,
     encounter.goldReward,
-    enemyTeam,
-    party,
     partyInventory,
     setParty,
   ]);
@@ -312,11 +318,11 @@ export default function Battle({
       </div>
       <button
         onClick={() => {
-          setEnemyTeam(team =>
-            team.map(enemy => {
+          setEnemyTeam((team) =>
+            team.map((enemy) => {
               enemy.currentHp = 0;
               return enemy;
-            })
+            }),
           );
         }}
       >

@@ -70,7 +70,7 @@ export default function GameObject() {
     if (encounter) return;
 
     if (
-      currentMap.locations.some(location => {
+      currentMap.locations.some((location) => {
         return (
           location.x === Math.round(charRef.current?.position.x as number) &&
           location.y === Math.round(charRef.current?.position.y as number)
@@ -80,18 +80,22 @@ export default function GameObject() {
       console.log('combat');
 
       const eventLocation = currentMap.locations.find(
-        location =>
+        (location) =>
           location.x === Math.round(charRef.current?.position.x as number) &&
-          location.y === Math.round(charRef.current?.position.y as number)
+          location.y === Math.round(charRef.current?.position.y as number),
       ) as MapLocation;
 
       const eventResolvers = {
         [LocationEvent.encounter]: (id: number) =>
-          setEncounter(gameEncounters.find(enc => enc.id === id) as Encounter),
+          setEncounter(
+            gameEncounters.find((enc) => enc.id === id) as Encounter,
+          ),
         [LocationEvent.portal]: (id: number) =>
-          setCurrentMap(maps.find(map => map.id === id) as GameMap),
+          setCurrentMap(maps.find((map) => map.id === id) as GameMap),
         [LocationEvent.prompt]: (id: number) =>
-          setPromptDialog(gameDialogs.find(enc => enc.id === id) as GameDialog),
+          setPromptDialog(
+            gameDialogs.find((enc) => enc.id === id) as GameDialog,
+          ),
       };
       const currentEvent = eventLocation.event;
 
@@ -136,7 +140,7 @@ export default function GameObject() {
           charRef.current.position.y = y;
           setIsCharacterFreezed(true);
         } else {
-          setLastPosition(current => {
+          setLastPosition((current) => {
             return {
               ...current,
               x,
@@ -151,7 +155,7 @@ export default function GameObject() {
 
     if (isCharacterFreezed) return;
 
-    if (Object.values(controls).some(c => c === true)) {
+    if (Object.values(controls).some((c) => c === true)) {
       if (controls.forward) {
         charRef.current.position.y += movementSpeed;
       }
@@ -219,7 +223,7 @@ export default function GameObject() {
               pointer-events: all;
             `}
           >
-            <Store toggleStore={toggleStore} setToggleStore={setToggleStore} />
+            <Store toggleStore={toggleStore} />
             <Menu toggleMenu={toggleMenu} />
             <Prompt
               promptDialog={promptDialog}
