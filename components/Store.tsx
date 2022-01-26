@@ -1,21 +1,27 @@
 import { css } from '@emotion/react';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { GameItem, gameItems, GameWeapon } from '../database/inventory';
 import useInventory from '../hooks/useInventory';
 
-export default function Store() {
+export default function Store({
+  toggleStore,
+  setToggleStore,
+}: {
+  toggleStore: boolean;
+  setToggleStore: Dispatch<SetStateAction<boolean>>;
+}) {
   const [inventory, setInventory] = useInventory();
-  const [toggleStore, setToggleStore] = useState(false);
 
   return (
     <>
-      <button
+      {/* <button
         onClick={() => {
           setToggleStore(!toggleStore);
         }}
       >
         Store
-      </button>
+      </button> */}
+      <h1>Store: [ L ]</h1>
       {toggleStore && (
         <div>
           {Object.entries(gameItems).map(([item, object]) => {

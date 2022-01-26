@@ -6,6 +6,8 @@ export default function useControls() {
     KeyS: 'backward' as const,
     KeyA: 'left' as const,
     KeyD: 'right' as const,
+    KeyP: 'p_letter' as const,
+    KeyL: 'l_letter' as const,
     Space: 'jump' as const,
   };
 
@@ -17,6 +19,8 @@ export default function useControls() {
     left: false,
     right: false,
     jump: false,
+    p_letter: false,
+    l_letter: false,
   });
 
   const handleKeyDown = (e: globalThis.KeyboardEvent) => {
@@ -44,5 +48,12 @@ export default function useControls() {
       document.removeEventListener('keyup', handleKeyUp);
     };
   }, []);
+
+  // useEffect(() => {
+  //   (async () => {
+  //     await setTimeout(() => {}, 500);
+
+  //   })();
+  // }, [movement]);
   return movement;
 }

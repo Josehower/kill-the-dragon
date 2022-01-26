@@ -7,7 +7,16 @@ export enum LocationEvent {
 export type MapLocation = {
   x: number;
   y: number;
-  event: { type: LocationEvent; eventObjectId: number };
+  event:
+    | {
+        type: LocationEvent.encounter | LocationEvent.prompt;
+        eventObjectId: number;
+      }
+    | {
+        type: LocationEvent.portal;
+        eventObjectId: number;
+        targetLocation: { x: number; y: number };
+      };
 };
 
 export type GameMap = {
@@ -25,7 +34,7 @@ export const maps: GameMap[] = [
     locations: [
       {
         x: -5,
-        y: 2,
+        y: 0,
         event: {
           type: LocationEvent.encounter,
           eventObjectId: 1,
@@ -33,7 +42,7 @@ export const maps: GameMap[] = [
       },
       {
         x: 3,
-        y: 2,
+        y: 0,
         event: {
           type: LocationEvent.encounter,
           eventObjectId: 2,
@@ -41,17 +50,26 @@ export const maps: GameMap[] = [
       },
       {
         x: 0,
-        y: -2,
+        y: 3,
         event: {
-          type: LocationEvent.encounter,
-          eventObjectId: 3,
+          type: LocationEvent.portal,
+          eventObjectId: 2,
+          targetLocation: { x: -1, y: 1 },
         },
       },
       {
         x: 0,
-        y: 3,
+        y: -2,
         event: {
-          type: LocationEvent.portal,
+          type: LocationEvent.prompt,
+          eventObjectId: 1,
+        },
+      },
+      {
+        x: -3,
+        y: -2,
+        event: {
+          type: LocationEvent.prompt,
           eventObjectId: 2,
         },
       },
@@ -63,11 +81,20 @@ export const maps: GameMap[] = [
     height: 5,
     locations: [
       {
-        x: 0,
-        y: 2,
+        x: -1,
+        y: 0,
         event: {
           type: LocationEvent.portal,
           eventObjectId: 1,
+          targetLocation: { x: 0, y: 2 },
+        },
+      },
+      {
+        x: 0,
+        y: 4,
+        event: {
+          type: LocationEvent.encounter,
+          eventObjectId: 3,
         },
       },
     ],
