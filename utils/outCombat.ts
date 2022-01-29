@@ -20,6 +20,8 @@ export function performOutCombatAllyAction(
   const newFoe = klona(foe);
   newFoe.currentHp += healthDelta.hpDelta;
   newFoe.stats.isDead = newFoe.currentHp > 0 ? false : true;
-  if (newFoe.currentHp > newFoe.stats.hp) newFoe.currentHp = newFoe.stats.hp;
+  if (newFoe.currentHp > newFoe.stats.hp) {
+    newFoe.currentHp = newFoe.stats.hp;
+  }
   return newFoe;
 }

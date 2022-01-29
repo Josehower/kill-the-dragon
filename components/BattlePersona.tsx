@@ -42,7 +42,7 @@ export default function BattlePersona<T extends Persona, O extends Persona>({
   useEffect(() => {
     // if the id is not in the actionArr, is not selecting action and have no action bar loading
     if (
-      !actionArr.some(action => action.performer.id === persona.id) &&
+      !actionArr.some((action) => action.performer.id === persona.id) &&
       !isSelectingAction &&
       !isGettingReady
     ) {
@@ -73,7 +73,7 @@ export default function BattlePersona<T extends Persona, O extends Persona>({
           callback={() => {
             setIsSelectingAction(true);
             if (setAllyActionQueue) {
-              setAllyActionQueue(current => [...current, persona.id]);
+              setAllyActionQueue((current) => [...current, persona.id]);
             }
           }}
         />

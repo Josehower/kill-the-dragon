@@ -28,7 +28,7 @@ export default function BattleTeam<T extends Persona, O extends Persona>({
 }: Props<T, O>) {
   return (
     <>
-      {team.map(persona => {
+      {team.map((persona) => {
         const isActive = activeId === persona.id;
         return (
           <div

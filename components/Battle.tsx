@@ -17,6 +17,7 @@ import useInventory from '../hooks/useInventory';
 import useParty from '../hooks/useParty';
 import useTeamStateNormalizer from '../hooks/useTeamStateNormalizer';
 import { calculateHealthDelta } from '../utils/combat';
+import { getStatsByExp } from '../utils/miscelaneous';
 import { wait } from '../utils/wait';
 import { Persona } from './BattlePersona';
 import BattleTeam from './BattleTeam';
@@ -115,8 +116,6 @@ export default function Battle({
       healthDelta.hpDelta = 0;
     }
 
-    console.log(healthDelta);
-
     if (foe.isAlly) {
       setParty((old) =>
         old.map((persona) => {
@@ -143,7 +142,6 @@ export default function Battle({
       );
     }
 
-    console.log('done');
     isActionHappening.current = false;
     setActiveId(undefined);
   }
@@ -172,7 +170,7 @@ export default function Battle({
 
   useEffect(() => {
     // set state when game loss
-    if (party.every((ally) => ally.stats.isDead) && isBattleActive.current) {
+    if (party.every((ally) => ally.stats.isDead)) {
       setBattleState(BattleState.lost);
       return;
     }
@@ -188,14 +186,6 @@ export default function Battle({
     });
   }, [party]);
 
-  useEffect(() => {
-    // set state when game win
-    if (enemyTeam.every((enemy) => enemy.stats.isDead)) {
-      setBattleState(BattleState.win);
-      return;
-    }
-  }, [enemyTeam]);
-
   const calculateReward = useCallback(
     (expOrGold: number) => {
       return expOrGold * enemyTeam.length;
@@ -205,7 +195,10 @@ export default function Battle({
 
   useEffect(() => {
     // set state when game win
-    if (battleState === BattleState.win && isBattleActive.current) {
+    if (
+      enemyTeam.every((enemy) => enemy.stats.isDead) &&
+      isBattleActive.current
+    ) {
       const exp = calculateReward(encounter.expReward);
       const gold = calculateReward(encounter.goldReward);
       partyInventory[1]((current) => {
@@ -214,12 +207,19 @@ export default function Battle({
       setParty((current) =>
         current.map((ally) => {
           if (ally.stats.isDead) return ally;
-          return { ...ally, exp: ally.exp + exp };
+          const newExp = ally.exp + exp;
+          const newStats = getStatsByExp(newExp);
+          return {
+            ...ally,
+            exp: newExp,
+            stats: { ...newStats },
+          };
         }),
       );
       console.log(
         `the team earned ${gold} gold and each alive ally earned ${exp} exp`,
       );
+      setBattleState(BattleState.win);
       return;
     }
   }, [
@@ -229,6 +229,7 @@ export default function Battle({
     encounter.goldReward,
     partyInventory,
     setParty,
+    enemyTeam,
   ]);
 
   useEffect(() => {

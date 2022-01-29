@@ -14,15 +14,15 @@ export default function Menu({
   const gameInventory = useInventory();
   const [inventory] = gameInventory;
   const [party, setParty] = useParty();
-  const weaponState = party.map(ally =>
-    ally.weapon?.id ? ally.weapon.id : ''
+  const weaponState = party.map((ally) =>
+    ally.weapon?.id ? ally.weapon.id : '',
   );
 
   const equippedWeapon = weaponState
-    .filter(wep => wep !== '')
+    .filter((wep) => wep !== '')
     .reduce((acc: any[], current) => {
       const id = Number(current);
-      let obj = acc.find(object => object.id === id);
+      let obj = acc.find((object) => object.id === id);
       if (obj) {
         obj.qty += 1;
       } else {
@@ -34,15 +34,15 @@ export default function Menu({
     }, []);
 
   const restInv = inventory.weapons
-    .map(obj => {
-      const equipped = equippedWeapon.find(wep => wep.id === obj.weapon.id);
+    .map((obj) => {
+      const equipped = equippedWeapon.find((wep) => wep.id === obj.weapon.id);
       let newObj;
       if (equipped) {
         newObj = { ...obj, qty: obj.qty - equipped.qty };
       }
       return newObj || obj;
     })
-    .filter(obj => obj.qty !== 0);
+    .filter((obj) => obj.qty !== 0);
 
   return (
     <>
@@ -56,25 +56,29 @@ export default function Menu({
       <h1>Party: [ P ]</h1>
 
       {toggleMenu && (
-        <div>
+        <div
+          css={css`
+            background-color: black;
+          `}
+        >
           <hr />
           <hr />
           <span>--- GOLD: {inventory.gold} ---</span>
           <span>
             --- ITEMS:
             {inventory.items.map(
-              itemObj => ` ${itemObj.item.name}: ${itemObj.qty}  `
+              (itemObj) => ` ${itemObj.item.name}: ${itemObj.qty}  `,
             )}
             ---
           </span>
           <span>
             --- WEAPONS:{' '}
             {inventory.weapons.map(
-              itemObj =>
+              (itemObj) =>
                 ` ${itemObj.weapon.name}: ${
-                  restInv.find(obj => itemObj.weapon.id === obj.weapon.id)
+                  restInv.find((obj) => itemObj.weapon.id === obj.weapon.id)
                     ?.qty || 0
-                }/${itemObj.qty}  `
+                }/${itemObj.qty}  `,
             )}
           </span>
           <div
@@ -91,7 +95,8 @@ export default function Menu({
                   <h3>{ally.weapon?.name}</h3>
                   <ul>
                     <li>exp:{ally.exp}</li>
-                    {Object.entries(ally.stats).map(stat => (
+
+                    {Object.entries(ally.stats).map((stat) => (
                       <li key={`stat-${stat[0]}`}>
                         {stat[0]}: {JSON.stringify(stat[1])}
                       </li>
@@ -106,7 +111,7 @@ export default function Menu({
                         gameItems.potion,
                         ally,
                         setParty,
-                        gameInventory
+                        gameInventory,
                       );
                     }}
                   >
@@ -119,7 +124,7 @@ export default function Menu({
                         gameItems.revive,
                         ally,
                         setParty,
-                        gameInventory
+                        gameInventory,
                       );
                     }}
                   >
@@ -127,23 +132,23 @@ export default function Menu({
                   </button>
                   <select
                     value={weaponState[index]}
-                    name='weapon'
-                    onChange={e => {
+                    name="weapon"
+                    onChange={(e) => {
                       const value = e.currentTarget.value;
-                      setParty(current =>
-                        current.map(currentAlly => {
+                      setParty((current) =>
+                        current.map((currentAlly) => {
                           if (currentAlly.id === ally.id) {
                             currentAlly.weapon = Object.values(gameItems).find(
-                              wep => wep.id === Number(value)
+                              (wep) => wep.id === Number(value),
                             ) as GameWeapon;
                             return currentAlly;
                           }
                           return currentAlly;
-                        })
+                        }),
                       );
                     }}
                   >
-                    <option value=''>none</option>
+                    <option value="">none</option>
                     {ally.weapon ? (
                       <option value={ally.weapon.id}>{ally.weapon.name}</option>
                     ) : (

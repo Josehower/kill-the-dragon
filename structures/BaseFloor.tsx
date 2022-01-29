@@ -34,9 +34,8 @@ export function BaseFloor({
   const grid = gridGenerator(size, map.height);
 
   let isOff = true;
-  useFrame((e) => {
+  useFrame(() => {
     if (isOff) {
-      console.log(e);
       isOff = false;
     }
   });
