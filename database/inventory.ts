@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from 'react';
-import { PlayerInventory } from '../pages/_app';
+import { PlayerInventory } from '../components/GameObject';
 import { getUseItemFunc } from '../utils/inventory';
 import { actions, CombatAction, DmgSource } from './actions';
 
@@ -10,7 +10,7 @@ export interface GameItem {
   description: string;
   isWeapon?: true;
   useItem: (
-    inventory: [PlayerInventory, Dispatch<SetStateAction<PlayerInventory>>]
+    inventory: [PlayerInventory, Dispatch<SetStateAction<PlayerInventory>>],
   ) => CombatAction | null;
 }
 

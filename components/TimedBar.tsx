@@ -14,7 +14,7 @@ export default function TimedBar({ endTime, startTime, callback }: Props) {
 
   const timeout = useRef<boolean>(false);
 
-  useGameLoop((a, b, c) => {
+  useGameLoop(() => {
     if (!timeout.current && barRef.current !== null) {
       const timer = +Date.now() - endTime;
 
@@ -56,7 +56,7 @@ export default function TimedBar({ endTime, startTime, callback }: Props) {
           color: blue;
           transition: all 0.05s;
         `}
-      ></div>
+      />
     </div>
   );
 }

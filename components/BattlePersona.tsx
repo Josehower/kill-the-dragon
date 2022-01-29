@@ -1,8 +1,7 @@
-import { css } from '@emotion/react';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { PlayerInventory } from '../components/GameObject';
 import { Enemy } from '../database/enemies';
 import { Ally } from '../database/party';
-import { PlayerInventory } from '../pages/_app';
 import ActionControls from './ActionControls';
 import { ActionToPerform } from './Battle';
 import TimedBar from './TimedBar';
@@ -22,7 +21,6 @@ type Props<T, O> = {
   allyActionQueue?: number[];
   setAllyActionQueue?: Dispatch<SetStateAction<number[]>>;
   inventory?: [PlayerInventory, Dispatch<SetStateAction<PlayerInventory>>];
-  activeId?: number;
 };
 
 export default function BattlePersona<T extends Persona, O extends Persona>({
@@ -44,14 +42,14 @@ export default function BattlePersona<T extends Persona, O extends Persona>({
   useEffect(() => {
     // if the id is not in the actionArr, is not selecting action and have no action bar loading
     if (
-      !actionArr.some(action => action.performer.id === persona.id) &&
+      !actionArr.some((action) => action.performer.id === persona.id) &&
       !isSelectingAction &&
       !isGettingReady
     ) {
       setTime(+Date.now());
       setIsGettingReady(true);
     }
-  }, [actionArr]);
+  }, [actionArr, isGettingReady, isSelectingAction, persona.id]);
 
   useEffect(() => {
     // useEffect needed to make sure the getting ready state happen after isSelectingAction is true to avoid weird bugs in the action queue array
@@ -75,7 +73,7 @@ export default function BattlePersona<T extends Persona, O extends Persona>({
           callback={() => {
             setIsSelectingAction(true);
             if (setAllyActionQueue) {
-              setAllyActionQueue(current => [...current, persona.id]);
+              setAllyActionQueue((current) => [...current, persona.id]);
             }
           }}
         />

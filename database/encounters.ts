@@ -65,7 +65,7 @@ export const gameEncounters: Encounter[] = [
   {
     id: 3,
     enemyTeam: [{ ...gameEnemies.dragon }],
-    expReward: 40,
+    expReward: 400,
     goldReward: 20,
   },
 ];

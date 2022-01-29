@@ -1,14 +1,13 @@
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Persona } from '../components/BattlePersona';
-import { Ally } from '../database/party';
 
 export default function useTeamStateNormalizer<T extends Persona>(
   team: T[],
-  setTeam: Dispatch<SetStateAction<T[]>>
+  setTeam: Dispatch<SetStateAction<T[]>>,
 ) {
   return useEffect(() => {
     if (
-      team.some(persona => {
+      team.some((persona) => {
         return (
           (persona.stats.isDead && persona.currentHp > 0) ||
           (!persona.stats.isDead && persona.currentHp <= 0) ||
@@ -17,8 +16,8 @@ export default function useTeamStateNormalizer<T extends Persona>(
         );
       })
     ) {
-      setTeam(current =>
-        current.map(persona => {
+      setTeam((current) =>
+        current.map((persona) => {
           const newStatus = persona.currentHp <= 0;
           const maxHp = persona.stats.hp;
           return {
@@ -30,8 +29,8 @@ export default function useTeamStateNormalizer<T extends Persona>(
               : persona.currentHp,
             stats: { ...persona.stats, isDead: newStatus },
           };
-        })
+        }),
       );
     }
-  }, [team]);
+  }, [team, setTeam]);
 }

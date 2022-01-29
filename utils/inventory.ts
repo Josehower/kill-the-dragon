@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from 'react';
+import { PlayerInventory } from '../components/GameObject';
 import { CombatAction } from '../database/actions';
-import { PlayerInventory } from '../pages/_app';
 
 export function getUseItemFunc(id: number, action: CombatAction) {
   const itemId = id;
@@ -8,12 +8,12 @@ export function getUseItemFunc(id: number, action: CombatAction) {
   return (
     playerInventory: [
       PlayerInventory,
-      Dispatch<SetStateAction<PlayerInventory>>
-    ]
+      Dispatch<SetStateAction<PlayerInventory>>,
+    ],
   ) => {
     const [inventory, setInventory] = playerInventory;
     const itemInInventory = inventory.items.find(
-      inventoryObj => inventoryObj.item.id === itemId && inventoryObj.qty > 0
+      (inventoryObj) => inventoryObj.item.id === itemId && inventoryObj.qty > 0,
     );
     if (!itemInInventory) {
       return null;

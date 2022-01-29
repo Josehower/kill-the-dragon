@@ -1,12 +1,12 @@
 import { css } from '@emotion/react';
 import { Dispatch, SetStateAction } from 'react';
-import { PlayerInventory } from '../pages/_app';
+import { PlayerInventory } from '../components/GameObject';
 import { ActionToPerform } from './Battle';
 import BattlePersona, { Persona } from './BattlePersona';
 
 type Props<T, O> = {
   team: T[];
-  setTeam: Dispatch<SetStateAction<T[]>>;
+  // setTeam: Dispatch<SetStateAction<T[]>>;
   opponentTeam: O[];
   actionArr: ActionToPerform<Persona>[];
   setActionArr: Dispatch<SetStateAction<ActionToPerform<Persona>[]>>;
@@ -28,7 +28,7 @@ export default function BattleTeam<T extends Persona, O extends Persona>({
 }: Props<T, O>) {
   return (
     <>
-      {team.map(persona => {
+      {team.map((persona) => {
         const isActive = activeId === persona.id;
         return (
           <div
@@ -54,7 +54,7 @@ export default function BattleTeam<T extends Persona, O extends Persona>({
                 allyActionQueue={allyActionQueue}
                 setAllyActionQueue={setAllyActionQueue}
                 inventory={inventory}
-                activeId={activeId}
+                // activeId={activeId}
               />
             )}
           </div>
