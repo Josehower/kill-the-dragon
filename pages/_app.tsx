@@ -9,10 +9,18 @@ function App({ Component, pageProps }: AppProps) {
           html,
           body {
             margin: 0;
-            color: white;
+            background-color: #000008;
+            color: #ededee;
             min-height: 100vh;
             font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
               Oxygen;
+
+            a {
+              text-decoration: none;
+              :visited {
+                color: #e6dbae;
+              }
+            }
           }
         `}
       />

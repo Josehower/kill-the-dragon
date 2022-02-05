@@ -77,8 +77,6 @@ export default function GameObject() {
         );
       })
     ) {
-      console.log('combat');
-
       const eventLocation = currentMap.locations.find(
         (location) =>
           location.x === Math.round(charRef.current?.position.x as number) &&
