@@ -1,9 +1,15 @@
 import { css } from '@emotion/react';
 import { Canvas } from '@react-three/fiber';
-import { Suspense } from 'react';
+import { Suspense, useRef } from 'react';
 import GameObject from '../components/GameObject';
+import { maps } from '../database/maps';
+import { BaseFloor } from '../structures/BaseFloor';
 
-function Load() {
+// export const textureContext = createContext<{
+//   texture: THREE.Texture | undefined;
+// }>({ texture: undefined });
+
+export function LoadingScreen() {
   return (
     <div
       css={css`
@@ -38,6 +44,7 @@ const canvas = css`
 `;
 
 export default function Game() {
+  const currentMap = useRef(maps[0]);
   console.log('canvas render');
   return (
     <div css={canvas}>
@@ -54,8 +61,13 @@ export default function Game() {
         <ambientLight intensity={1} />
         <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
         <pointLight position={[-10, -10, -10]} />
-        <Suspense fallback={<Load />}>
-          <GameObject />
+        {/* <AssetsLoader> */}
+        <GameObject mapRef={currentMap} />
+        <Suspense fallback={<LoadingScreen />}>
+          <Suspense fallback={null}>
+            <BaseFloor map={maps[0]} mapRef={currentMap} />
+            <BaseFloor map={maps[1]} mapRef={currentMap} />
+          </Suspense>
         </Suspense>
       </Canvas>
     </div>

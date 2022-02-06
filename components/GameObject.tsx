@@ -4,6 +4,7 @@ import { useFrame } from '@react-three/fiber';
 import {
   createContext,
   Dispatch,
+  MutableRefObject,
   SetStateAction,
   useRef,
   useState,
@@ -15,6 +16,7 @@ import { GameItem, GameWeapon } from '../database/inventory';
 import { GameMap, LocationEvent, MapLocation, maps } from '../database/maps';
 import { Ally, playerParty } from '../database/party';
 import useControls from '../hooks/useControls';
+import { LoadingScreen } from '../pages/game';
 import { BaseFloor } from '../structures/BaseFloor';
 import { MainCharacter } from '../structures/MainCharacter';
 import Battle from './Battle';
@@ -37,13 +39,18 @@ export type GameStateContext = {
 
 export const gameStateContext = createContext<GameStateContext | null>(null);
 
-export default function GameObject() {
+export default function GameObject({
+  mapRef,
+}: {
+  mapRef: MutableRefObject<GameMap>;
+}) {
+  console.log('render a');
   const charRef = useRef<three.Sprite>();
   const flag = useRef<boolean>(true);
   const [isCharacterFreezed, setIsCharacterFreezed] = useState(false);
   const [lastPosition, setLastPosition] = useState<{ x: number; y: number }>();
   const [promptDialog, setPromptDialog] = useState<GameDialog>();
-  const [currentMap, setCurrentMap] = useState<GameMap>(maps[0]);
+  // const [currentMap, setCurrentMap] = useState<GameMap>(maps[0]);
   const [party, setParty] = useState<Ally[]>(() => playerParty);
   const [partyInventory, setPartyInventory] = useState<PlayerInventory>({
     gold: 0,
@@ -70,14 +77,14 @@ export default function GameObject() {
     if (encounter) return;
 
     if (
-      currentMap.locations.some((location) => {
+      mapRef.current.locations.some((location) => {
         return (
           location.x === Math.round(charRef.current?.position.x as number) &&
           location.y === Math.round(charRef.current?.position.y as number)
         );
       })
     ) {
-      const eventLocation = currentMap.locations.find(
+      const eventLocation = mapRef.current.locations.find(
         (location) =>
           location.x === Math.round(charRef.current?.position.x as number) &&
           location.y === Math.round(charRef.current?.position.y as number),
@@ -88,8 +95,10 @@ export default function GameObject() {
           setEncounter(
             gameEncounters.find((enc) => enc.id === id) as Encounter,
           ),
-        [LocationEvent.portal]: (id: number) =>
-          setCurrentMap(maps.find((map) => map.id === id) as GameMap),
+        [LocationEvent.portal]: (id: number) => {
+          const newMap = maps.find((map) => map.id === id) as GameMap;
+          mapRef.current = newMap;
+        },
         [LocationEvent.prompt]: (id: number) =>
           setPromptDialog(
             gameDialogs.find((enc) => enc.id === id) as GameDialog,
@@ -132,7 +141,7 @@ export default function GameObject() {
         }
 
         console.log(x, y);
-
+        console.log('heree');
         if (currentEvent.type === LocationEvent.prompt) {
           charRef.current.position.x = x;
           charRef.current.position.y = y;
@@ -203,7 +212,6 @@ export default function GameObject() {
 
   return (
     <>
-      <BaseFloor map={currentMap} setEncounter={setEncounter} />
       <MainCharacter
         charRef={charRef}
         lastPosition={lastPosition}
