@@ -16,8 +16,6 @@ import { GameItem, GameWeapon } from '../database/inventory';
 import { GameMap, LocationEvent, MapLocation, maps } from '../database/maps';
 import { Ally, playerParty } from '../database/party';
 import useControls from '../hooks/useControls';
-import { LoadingScreen } from '../pages/game';
-import { BaseFloor } from '../structures/BaseFloor';
 import { MainCharacter } from '../structures/MainCharacter';
 import Battle from './Battle';
 import Menu from './Menu';

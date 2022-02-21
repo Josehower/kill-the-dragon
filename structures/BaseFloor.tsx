@@ -1,28 +1,28 @@
 import { useTexture } from '@react-three/drei';
 import { Color, MeshProps, useFrame, Vector3 } from '@react-three/fiber';
-import { createContext, MutableRefObject, Suspense, useRef } from 'react';
+import { createContext, MutableRefObject, useContext, useRef } from 'react';
 import * as THREE from 'three';
 import { GameMap } from '../database/maps';
-import { LoadingScreen } from '../pages/game';
 import { gridGenerator } from '../utils/map';
 
 const textureContext = createContext<{
-  texture: THREE.Texture | undefined;
-}>({ texture: undefined });
+  texture: THREE.Texture;
+}>({ texture: new THREE.Texture() });
 
 function Tile({
   pos = [0, 0, 0],
-  color = 'red',
   ...props
 }: {
   pos: Vector3;
-  color: Color;
   props?: MeshProps;
 }) {
+  const { texture } = useContext(textureContext);
+  const copy = texture.clone();
+  copy.needsUpdate = true;
+
   return (
     <sprite {...props} position={pos}>
-      <planeGeometry />
-      <meshStandardMaterial color={color} />
+      <spriteMaterial map={copy} />
     </sprite>
   );
 }
@@ -40,7 +40,8 @@ export function BaseFloor({
 
   texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
   texture.repeat.set(1 / 16, 1 / 16);
-  texture.offset.x = 15 / 16;
+  texture.offset.x = 8 / 16;
+  texture.offset.y = 8 / 16;
 
   const meshRef = useRef<THREE.Mesh>();
 
@@ -69,15 +70,9 @@ export function BaseFloor({
                 location.x === centeredX && location.y === centeredY,
             )
           ) {
-            return <Tile pos={[centeredX, centeredY, -1]} color="purple" />;
+            return <Tile pos={[centeredX, centeredY, -1]} />;
           }
-          return (
-            <Tile
-              key={`${x}-${y}`}
-              pos={[centeredX, centeredY, -1]}
-              color={(centeredX + centeredY) % 2 ? 'white' : 'green'}
-            />
-          );
+          return <Tile key={`${x}-${y}`} pos={[centeredX, centeredY, -1]} />;
         })}
       </mesh>
     </textureContext.Provider>

@@ -76,6 +76,7 @@ export const gameEnemies: GameEnemies = {
       { action: actions.tsunami, frequency: 0.8 },
       { action: actions.strike, frequency: 1 },
     ],
+
     stats: {
       lvl: 2,
       hp: 50,
