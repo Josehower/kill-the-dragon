@@ -50,11 +50,20 @@ export const maps: GameMap[] = [
       },
       {
         x: 0,
-        y: 3,
+        y: 2,
         event: {
           type: LocationEvent.portal,
           eventObjectId: 2,
           targetLocation: { x: -1, y: 1 },
+        },
+      },
+      {
+        x: 1,
+        y: 2,
+        event: {
+          type: LocationEvent.portal,
+          eventObjectId: 2,
+          targetLocation: { x: 0, y: 1 },
         },
       },
       {
@@ -86,7 +95,16 @@ export const maps: GameMap[] = [
         event: {
           type: LocationEvent.portal,
           eventObjectId: 1,
-          targetLocation: { x: 0, y: 2 },
+          targetLocation: { x: 0, y: 1 },
+        },
+      },
+      {
+        x: 0,
+        y: 0,
+        event: {
+          type: LocationEvent.portal,
+          eventObjectId: 1,
+          targetLocation: { x: 1, y: 1 },
         },
       },
       {

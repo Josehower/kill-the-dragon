@@ -1,5 +1,6 @@
 import { css } from '@emotion/react';
-import { Canvas } from '@react-three/fiber';
+import { useCamera } from '@react-three/drei';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Suspense, useRef } from 'react';
 import GameObject from '../components/GameObject';
 import { maps } from '../database/maps';
@@ -43,6 +44,14 @@ const canvas = css`
   left: 0;
 `;
 
+function Dolly() {
+  // This one makes the camera move in and out
+  const state = useThree();
+  state.camera.position.x = -0.5;
+
+  return null;
+}
+
 export default function Game() {
   const currentMap = useRef(maps[0]);
   console.log('canvas render');
@@ -58,6 +67,7 @@ export default function Game() {
         orthographic
         gl={{ alpha: false, antialias: false }}
       >
+        <Dolly />
         <ambientLight intensity={0.4} />
         <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
         <pointLight position={[-10, -10, -10]} />
