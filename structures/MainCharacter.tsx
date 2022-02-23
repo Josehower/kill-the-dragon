@@ -1,6 +1,7 @@
+import { useTexture } from '@react-three/drei';
 import { Color, MeshProps } from '@react-three/fiber';
-import { MutableRefObject } from 'react';
-import * as three from 'three';
+import { MutableRefObject, Suspense } from 'react';
+import * as THREE from 'three';
 
 export default function Sprite({
   tileRef,
@@ -9,13 +10,20 @@ export default function Sprite({
   ...props
 }: {
   position: MeshProps['position'];
-  tileRef: MutableRefObject<three.Sprite | undefined>;
+  tileRef: MutableRefObject<THREE.Sprite | undefined>;
   color?: Color;
 }) {
+  const texture = useTexture('/tile-sets/hero.png');
+
+  texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+  texture.repeat.set(1 / 6, 1 / 4);
+  // texture.offset.x = 0 / 6;
+  // texture.offset.y = 3 / 4;
+  texture.magFilter = THREE.NearestFilter;
   return (
     <sprite ref={tileRef} {...props} position={position}>
-      <planeGeometry />
-      <meshStandardMaterial color={color} />
+      <planeGeometry args={[1, 2]} />
+      <spriteMaterial map={texture} />
     </sprite>
   );
 }
@@ -26,19 +34,21 @@ export function MainCharacter({
   isCharacterFreezed,
   ...props
 }: MeshProps & {
-  charRef: MutableRefObject<three.Sprite | undefined>;
+  charRef: MutableRefObject<THREE.Sprite | undefined>;
   lastPosition?: { x: number; y: number };
   isCharacterFreezed: boolean;
 }) {
   return (
-    <mesh {...props} onClick={() => console.log('click')}>
-      <Sprite
-        position={
-          lastPosition ? [lastPosition.x, lastPosition.y, 0] : [0, 0, 0]
-        }
-        tileRef={charRef}
-        color="blue"
-      />
-    </mesh>
+    <Suspense fallback={null}>
+      <mesh {...props} onClick={() => console.log('click')}>
+        <Sprite
+          position={
+            lastPosition ? [lastPosition.x, lastPosition.y, 0] : [0, 0, 0]
+          }
+          tileRef={charRef}
+          color="blue"
+        />
+      </mesh>
+    </Suspense>
   );
 }

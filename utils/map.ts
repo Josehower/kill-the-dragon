@@ -10,5 +10,5 @@ export function gridGenerator(col: number = 10, row?: number) {
     line.forEach((arr) => grid.push(arr));
   }
 
-  return grid;
+  return grid.sort((a, b) => (a[1] > b[1] ? -1 : 1));
 }

@@ -58,15 +58,31 @@ export default function Game() {
         orthographic
         gl={{ alpha: false, antialias: false }}
       >
-        <ambientLight intensity={1} />
+        <ambientLight intensity={0.4} />
         <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
         <pointLight position={[-10, -10, -10]} />
         {/* <AssetsLoader> */}
         <GameObject mapRef={currentMap} />
         <Suspense fallback={<LoadingScreen />}>
           <Suspense fallback={null}>
-            <BaseFloor map={maps[0]} mapRef={currentMap} />
-            <BaseFloor map={maps[1]} mapRef={currentMap} />
+            <BaseFloor
+              path="/tile-sets/tile-set-images/wood_tileset47.png"
+              map={maps[0]}
+              set={0}
+              mapRef={currentMap}
+            />
+            <BaseFloor
+              path="/tile-sets/tile-set-images/mountain_house.png"
+              map={maps[0]}
+              set={1}
+              mapRef={currentMap}
+            />
+            <BaseFloor
+              path="/tile-sets/tile-set-images/wood_tileset47.png"
+              map={maps[1]}
+              set={0}
+              mapRef={currentMap}
+            />
           </Suspense>
         </Suspense>
       </Canvas>

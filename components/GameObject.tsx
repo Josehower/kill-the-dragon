@@ -43,6 +43,8 @@ export default function GameObject({
   mapRef: MutableRefObject<GameMap>;
 }) {
   console.log('render a');
+  const timeRef = useRef<number>(900);
+  const posRef = useRef<number>(1);
   const charRef = useRef<three.Sprite>();
   const flag = useRef<boolean>(true);
   const [isCharacterFreezed, setIsCharacterFreezed] = useState(false);
@@ -58,7 +60,7 @@ export default function GameObject({
   const [encounter, setEncounter] = useState<Encounter | null>(null);
 
   const controls = useControls();
-  const movementSpeed = 0.07;
+  const movementSpeed = 0.05;
 
   const [toggleMenu, setToggleMenu] = useState<boolean>(false);
   const [toggleStore, setToggleStore] = useState(false);
@@ -70,7 +72,7 @@ export default function GameObject({
     setPartyInventory,
   };
 
-  useFrame(() => {
+  useFrame(({ clock }) => {
     if (!charRef.current) return;
     if (encounter) return;
 
@@ -163,15 +165,64 @@ export default function GameObject({
     if (Object.values(controls).some((c) => c === true)) {
       if (controls.forward) {
         charRef.current.position.y += movementSpeed;
+        if (charRef.current.material.map) {
+          // console.log(clock.oldTime - clock.elapsedTime);
+          if (timeRef.current > 160 * 9) {
+            charRef.current.material.map.offset.x =
+              [2, 3, 4, 5][posRef.current % 4] / 6;
+            charRef.current.material.map.offset.y = 2 / 4;
+            timeRef.current = 0;
+            console.log('elapsed', posRef.current % 2);
+            posRef.current += 1;
+          } else {
+            timeRef.current += 160;
+          }
+        }
       }
       if (controls.backward) {
         charRef.current.position.y -= movementSpeed;
+        if (charRef.current.material.map) {
+          if (timeRef.current > 160 * 9) {
+            charRef.current.material.map.offset.x =
+              [2, 3, 4, 5][posRef.current % 4] / 6;
+            charRef.current.material.map.offset.y = 3 / 4;
+            timeRef.current = 0;
+            console.log('elapsed', posRef.current % 2);
+            posRef.current += 1;
+          } else {
+            timeRef.current += 160;
+          }
+        }
       }
       if (controls.right) {
         charRef.current.position.x += movementSpeed;
+        if (charRef.current.material.map) {
+          if (timeRef.current > 160 * 7) {
+            charRef.current.material.map.offset.x =
+              [1, 2, 3, 4, 5][posRef.current % 5] / 6;
+            charRef.current.material.map.offset.y = 0 / 4;
+            timeRef.current = 0;
+            console.log('elapsed', posRef.current % 2);
+            posRef.current += 1;
+          } else {
+            timeRef.current += 160;
+          }
+        }
       }
       if (controls.left) {
         charRef.current.position.x -= movementSpeed;
+        if (charRef.current.material.map) {
+          if (timeRef.current > 160 * 7) {
+            charRef.current.material.map.offset.x =
+              [1, 2, 3, 4, 5][posRef.current % 5] / 6;
+            charRef.current.material.map.offset.y = 1 / 4;
+            timeRef.current = 0;
+            console.log('elapsed', posRef.current % 2);
+            posRef.current += 1;
+          } else {
+            timeRef.current += 160;
+          }
+        }
       }
       if (controls.p_letter && flag.current) {
         // TODO: this is ugly please fix it

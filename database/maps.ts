@@ -29,8 +29,8 @@ export type GameMap = {
 export const maps: GameMap[] = [
   {
     id: 1,
-    width: 14,
-    height: 7,
+    width: 20,
+    height: 12,
     locations: [
       {
         x: -5,
