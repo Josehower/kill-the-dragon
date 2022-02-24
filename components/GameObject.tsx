@@ -50,7 +50,6 @@ export default function GameObject({
   const [isCharacterFreezed, setIsCharacterFreezed] = useState(false);
   const [lastPosition, setLastPosition] = useState<{ x: number; y: number }>();
   const [promptDialog, setPromptDialog] = useState<GameDialog>();
-  // const [currentMap, setCurrentMap] = useState<GameMap>(maps[0]);
   const [party, setParty] = useState<Ally[]>(() => playerParty);
   const [partyInventory, setPartyInventory] = useState<PlayerInventory>({
     gold: 0,
@@ -72,7 +71,7 @@ export default function GameObject({
     setPartyInventory,
   };
 
-  useFrame(({ clock }) => {
+  useFrame(() => {
     if (!charRef.current) return;
     if (encounter) return;
 
