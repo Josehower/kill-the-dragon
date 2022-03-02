@@ -1,10 +1,11 @@
 import { css } from '@emotion/react';
-import { useCamera } from '@react-three/drei';
+import { Loader, useCamera } from '@react-three/drei';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Suspense, useRef } from 'react';
 import GameObject from '../components/GameObject';
-import { maps } from '../database/maps';
-import { BaseFloor } from '../structures/BaseFloor';
+import { BaseFloor } from '../components/structures/BaseFloor';
+import { MapComponent } from '../components/structures/MapComponent';
+import { maps, MapSlug } from '../database/maps';
 
 // export const textureContext = createContext<{
 //   texture: THREE.Texture | undefined;
@@ -19,6 +20,7 @@ export function LoadingScreen() {
         display: flex;
         justify-content: start;
         align-items: end;
+        background-color: 'red';
       `}
     >
       <div
@@ -71,28 +73,29 @@ export default function Game() {
         <ambientLight intensity={0.4} />
         <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
         <pointLight position={[-10, -10, -10]} />
-        {/* <AssetsLoader> */}
         <GameObject mapRef={currentMap} />
         <Suspense fallback={<LoadingScreen />}>
           <Suspense fallback={null}>
-            <BaseFloor
-              path="/tile-sets/tile-set-images/wood_tileset47.png"
+            <MapComponent slug={MapSlug.town} stateRef={currentMap} />
+
+            {/* <BaseFloor
+              path="/tile-sets/tile-set-images/grass.png"
               map={maps[0]}
               set={0}
               mapRef={currentMap}
             />
             <BaseFloor
-              path="/tile-sets/tile-set-images/mountain_house.png"
+              path="/tile-sets/tile-set-images/house.png"
               map={maps[0]}
               set={1}
               mapRef={currentMap}
             />
             <BaseFloor
-              path="/tile-sets/tile-set-images/wood_tileset47.png"
+              path="/tile-sets/tile-set-images/grass.png"
               map={maps[1]}
               set={0}
               mapRef={currentMap}
-            />
+            /> */}
           </Suspense>
         </Suspense>
       </Canvas>

@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="20" height="12" tilewidth="32" tileheight="32" infinite="0" nextlayerid="18" nextobjectid="1">
- <tileset firstgid="1" source="grass.tsx"/>
- <tileset firstgid="257" source="Water.tsx"/>
- <tileset firstgid="513" source="port.tsx"/>
- <tileset firstgid="769" source="sand.tsx"/>
- <tileset firstgid="1025" source="House.tsx"/>
- <tileset firstgid="1281" source="cave-entrance.tsx"/>
- <tileset firstgid="1389" source="mountain-landscape.tsx"/>
- <tileset firstgid="1645" source="castle-objects.tsx"/>
+ <editorsettings>
+  <export target="../database/maps/townq.json" format="json"/>
+ </editorsettings>
+ <properties>
+  <property name="id" type="int" value="1"/>
+  <property name="slug" value="town"/>
+ </properties>
+ <tileset firstgid="1" source="tile-sets/grass.tsx"/>
+ <tileset firstgid="257" source="tile-sets/ocean.tsx"/>
+ <tileset firstgid="513" source="tile-sets/port.tsx"/>
+ <tileset firstgid="769" source="tile-sets/sand.tsx"/>
+ <tileset firstgid="1025" source="tile-sets/house.tsx"/>
+ <tileset firstgid="1281" source="tile-sets/cave.tsx"/>
+ <tileset firstgid="1389" source="tile-sets/mountain.tsx"/>
+ <tileset firstgid="1645" source="tile-sets/castle.tsx"/>
  <layer id="4" name="arena base - 0" width="20" height="12">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -46,7 +53,7 @@
 34,34,34,34,34,34,34,0,0,0,0,0,0,0,0,34,34,34,34,34,
 34,34,34,34,34,34,34,0,0,0,0,0,0,0,0,34,34,34,34,34,
 34,34,34,34,34,34,34,34,0,0,0,0,0,0,2,34,34,34,34,34,
-34,34,34,34,34,34,34,34,0,0,0,0,0,0,34,34,3,33,4,5,
+34,34,34,34,34,34,34,34,0,0,0,0,0,0,34,34,3,4,4,5,
 34,34,34,34,34,34,34,34,34,0,0,0,0,34,34,34,19,20,20,21,
 34,34,34,34,34,34,34,33,34,34,34,34,34,34,34,34,35,36,36,37,
 34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,52,53,53,53,53,
@@ -79,11 +86,11 @@
 0,0,0,225,225,225,0,0,0,0,0,0,0,0,0,0,0,0,0,41,
 0,0,0,241,241,241,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,211,196,213,0,0,0,0,0,0,0,0,0,0,0,227,228,0,
-0,0,0,0,0,0,0,1817,1818,0,0,0,0,0,0,0,0,243,244,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,243,244,0,
+0,0,0,0,0,0,0,1817,1818,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,1833,1834,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,1849,1850,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,1865,1866,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>

@@ -1,9 +1,9 @@
 import { MeshProps, useFrame, Vector3 } from '@react-three/fiber';
 import { MutableRefObject, useContext, useRef } from 'react';
 import * as THREE from 'three';
-import AssetsLoader, { textureContext } from '../components/AssetsLoader';
-import { GameMap } from '../database/maps';
-import { gridGenerator } from '../utils/map';
+import { GameMap } from '../../database/maps';
+import { gridGenerator } from '../../utils/map';
+import AssetsLoader, { textureContext } from '../AssetsLoader';
 
 // 1 = 15, 0
 // 2 = 15, 2

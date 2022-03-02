@@ -16,11 +16,11 @@ import { GameItem, GameWeapon } from '../database/inventory';
 import { GameMap, LocationEvent, MapLocation, maps } from '../database/maps';
 import { Ally, playerParty } from '../database/party';
 import useControls from '../hooks/useControls';
-import { MainCharacter } from '../structures/MainCharacter';
 import Battle from './Battle';
 import Menu from './Menu';
 import Prompt from './Prompt';
 import Store from './Store';
+import { MainCharacter } from './structures/MainCharacter';
 
 export type PlayerInventory = {
   gold: number;

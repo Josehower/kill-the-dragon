@@ -17,7 +17,7 @@ export default function Sprite({
 
   texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
   texture.repeat.set(1 / 6, 1 / 4);
-  // texture.offset.x = 0 / 6;
+  // texture.offset.x = 4 / 6;
   // texture.offset.y = 3 / 4;
   texture.magFilter = THREE.NearestFilter;
   return (

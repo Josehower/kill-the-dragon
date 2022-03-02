@@ -1,3 +1,7 @@
+export enum MapSlug {
+  town = 'town.json',
+}
+
 export enum LocationEvent {
   encounter = 'ENCOUNTER',
   portal = 'PORTAL',
