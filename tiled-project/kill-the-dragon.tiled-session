@@ -8,11 +8,19 @@
     ],
     "fileStates": {
         "start-town.tmx": {
-            "scale": 0.71,
-            "selectedLayer": -1,
+            "scale": 1,
+            "selectedLayer": 4,
             "viewCenter": {
-                "x": 338.02816901408454,
-                "y": 297.88732394366195
+                "x": 390,
+                "y": 215.5
+            }
+        },
+        "store.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 162.66666666666669,
+                "y": 187
             }
         },
         "tile-sets/castle.tsx": {
@@ -20,7 +28,8 @@
             "scaleInEditor": 1
         },
         "tile-sets/cave.tsx": {
-            "scaleInDock": 1
+            "scaleInDock": 1,
+            "scaleInEditor": 1
         },
         "tile-sets/grass.tsx": {
             "scaleInDock": 1,
@@ -44,16 +53,25 @@
         }
     },
     "last.exportedFilePath": "/Users/josehower/projects-personal/kill-the-dragon/database/maps",
+    "last.imagePath": "/Users/josehower/projects-personal/kill-the-dragon/public/tile-sets/tile-set-images",
+    "map.height": 8,
     "map.lastUsedExportFilter": "JSON map files (*.json)",
+    "map.lastUsedFormat": "tmx",
+    "map.width": 10,
     "openFiles": [
-        "start-town.tmx"
+        "start-town.tmx",
+        "tile-sets/grass.tsx",
+        "tile-sets/castle.tsx",
+        "tile-sets/cave.tsx"
     ],
     "project": "",
-    "property.type": "object",
+    "property.type": "int",
     "recentFiles": [
-        "start-town.tmx",
-        "tile-sets/house.tsx",
+        "tile-sets/cave.tsx",
         "tile-sets/castle.tsx",
-        "tile-sets/grass.tsx"
-    ]
+        "tile-sets/grass.tsx",
+        "start-town.tmx",
+        "tile-sets/house.tsx"
+    ],
+    "tileset.lastUsedFormat": "tsx"
 }

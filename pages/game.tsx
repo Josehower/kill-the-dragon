@@ -77,25 +77,7 @@ export default function Game() {
         <Suspense fallback={<LoadingScreen />}>
           <Suspense fallback={null}>
             <MapComponent slug={MapSlug.town} stateRef={currentMap} />
-
-            {/* <BaseFloor
-              path="/tile-sets/tile-set-images/grass.png"
-              map={maps[0]}
-              set={0}
-              mapRef={currentMap}
-            />
-            <BaseFloor
-              path="/tile-sets/tile-set-images/house.png"
-              map={maps[0]}
-              set={1}
-              mapRef={currentMap}
-            />
-            <BaseFloor
-              path="/tile-sets/tile-set-images/grass.png"
-              map={maps[1]}
-              set={0}
-              mapRef={currentMap}
-            /> */}
+            <MapComponent slug={MapSlug.store} stateRef={currentMap} />
           </Suspense>
         </Suspense>
       </Canvas>

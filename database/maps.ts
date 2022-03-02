@@ -1,5 +1,6 @@
 export enum MapSlug {
   town = 'town.json',
+  store = 'store.json',
 }
 
 export enum LocationEvent {
