@@ -15,17 +15,17 @@ import AssetsLoader, { textureContext } from '../AssetsLoader';
 function Tile({
   pos = [0, 0, 0],
   mapTestValue,
-  mapData,
+  tilesetsData,
   ...props
 }: {
   pos: Vector3;
   mapTestValue: number;
-  mapData: any[];
+  tilesetsData: any[];
   props?: MeshProps;
 }) {
   const { texture } = useContext(textureContext);
 
-  const sortLayerRef = mapData.tilesets.sort((a, b) => a.firstgid > b.firstgid);
+  const sortLayerRef = tilesetsData.sort((a, b) => a.firstgid > b.firstgid);
 
   const tileSource = sortLayerRef.find((set, index, arr) => {
     if (index === arr.length - 1) return true;
@@ -34,14 +34,14 @@ function Tile({
   });
 
   const tileTexture = texture.find((text) =>
-    text.image.src.includes(tileSource.source),
+    text.image.src.includes(tileSource.module.image),
   );
 
   if (tileTexture) {
     const copy = tileTexture.clone();
 
-    const gridx = copy.image.width / mapData.tilewidth;
-    const gridy = copy.image.height / mapData.tileheight;
+    const gridx = copy.image.width / tileSource.module.tilewidth;
+    const gridy = copy.image.height / tileSource.module.tileheight;
 
     copy.wrapS = copy.wrapT = THREE.RepeatWrapping;
 
@@ -76,15 +76,37 @@ export function MapComponent({
   stateRef: MutableRefObject<GameMap>;
 }) {
   const [mapData, setMapData] = useState<any[] | undefined>();
+  const [tilesetsData, setTilesetData] = useState<any[] | undefined>();
   const meshRef = useRef<THREE.Mesh>();
 
   useEffect(() => {
     async function get() {
-      const dataa = await import(`../../database/maps/${slug}`);
-      setMapData(dataa.default);
+      const { default: file } = await import(`../../database/maps/${slug}`);
+
+      const texturesSourcePaths = await Promise.all(
+        file.tilesets.map((tileSet) =>
+          import(
+            `../../database/tilesets/${tileSet.source.replace(
+              '../tilesets/',
+              '',
+            )}`
+          ).then((json) => {
+            return {
+              module: {
+                ...json.default,
+                image: json.default.image.replace('../../public', ''),
+              },
+              firstgid: tileSet.firstgid,
+            };
+          }),
+        ),
+      );
+
+      setTilesetData(texturesSourcePaths);
+      setMapData(file);
     }
     get().catch(() => {});
-  });
+  }, [slug]);
 
   useFrame(() => {
     if (meshRef.current) {
@@ -93,7 +115,7 @@ export function MapComponent({
     }
   });
 
-  if (!mapData) {
+  if (!tilesetsData || !mapData) {
     return null;
   }
 
@@ -103,12 +125,13 @@ export function MapComponent({
   const offset =
     offsetX || offsetY ? [offsetX?.value ?? 0, offsetY?.value ?? 0] : undefined;
 
-  console.log('offset', offset);
   const grid = gridGenerator(mapData.width, mapData.height, offset);
 
   // Must be a suspense null in a parent component before the useTexture in order to work
   return (
-    <AssetsLoader texturePath={mapData.tilesets.map((tile) => tile.source)}>
+    <AssetsLoader
+      texturePath={tilesetsData.map((tileset) => tileset.module.image)}
+    >
       <mesh ref={meshRef} onClick={() => console.log('click')}>
         {mapData.layers.map((layer, ind) => {
           return (
@@ -124,7 +147,7 @@ export function MapComponent({
                       key={`${x}-${y}-${layer.name}`}
                       pos={[centeredX, centeredY, -1]}
                       mapTestValue={mapTestValue}
-                      mapData={mapData}
+                      tilesetsData={tilesetsData}
                     />
                   );
                 }
