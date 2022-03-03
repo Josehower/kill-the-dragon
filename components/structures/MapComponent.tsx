@@ -60,7 +60,7 @@ export function MapComponent({
   useFrame(() => {
     if (meshRef.current) {
       meshRef.current.position.z =
-        stateRef.current.id === mapData?.properties?.[0].value ? -1 : 2;
+        stateRef.current.id === mapData?.properties[0].value ? -1 : 2;
     }
   });
 
