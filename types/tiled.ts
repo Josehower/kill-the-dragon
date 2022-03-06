@@ -1,0 +1,88 @@
+export type JsonTileset = {
+  columns: number;
+  image: string;
+  imageheight: number;
+  imagewidth: number;
+  margin: number;
+  name: string;
+  spacing: number;
+  tilecount: number;
+  tiledversion: string;
+  tileheight: number;
+  tilewidth: number;
+  type: string;
+  version: string;
+};
+
+export type JsonMap = {
+  compressionlevel: number;
+  editorsettings: {
+    export: {
+      format: string;
+      target?: string;
+    };
+  };
+  height: number;
+  infinite: boolean;
+  layers: {
+    data: number[];
+    height: number;
+    id: number;
+    name: string;
+    opacity: number;
+    type: string;
+    visible: boolean;
+    width: number;
+    x: number;
+    y: number;
+  }[];
+  nextlayerid: number;
+  nextobjectid: number;
+  orientation: string;
+  properties:
+    | [
+        {
+          name: 'id';
+          type: 'int';
+          value: number;
+        },
+        {
+          name: 'offsetX';
+          type: 'int';
+          value: number;
+        },
+        {
+          name: 'offsetY';
+          type: 'int';
+          value: number;
+        },
+        {
+          name: 'slug';
+          type: 'string';
+          value: string;
+        },
+      ]
+    | [
+        {
+          name: 'id';
+          type: 'int';
+          value: number;
+        },
+        {
+          name: 'slug';
+          type: 'string';
+          value: string;
+        },
+      ];
+  renderorder: string;
+  tiledversion: string;
+  tileheight: number;
+  tilesets: {
+    firstgid: number;
+    source: string;
+  }[];
+  tilewidth: number;
+  type: string;
+  version: string;
+  width: number;
+};

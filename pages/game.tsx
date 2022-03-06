@@ -1,9 +1,11 @@
 import { css } from '@emotion/react';
-import { Canvas } from '@react-three/fiber';
-import { Suspense } from 'react';
+import { Canvas, useThree } from '@react-three/fiber';
+import { Suspense, useRef } from 'react';
 import GameObject from '../components/GameObject';
+import { MapComponent } from '../components/structures/MapComponent';
+import { maps, MapSlug } from '../database/maps';
 
-function Load() {
+export function LoadingScreen() {
   return (
     <div
       css={css`
@@ -12,6 +14,7 @@ function Load() {
         display: flex;
         justify-content: start;
         align-items: end;
+        background-color: 'red';
       `}
     >
       <div
@@ -37,7 +40,16 @@ const canvas = css`
   left: 0;
 `;
 
+function Dolly() {
+  // This one makes the camera move in and out
+  const state = useThree();
+  state.camera.position.x = -0.5;
+
+  return null;
+}
+
 export default function Game() {
+  const currentMap = useRef(maps[0]);
   console.log('canvas render');
   return (
     <div css={canvas}>
@@ -51,11 +63,16 @@ export default function Game() {
         orthographic
         gl={{ alpha: false, antialias: false }}
       >
-        <ambientLight intensity={1} />
+        <Dolly />
+        <ambientLight intensity={0.4} />
         <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
         <pointLight position={[-10, -10, -10]} />
-        <Suspense fallback={<Load />}>
-          <GameObject />
+        {/* <GameObject mapRef={currentMap} /> */}
+        <Suspense fallback={<LoadingScreen />}>
+          <Suspense fallback={null}>
+            <MapComponent slug={MapSlug.town} stateRef={currentMap} />
+            <MapComponent slug={MapSlug.store} stateRef={currentMap} />
+          </Suspense>
         </Suspense>
       </Canvas>
     </div>

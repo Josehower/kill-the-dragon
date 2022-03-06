@@ -11,7 +11,5 @@ https://www.figma.com/file/OB59lY7Hrwgqoy9glV17fa/Arquitecture-of-my-RPG?node-id
 
 TODO:
 
-1. anadir r3f
-2. crear el canvas
 3. testear el hook the efecto externo
 4. organizar el componente de barra para que se ejecute con mutacion.
