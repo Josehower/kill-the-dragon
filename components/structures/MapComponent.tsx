@@ -134,7 +134,7 @@ function Tile({
   tilesetsData: TilesetsData;
   props?: MeshProps;
 }) {
-  const { texture } = useContext(textureContext);
+  const { assets: textures } = useContext(textureContext);
 
   const tileTilesetSource = tilesetsData
     .sort((a, b) => a.firstgid - b.firstgid)
@@ -148,14 +148,14 @@ function Tile({
     });
 
   const tileTexture =
-    texture && Array.isArray(texture)
-      ? texture.find((text) => {
+    textures && Array.isArray(textures)
+      ? textures.find((text) => {
           if (tileTilesetSource) {
             return text.image.src.includes(tileTilesetSource.module.image);
           }
           return false;
         })
-      : texture;
+      : textures;
 
   if (tileTexture && tileTilesetSource) {
     const textureClone = tileTexture.clone();

@@ -1,15 +1,9 @@
 import { css } from '@emotion/react';
-import { Loader, useCamera } from '@react-three/drei';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { Canvas, useThree } from '@react-three/fiber';
 import { Suspense, useRef } from 'react';
 import GameObject from '../components/GameObject';
-import { BaseFloor } from '../components/structures/BaseFloor';
 import { MapComponent } from '../components/structures/MapComponent';
 import { maps, MapSlug } from '../database/maps';
-
-// export const textureContext = createContext<{
-//   texture: THREE.Texture | undefined;
-// }>({ texture: undefined });
 
 export function LoadingScreen() {
   return (
@@ -73,7 +67,7 @@ export default function Game() {
         <ambientLight intensity={0.4} />
         <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
         <pointLight position={[-10, -10, -10]} />
-        <GameObject mapRef={currentMap} />
+        {/* <GameObject mapRef={currentMap} /> */}
         <Suspense fallback={<LoadingScreen />}>
           <Suspense fallback={null}>
             <MapComponent slug={MapSlug.town} stateRef={currentMap} />
