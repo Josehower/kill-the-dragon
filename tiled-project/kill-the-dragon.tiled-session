@@ -1,0 +1,72 @@
+{
+    "activeFile": "/Users/josehower/projects-personal/kill-the-dragon/database/maps/town.json",
+    "expandedProjectPaths": [
+    ],
+    "fileStates": {
+        "/Users/josehower/projects-personal/kill-the-dragon/database/maps/store.json": {
+            "scale": 1.05,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 159.99999999999997,
+                "y": 160.47619047619048
+            }
+        },
+        "/Users/josehower/projects-personal/kill-the-dragon/database/maps/town.json": {
+            "scale": 0.9227,
+            "selectedLayer": 13,
+            "viewCenter": {
+                "x": 326.7584263574293,
+                "y": 171.236588273545
+            }
+        },
+        "/Users/josehower/projects-personal/kill-the-dragon/database/tilesets/castle.json": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "/Users/josehower/projects-personal/kill-the-dragon/database/tilesets/cave.json": {
+            "scaleInDock": 1
+        },
+        "/Users/josehower/projects-personal/kill-the-dragon/database/tilesets/grass.json": {
+            "scaleInDock": 1
+        },
+        "/Users/josehower/projects-personal/kill-the-dragon/database/tilesets/house.json": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "/Users/josehower/projects-personal/kill-the-dragon/database/tilesets/interior-objects.json": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "/Users/josehower/projects-personal/kill-the-dragon/database/tilesets/mountain.json": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "/Users/josehower/projects-personal/kill-the-dragon/database/tilesets/ocean.json": {
+            "scaleInDock": 1
+        },
+        "/Users/josehower/projects-personal/kill-the-dragon/database/tilesets/port.json": {
+            "scaleInDock": 1
+        },
+        "/Users/josehower/projects-personal/kill-the-dragon/database/tilesets/sand.json": {
+            "scaleInDock": 1
+        }
+    },
+    "last.imagePath": "/Users/josehower/projects-personal/kill-the-dragon/public/tile-sets/tile-set-images",
+    "openFiles": [
+        "/Users/josehower/projects-personal/kill-the-dragon/database/tilesets/castle.json",
+        "/Users/josehower/projects-personal/kill-the-dragon/database/maps/store.json",
+        "/Users/josehower/projects-personal/kill-the-dragon/database/maps/town.json",
+        "/Users/josehower/projects-personal/kill-the-dragon/database/tilesets/interior-objects.json",
+        "/Users/josehower/projects-personal/kill-the-dragon/database/tilesets/house.json",
+        "/Users/josehower/projects-personal/kill-the-dragon/database/tilesets/mountain.json"
+    ],
+    "project": "",
+    "recentFiles": [
+        "/Users/josehower/projects-personal/kill-the-dragon/database/tilesets/castle.json",
+        "/Users/josehower/projects-personal/kill-the-dragon/database/maps/store.json",
+        "/Users/josehower/projects-personal/kill-the-dragon/database/tilesets/mountain.json",
+        "/Users/josehower/projects-personal/kill-the-dragon/database/tilesets/house.json",
+        "/Users/josehower/projects-personal/kill-the-dragon/database/tilesets/interior-objects.json",
+        "/Users/josehower/projects-personal/kill-the-dragon/database/maps/town.json"
+    ]
+}

@@ -6,9 +6,34 @@
  "name":"interior-objects",
  "spacing":0,
  "tilecount":256,
- "tiledversion":"1.8.2",
+ "tiledversion":"1.7.2",
  "tileheight":32,
+ "tiles":[
+        {
+         "animation":[
+                {
+                 "duration":100,
+                 "tileid":252
+                }, 
+                {
+                 "duration":100,
+                 "tileid":251
+                }, 
+                {
+                 "duration":100,
+                 "tileid":250
+                }, 
+                {
+                 "duration":100,
+                 "tileid":249
+                }, 
+                {
+                 "duration":100,
+                 "tileid":248
+                }],
+         "id":253
+        }],
  "tilewidth":32,
  "type":"tileset",
- "version":"1.8"
+ "version":"1.6"
 }

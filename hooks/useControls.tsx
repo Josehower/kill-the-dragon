@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 
 export default function useControls() {
   const keys = useMemo(() => {
@@ -18,7 +18,7 @@ export default function useControls() {
     [keys],
   );
 
-  const [movement, setMovement] = useState({
+  const movement = useRef({
     forward: false,
     backward: false,
     left: false,
@@ -31,10 +31,10 @@ export default function useControls() {
   const handleKeyDown = useCallback(
     (e: globalThis.KeyboardEvent) => {
       if (e.code in keys) {
-        setMovement((m) => ({
-          ...m,
+        movement.current = {
+          ...movement.current,
           [moveFieldByKey(e.code as keyof typeof keys)]: true,
-        }));
+        };
       }
     },
     [keys, moveFieldByKey],
@@ -43,10 +43,10 @@ export default function useControls() {
   const handleKeyUp = useCallback(
     (e: globalThis.KeyboardEvent) => {
       if (e.code in keys) {
-        setMovement((m) => ({
-          ...m,
+        movement.current = {
+          ...movement.current,
           [moveFieldByKey(e.code as keyof typeof keys)]: false,
-        }));
+        };
       }
     },
     [keys, moveFieldByKey],

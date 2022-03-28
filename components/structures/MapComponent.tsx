@@ -11,6 +11,7 @@ import * as THREE from 'three';
 import { GameMap, MapSlug } from '../../database/maps';
 import { JsonMap, JsonTileset } from '../../types/tiled';
 import { gridGenerator } from '../../utils/map';
+import { tiledToR3FTextureTranspiler } from '../../utils/tiles';
 import AssetsLoader, { textureContext } from '../AssetsLoader';
 
 type TilesetsData = { module: JsonTileset; firstgid: number }[];
@@ -159,30 +160,22 @@ function Tile({
 
   if (tileTexture && tileTilesetSource) {
     const textureClone = tileTexture.clone();
-    textureClone.wrapS = textureClone.wrapT = THREE.RepeatWrapping;
-    textureClone.magFilter = THREE.NearestFilter;
-    textureClone.needsUpdate = true;
-
     // value of the tile in relation to the tilesetSource
     const tileValueOnTileset = mapTileValue - tileTilesetSource.firstgid;
 
-    // image width and height size (e.g 512px) / tile width and height size (e.g. 32px)
-    const tilesAmountX =
-      textureClone.image.width / tileTilesetSource.module.tilewidth;
-    const tilesAmountY =
-      textureClone.image.height / tileTilesetSource.module.tileheight;
+    const { offset, repeat } = tiledToR3FTextureTranspiler(
+      tileValueOnTileset,
+      textureClone,
+      [tileTilesetSource.module.tilewidth, tileTilesetSource.module.tileheight],
+    );
 
-    textureClone.repeat.set(1 / tilesAmountX, 1 / tilesAmountY);
+    textureClone.repeat.set(repeat.x, repeat.y);
+    textureClone.offset.x = offset.x;
+    textureClone.offset.y = offset.y;
 
-    // X coordinate position of the texture based on the tilesetValue for this tile
-    const texturePositionX = tileValueOnTileset % tilesAmountX;
-
-    // X coordinate position of the texture based on the tilesetValue for this tile
-    const texturePositionY =
-      tilesAmountY - Math.floor(tileValueOnTileset / tilesAmountX) - 1;
-
-    textureClone.offset.x = texturePositionX / tilesAmountX;
-    textureClone.offset.y = texturePositionY / tilesAmountY;
+    textureClone.wrapS = textureClone.wrapT = THREE.RepeatWrapping;
+    textureClone.magFilter = THREE.NearestFilter;
+    textureClone.needsUpdate = true;
 
     return (
       <sprite {...props} position={pos}>

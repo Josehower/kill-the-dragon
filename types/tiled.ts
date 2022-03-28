@@ -86,3 +86,8 @@ export type JsonMap = {
   version: string;
   width: number;
 };
+
+export type TileAnimation = {
+  duration: number;
+  tileid: number;
+}[];

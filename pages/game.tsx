@@ -2,6 +2,7 @@ import { css } from '@emotion/react';
 import { Canvas, useThree } from '@react-three/fiber';
 import { Suspense, useRef } from 'react';
 import GameObject from '../components/GameObject';
+import { MainCharacter } from '../components/structures/MainCharacter';
 import { MapComponent } from '../components/structures/MapComponent';
 import { maps, MapSlug } from '../database/maps';
 
@@ -70,6 +71,7 @@ export default function Game() {
         {/* <GameObject mapRef={currentMap} /> */}
         <Suspense fallback={<LoadingScreen />}>
           <Suspense fallback={null}>
+            <MainCharacter />
             <MapComponent slug={MapSlug.town} stateRef={currentMap} />
             <MapComponent slug={MapSlug.store} stateRef={currentMap} />
           </Suspense>
