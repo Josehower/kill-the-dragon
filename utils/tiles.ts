@@ -175,29 +175,46 @@ export function createScriptAnimation(
     const tileidArr = animation.map((step) =>
       typeof step === 'number' ? step : step.tileid,
     );
+    sprite.position.x += animation[activator % tileidArr.length].portX || 0;
     animator(tileidArr[activator % tileidArr.length]);
   };
+
+  let singleIterationControl = true;
 
   const regulator = createFlexFrameRegulator(
     animationCallback,
     typeof animation[0] === 'number'
       ? (options && [options.speed]) || [speedDefault]
       : animation.map((frame) => frame.duration),
+    (index) => {
+      sprite.position.x += animation[index].moveX || 0;
+    },
+    () => {
+      singleIterationControl = false;
+    },
+    false,
   );
-
+  const reset = regulator(0);
   return (delta: number, control: boolean = true, prop?: number | string) => {
-    if (control) {
+    if (control && singleIterationControl) {
       // sprite.position.x += (options && options.moveX) || moveXDefault;
       // sprite.position.y += (options && options.moveY) || moveYDefault;
 
       regulator(delta, prop);
+    } else if (!control) {
+      singleIterationControl = true;
+      reset();
     }
+
+    return reset;
   };
 }
 
 function createFlexFrameRegulator(
   func: (activator: number, reset?: () => void, prop?: number | string) => any,
   ms: number[],
+  always: (n: number) => void,
+  afterRound?: () => void,
   ini: boolean = true,
 ) {
   let msIndex = 0;
@@ -210,8 +227,10 @@ function createFlexFrameRegulator(
     activator = 0;
   }
 
-  return function (frameDelta: number, prop?: number | string) {
+  return function (frameDelta: number, prop?: number | string): () => void {
     deltaAccumulator += frameDelta * 1000;
+
+    always(msIndex);
 
     if (deltaAccumulator >= ms[msIndex]) {
       func(activator, reset, prop);
@@ -221,6 +240,7 @@ function createFlexFrameRegulator(
         msIndex += 1;
       } else {
         msIndex = 0;
+        afterRound && afterRound();
       }
     }
 

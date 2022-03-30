@@ -165,13 +165,16 @@ export function MainCharacter({
       spin = createScriptAnimation(
         charRef.current,
         [
-          { tileid: 0, duration: 50 },
-          { tileid: 6, duration: 80 },
-          { tileid: 12, duration: 110 },
-          { tileid: 18, duration: 150 },
-          { tileid: 0, duration: 180 },
-          { tileid: 6, duration: 200 },
-          { tileid: 12, duration: 250 },
+          { tileid: 0, duration: 100, moveX: 0.05 },
+          { tileid: 6, duration: 80, moveX: 0.05 },
+          { tileid: 12, duration: 110, moveX: 0.05 },
+          { tileid: 18, duration: 150, moveX: 0.05, portX: 1.5 },
+          { tileid: 0, duration: 180, moveX: -0.05 },
+          { tileid: 0, duration: 180, moveX: 0.05 },
+          { tileid: 0, duration: 180, moveX: -0.05 },
+          { tileid: 0, duration: 180, moveX: 0.05 },
+          { tileid: 6, duration: 200, moveX: -0.05 },
+          { tileid: 12, duration: 250, moveX: -0.05, portX: -1.5 },
           { tileid: 18, duration: 400 },
         ],
         {
@@ -216,8 +219,8 @@ export function MainCharacter({
       !controls.current.jump
     ) {
       animator(0);
-      charRef.current.position.x = Math.floor(charRef.current.position.x) + 0.5;
-      charRef.current.position.y = Math.floor(charRef.current.position.y) + 0.5;
+      // charRef.current.position.x = Math.floor(charRef.current.position.x) + 0.5;
+      // charRef.current.position.y = Math.floor(charRef.current.position.y) + 0.5;
     }
 
     // console.log(d);
