@@ -126,30 +126,30 @@ export function MainCharacter({
     if (!runRight) {
       runRight = createLoopAnimation(charRef.current, [20, 21, 22, 23], {
         tileSize: [32, 64],
-        speed: 120,
-        moveX: 0.05,
+        frameDuration: 120,
+        constantMove: { x: 0.05 },
       });
     }
 
     if (!runLeft) {
       runLeft = createLoopAnimation(charRef.current, [14, 15, 16, 17], {
         tileSize: [32, 64],
-        speed: 120,
-        moveX: -0.05,
+        frameDuration: 120,
+        constantMove: { x: -0.05 },
       });
     }
     if (!runUp) {
       runUp = createLoopAnimation(charRef.current, [8, 9, 10, 11], {
         tileSize: [32, 64],
-        speed: 120,
-        moveY: 0.05,
+        frameDuration: 120,
+        constantMove: { y: 0.05 },
       });
     }
     if (!runDown) {
       runDown = createLoopAnimation(charRef.current, [2, 3, 4, 5], {
         tileSize: [32, 64],
-        speed: 120,
-        moveY: -0.05,
+        frameDuration: 120,
+        constantMove: { y: -0.05 },
       });
     }
 
@@ -165,10 +165,11 @@ export function MainCharacter({
       spin = createScriptAnimation(
         charRef.current,
         [
-          { tileid: 0, duration: 100, moveX: 0.05 },
-          { tileid: 6, duration: 80, moveX: 0.05 },
-          { tileid: 12, duration: 110, moveX: 0.05 },
-          { tileid: 18, duration: 150, moveX: 0.05, portX: 1.5 },
+          { duration: 50, moveX: 0.05 },
+          { duration: 800, moveX: 0.05 },
+          { duration: 80, moveX: 0.05 },
+          { duration: 110, moveX: 0.05 },
+          { duration: 150, moveX: 0.05, portX: 1.5 },
           { tileid: 0, duration: 180, moveX: -0.05 },
           { tileid: 0, duration: 180, moveX: 0.05 },
           { tileid: 0, duration: 180, moveX: -0.05 },
@@ -179,6 +180,7 @@ export function MainCharacter({
         ],
         {
           tileSize: [32, 64],
+          constantMove: { y: -0.05 },
         },
       );
     }
@@ -205,7 +207,7 @@ export function MainCharacter({
     runUp(d, controls.current.forward);
     runDown(d, controls.current.backward);
 
-    spin(d, controls.current.jump);
+    const on = spin(d, controls.current.jump);
 
     // if (controls.current.left && !on) {
     //   startLeft = true;
@@ -216,7 +218,8 @@ export function MainCharacter({
       !controls.current.left &&
       !controls.current.forward &&
       !controls.current.backward &&
-      !controls.current.jump
+      !controls.current.jump &&
+      !on
     ) {
       animator(0);
       // charRef.current.position.x = Math.floor(charRef.current.position.x) + 0.5;
