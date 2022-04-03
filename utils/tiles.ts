@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { TileAnimation } from '../types/tiled';
+import { GameSpriteAnimation } from '../types/tiled';
 
 export function tiledToR3FTextureTranspiler(
   tileValue: number,
@@ -64,30 +64,44 @@ export function createTileTextureAnimator(
     texture.offset.y = offset.y;
   };
 }
-
-// createAnimation(texture, animation, {
-//   tileSize: 32,
-//   loop: true,
-//   speed: 100
-//   control: undefined,
-//   dependencies: [],
-//   fastStart: true,
-
-// });
-
-export function createLoopAnimation(
+export function createSpriteAnimation<
+  Animation extends GameSpriteAnimation | number[],
+>(
   sprite: THREE.Sprite,
-  animation: TileAnimation | number[],
+  animation: Animation,
   options?: {
     tileSize?: number | [number, number];
-    frameDuration?: number;
+    /** option only with `number[]` animations
+     *
+     * if undefined defaults to `frameDuration: "100"`
+     */
+    frameDuration?: Animation extends number[] ? number : never;
+    /** Sprite position update on every frame, accept negative numbers too.
+     *
+     * if undefined defaults to `{ x: 0, y: 0 }`
+     */
     constantMove?: { x?: number; y?: number };
+    /** option default is `type: "loop"`*/
+    type?: 'single onPress' | 'single' | 'loop';
   },
 ) {
   const tileSizeDefault = 32;
   const frameDurationDefault = 100;
   const moveXDefault = 0;
   const moveYDefault = 0;
+  const typeDefault = 'loop';
+
+  let complexAnimation: GameSpriteAnimation = [];
+  let numberAnimation: number[] = [];
+  const isComplexAnimation = !Number(animation[0]);
+
+  if (isComplexAnimation) {
+    complexAnimation = animation as GameSpriteAnimation;
+  } else if (animation[0]) {
+    numberAnimation = animation as number[];
+  } else {
+    throw new Error('Animation is empty');
+  }
 
   if (!sprite.material.map) {
     throw new Error('Sprite must contain a texture to animate');
@@ -99,83 +113,54 @@ export function createLoopAnimation(
   );
 
   const animationCallback = (activator: number) => {
-    const tileidArr = animation.map((step) =>
-      typeof step === 'number' ? step : step.tileid,
-    );
-    animator(tileidArr[activator % tileidArr.length]);
-  };
+    const currentAnimationStepIndex = activator % animation.length;
+    const tileid = isComplexAnimation
+      ? complexAnimation[currentAnimationStepIndex].tileid
+      : numberAnimation[currentAnimationStepIndex];
 
-  const regulator = createAnimationFrameRegulator(
-    animationCallback,
-    typeof animation[0] === 'number'
-      ? (options && options.frameDuration) || frameDurationDefault
-      : // Array of durations
-        (animation as TileAnimation).map((frame) => frame.duration),
-    {
-      onEveryCall: () => {
-        sprite.position.x +=
-          (options && options.constantMove?.x) || moveXDefault;
-        sprite.position.y +=
-          (options && options.constantMove?.y) || moveYDefault;
-      },
-    },
-  );
+    if (
+      isComplexAnimation &&
+      complexAnimation[currentAnimationStepIndex].port
+    ) {
+      const { x, y } = complexAnimation[currentAnimationStepIndex].port || {};
 
-  return (delta: number, control: boolean = true) => {
-    if (control) {
-      regulator(delta);
+      // update the position one time by step of the sprite, causing a teleport effect
+      sprite.position.x += x || 0;
+      sprite.position.y += y || 0;
+    }
+    if (typeof tileid !== 'undefined') {
+      animator(tileid);
     }
   };
-}
 
-export function createScriptAnimation(
-  sprite: THREE.Sprite,
-  animation: TileAnimation | number[],
-  options?: {
-    tileSize?: number | [number, number];
-    frameDuration?: number;
-    constantMove?: { x?: number; y?: number };
-  },
-) {
-  const tileSizeDefault = 32;
-  const frameDurationDefault = 100;
-  const moveXDefault = 0;
-  const moveYDefault = 0;
+  // Closures to store sprite animation state.
+  const animationType = (options && options.type) || typeDefault;
 
-  if (!sprite.material.map) {
-    throw new Error('Sprite must contain a texture to animate');
-  }
+  let isFirstIterationActive =
+    animationType === 'single onPress'
+      ? true
+      : animationType === 'single'
+      ? false
+      : undefined;
 
-  const animator = createTileTextureAnimator(
-    sprite.material.map,
-    (options && options.tileSize) || tileSizeDefault,
-  );
+  let isControlReleased = true;
+  let isAnimationActive = false;
 
-  const animationCallback = (activator: number) => {
-    const tileidArr = animation.map((step) =>
-      typeof step === 'number' ? step : step.tileid,
-    );
-    sprite.position.x += animation[activator % tileidArr.length].portX || 0;
-
-    if (typeof tileidArr[activator % tileidArr.length] === 'undefined') return;
-
-    animator(tileidArr[activator % tileidArr.length]);
-  };
-
-  // is true on onpress animation
-  // let singleIterationControl = true;
-  let singleIterationControl = false;
-  let on = false;
   const regulator = createAnimationFrameRegulator(
     animationCallback,
-    typeof animation[0] === 'number'
-      ? options && options.frameDuration
-        ? [options.frameDuration]
-        : [frameDurationDefault]
-      : (animation as TileAnimation).map((frame) => frame.duration),
+    isComplexAnimation
+      ? complexAnimation.map((frame) => frame.duration)
+      : options && options.frameDuration
+      ? [options.frameDuration]
+      : [frameDurationDefault],
     {
       onEveryCall: (index) => {
-        sprite.position.x += animation[index].moveX || 0;
+        if (isComplexAnimation && complexAnimation[index].move) {
+          const { x, y } = complexAnimation[index].move || {};
+
+          sprite.position.x += x || 0;
+          sprite.position.y += y || 0;
+        }
 
         sprite.position.x +=
           (options && options.constantMove?.x) || moveXDefault;
@@ -183,35 +168,50 @@ export function createScriptAnimation(
           (options && options.constantMove?.y) || moveYDefault;
       },
       onRoundEnd: () => {
-        singleIterationControl = false;
-        on = false;
+        isFirstIterationActive = false;
+        isAnimationActive = false;
       },
       quickStart: false,
     },
   );
   const reset = regulator(0);
   return (delta: number, control: boolean = true) => {
-    // option when we want on press animation
-    // if (constrol && singleIterationControl) {
-    //   // sprite.position.x += (options && options.moveX) || moveXDefault;
-    //   // sprite.position.y += (options && options.moveY) || moveYDefault;
-
-    //   regulator(delta, prop);
-    // } else if (!control) {
-    //   singleIterationControl = true;
-    //   reset();
-    // }
-
-    if (singleIterationControl) {
-      regulator(delta);
-    } else if (control) {
-      singleIterationControl = true;
-      on = true;
-      reset();
+    if (animationType === 'single onPress') {
+      //  We want the single round animation stop as soon as the user release the button
+      if (control && isFirstIterationActive) {
+        isAnimationActive = true;
+        regulator(delta);
+      } else if (!control) {
+        isFirstIterationActive = true;
+        isAnimationActive = false;
+        reset();
+      }
+    } else if (animationType === 'single') {
+      //  We want the single round animation keep going even if the user release the button
+      if (isFirstIterationActive) {
+        regulator(delta);
+      } else if (control) {
+        if (isControlReleased) {
+          isFirstIterationActive = true;
+          isAnimationActive = true;
+          isControlReleased = false;
+          reset();
+        }
+      } else {
+        isControlReleased = true;
+      }
+    } else {
+      //  We want the animation keep looping as long as the user press the button
+      if (control) {
+        regulator(delta);
+        isAnimationActive = true;
+      } else {
+        reset();
+        isAnimationActive = false;
+      }
     }
 
-    // return reset;
-    return on;
+    return isAnimationActive;
   };
 }
 

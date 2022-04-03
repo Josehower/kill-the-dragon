@@ -6,6 +6,7 @@ import useControls from '../../hooks/useControls';
 import {
   createLoopAnimation,
   createScriptAnimation,
+  createSpriteAnimation,
   createTileTextureAnimator,
   tiledToR3FTextureTranspiler,
 } from '../../utils/tiles';
@@ -62,60 +63,6 @@ export function MainCharacter({
 
   let spin;
 
-  // let on = false;
-  // let onSpin = false;
-  // let startSpin = false;
-
-  // let another = false;
-  // let last = 0;
-  // const spinAndDash = async () => {
-  //   if (!startSpin) return;
-  //   if (another) {
-  //     charRef.current.position.x -= 0.06;
-  //   }
-  //   if (animator && !onSpin) {
-  //     onSpin = true;
-  //     animator(0);
-  //     await wait(150);
-  //     animator(6);
-  //     await wait(150);
-  //     animator(12);
-  //     await wait(150);
-  //     animator(18);
-  //     animator(0);
-  //     await wait(100);
-  //     animator(6);
-  //     await wait(100);
-  //     animator(12);
-  //     await wait(100);
-  //     animator(18);
-  //     await wait(100);
-  //     charRef.current.position.x += 3;
-  //     animator(21);
-  //     await wait(60);
-  //     animator(22);
-  //     last = charRef.current.position.x;
-  //     another = true;
-  //     await wait(60);
-  //     animator(23);
-  //     await wait(60);
-  //     animator(22);
-  //     await wait(60);
-  //     another = false;
-  //     animator(21);
-  //     await wait(20);
-  //     animator(6);
-  //     await wait(20);
-  //     animator(12);
-  //     await wait(20);
-  //     animator(18);
-  //     await wait(50);
-  //     charRef.current.position.x = last - 3;
-  //     onSpin = false;
-  //     startSpin = false;
-  //   }
-  // };
-
   useEffect(() => {
     console.log('load');
   }, [charRef]);
@@ -124,7 +71,7 @@ export function MainCharacter({
     if (!charRef.current?.material.map) return;
 
     if (!runRight) {
-      runRight = createLoopAnimation(charRef.current, [20, 21, 22, 23], {
+      runRight = createSpriteAnimation(charRef.current, [20, 21, 22, 23], {
         tileSize: [32, 64],
         frameDuration: 120,
         constantMove: { x: 0.05 },
@@ -132,21 +79,21 @@ export function MainCharacter({
     }
 
     if (!runLeft) {
-      runLeft = createLoopAnimation(charRef.current, [14, 15, 16, 17], {
+      runLeft = createSpriteAnimation(charRef.current, [14, 15, 16, 17], {
         tileSize: [32, 64],
         frameDuration: 120,
         constantMove: { x: -0.05 },
       });
     }
     if (!runUp) {
-      runUp = createLoopAnimation(charRef.current, [8, 9, 10, 11], {
+      runUp = createSpriteAnimation(charRef.current, [8, 9, 10, 11], {
         tileSize: [32, 64],
         frameDuration: 120,
         constantMove: { y: 0.05 },
       });
     }
     if (!runDown) {
-      runDown = createLoopAnimation(charRef.current, [2, 3, 4, 5], {
+      runDown = createSpriteAnimation(charRef.current, [2, 3, 4, 5], {
         tileSize: [32, 64],
         frameDuration: 120,
         constantMove: { y: -0.05 },
@@ -162,56 +109,37 @@ export function MainCharacter({
     }
 
     if (!spin) {
-      spin = createScriptAnimation(
+      spin = createSpriteAnimation(
         charRef.current,
         [
-          { duration: 50, moveX: 0.05 },
-          { duration: 800, moveX: 0.05 },
-          { duration: 80, moveX: 0.05 },
-          { duration: 110, moveX: 0.05 },
-          { duration: 150, moveX: 0.05, portX: 1.5 },
-          { tileid: 0, duration: 180, moveX: -0.05 },
-          { tileid: 0, duration: 180, moveX: 0.05 },
-          { tileid: 0, duration: 180, moveX: -0.05 },
-          { tileid: 0, duration: 180, moveX: 0.05 },
-          { tileid: 6, duration: 200, moveX: -0.05 },
-          { tileid: 12, duration: 250, moveX: -0.05, portX: -1.5 },
+          { duration: 50, move: { x: 0.05 } },
+          { duration: 800, move: { x: 0.05 } },
+          { duration: 80, move: { x: 0.05 } },
+          { duration: 110, move: { x: 0.05 } },
+          { duration: 150, move: { x: 0.05 } },
+          { tileid: 0, duration: 180, move: { x: -0.05 }, port: { x: 1.05 } },
+          { tileid: 0, duration: 180, move: { x: 0.05 }, port: { x: 100.05 } },
+          { tileid: 0, duration: 180, port: { x: -100.05 } },
+          { tileid: 0, duration: 180, move: { x: 0.05 } },
+          { tileid: 6, duration: 200, move: { x: -0.05 }, port: { x: -1.05 } },
+          { tileid: 12, duration: 250, move: { x: -0.05 } },
           { tileid: 18, duration: 400 },
         ],
         {
           tileSize: [32, 64],
-          constantMove: { y: -0.05 },
+          constantMove: { y: -0.005 },
+          type: 'single onPress',
         },
       );
     }
 
-    // if (charRef.current) {
-    //   charRef.current.position.x +=
-    //     Math.sin(clock.clock.getElapsedTime() * 5) * 0.08;
-
-    //   if (Math.sin(clock.clock.getElapsedTime() * 5) > 0) {
-    //     runRight(d);
-    //   } else {
-    //     runLeft(d);
-    //   }
-    // }
-
-    // spinAndDash();
-    // if (controls.current.jump && !onSpin) {
-    //   startSpin = true;
-    // }
-
-    // charRef.current.position.x += 0.05;
     runRight(d, controls.current.right);
     runLeft(d, controls.current.left);
     runUp(d, controls.current.forward);
     runDown(d, controls.current.backward);
 
     const on = spin(d, controls.current.jump);
-
-    // if (controls.current.left && !on) {
-    //   startLeft = true;
-    // }
+    console.log(on);
 
     if (
       !controls.current.right &&
@@ -244,40 +172,3 @@ export function MainCharacter({
     </Suspense>
   );
 }
-
-// Existen diferentes tipos de animaciones, la manera mas natural en r3f es ponerlas en el gameLoop, lo que las hace necesitar ser resilientes a multiples llamados consecutivos.
-
-// Loop anomations. Necesitan de un regulador de frame (basado en delta o en clockElapsedTime)
-
-// animaciones de desplazamiento. necesitan accesso al delta para funcionar fluidas.
-
-// temporales de un solo sentido no necesitan el delta y exponen la variable activacion para saber cuando cominezan y cuando terminan.
-
-// animaciones necesitan closures privados, y otros expuestos (animacionOn y arranque)
-
-// Hay animaciones que se pueden interpolar es decir hay jerarquias de animaciones. por ejemplo en la animacion movimiento se mueve el sprite y se activa una animacion de loop, pero yo puedo querer lanzar en spin y seguir aplicando el movimiento.
-
-// spin Prioridad 1
-// movimiento Prioridad 2 (si spin se activa seguir movimiento pero parar loop)
-
-// [
-//   {
-//    "duration":100,
-//    "tileid":252
-//   },
-//   {
-//    "duration":100,
-//    "tileid":251
-//   },
-//   {
-//    "duration":100,
-//    "tileid":250
-//   },
-//   {
-//    "duration":100,
-//    "tileid":249
-//   },
-//   {
-//    "duration":100,
-//    "tileid":248
-//   }],
