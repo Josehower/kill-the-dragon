@@ -69,6 +69,14 @@ export function createTileTextureAnimator(
     texture.offset.y = offset.y;
   };
 }
+
+/**
+ Create a function that animate target sprite from an array of tileid numbers, or a complex GameSpriteAnimation.
+
+ Function is also compatible with `Tiled` animations format.
+
+ The Function must be called inside of `useFrame` or `raf` since depends of a delta value to count.
+ */
 export function createSpriteAnimation<
   Animation extends GameSpriteAnimation | number[],
 >(
