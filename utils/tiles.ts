@@ -30,6 +30,11 @@ export function tiledToR3FTextureTranspiler(
   };
 }
 
+/**
+ Create a function that switch the texture offset of the tile based on an input name.
+
+ The number represent the position of the tile on the texture, number 0 represent the topmost leftmost tile and keep counting left to right.
+ */
 export function createTileTextureAnimator(
   texture: THREE.Texture,
   tileSize: number | [number, number],
@@ -70,6 +75,10 @@ export function createSpriteAnimation<
   sprite: THREE.Sprite,
   animation: Animation,
   options?: {
+    /** Tile size in pixels `[<size for x>,<size for y>]`, single number is shorthand for square tiles.
+     *
+     * if undefined defaults to `tileSize: "32"`
+     */
     tileSize?: number | [number, number];
     /** option only with `number[]` animations
      *
