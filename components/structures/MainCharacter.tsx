@@ -1,6 +1,6 @@
 import { useTexture } from '@react-three/drei';
 import { Color, MeshProps, useFrame } from '@react-three/fiber';
-import { MutableRefObject, Suspense, useEffect, useRef } from 'react';
+import { MutableRefObject, Suspense, useRef } from 'react';
 import * as THREE from 'three';
 import useControls from '../../hooks/useControls';
 import { SpriteAnimationHandler } from '../../types/tiled';
