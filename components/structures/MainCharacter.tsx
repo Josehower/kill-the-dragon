@@ -115,7 +115,7 @@ export function MainCharacter({
       animationsRef.current.spin = createSpriteAnimation(
         charRef.current,
         [
-          { duration: 50, move: { x: 0.05 } },
+          { tileid: 3, duration: 500, move: { x: 0.05 } },
           { duration: 800, move: { x: 0.05 } },
           { duration: 80, move: { x: 0.05 } },
           { duration: 110, move: { x: 0.05 } },
@@ -132,6 +132,7 @@ export function MainCharacter({
           tileSize: [32, 64],
           constantMove: { y: -0.005 },
           type: 'single',
+          quickStart: true,
         },
       );
     }

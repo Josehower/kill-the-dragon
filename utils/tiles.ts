@@ -85,21 +85,28 @@ export function createSpriteAnimation<
   options?: {
     /** Tile size in pixels `[<size for x>,<size for y>]`, single number is shorthand for square tiles.
      *
-     * if undefined defaults to `tileSize: "32"`
+     *  if undefined defaults to `tileSize: "32"`
      */
     tileSize?: number | [number, number];
-    /** option only with `number[]` animations
+    /** if undefined defaults to `frameDuration: "100"`
      *
-     * if undefined defaults to `frameDuration: "100"`
+     *    💥 Use this option only with `number[]` animations
      */
     frameDuration?: Animation extends number[] ? number : never;
     /** Sprite position update on every frame, accept negative numbers too.
      *
-     * if undefined defaults to `{ x: 0, y: 0 }`
+     *  if undefined defaults to `{ x: 0, y: 0 }`
      */
     constantMove?: { x?: number; y?: number };
-    /** option default is `type: "loop"`*/
+    /** if undefined defaults to `type: "loop"`*/
     type?: 'single onPress' | 'single' | 'loop';
+    /** Set the animation to call the first animation step immediately instead of wait the first time duration, if `true` the first step duration will be ignored.
+     *
+     *  if undefined defaults to `quickStart: "false"`
+     *
+     *    💥 Not compatible with `number[]` animations, if this feature is needed use a complex animation array.
+     */
+    quickStart?: Animation extends GameSpriteAnimation ? boolean : never;
   },
 ) {
   const tileSizeDefault = 32;
@@ -107,6 +114,7 @@ export function createSpriteAnimation<
   const moveXDefault = 0;
   const moveYDefault = 0;
   const typeDefault = 'loop';
+  const quickStartDefault = false;
 
   let complexAnimation: GameSpriteAnimation = [];
   let numberAnimation: number[] = [];
@@ -188,7 +196,10 @@ export function createSpriteAnimation<
         isFirstIterationActive = false;
         isAnimationActive = false;
       },
-      quickStart: false,
+      quickStart:
+        animationType === 'loop'
+          ? true
+          : (options && options.quickStart) || quickStartDefault,
     },
   );
   const reset = regulator(0);
