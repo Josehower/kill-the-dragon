@@ -165,6 +165,12 @@ export function MainCharacter({
     ) {
       animatorRef.current.animator(0);
     }
+
+    // TODO: add sprite colliders and collisions. This seems to be a way to achieve it
+    const collition = charRef.current.position.y < -2;
+    if (runningDown && collition) {
+      charRef.current.position.y += 0.05;
+    }
   });
   return (
     <Suspense fallback={null}>
