@@ -105,3 +105,8 @@ type GameAnimationStep = Omit<TiledAnimationStep, 'tileid'> & {
 };
 
 export type GameSpriteAnimation = GameAnimationStep[];
+
+export type SpriteAnimationHandler = (
+  delta: number,
+  control?: boolean,
+) => boolean;

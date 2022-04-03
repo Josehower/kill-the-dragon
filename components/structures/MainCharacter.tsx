@@ -3,14 +3,11 @@ import { Color, MeshProps, useFrame } from '@react-three/fiber';
 import { MutableRefObject, Suspense, useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import useControls from '../../hooks/useControls';
+import { SpriteAnimationHandler } from '../../types/tiled';
 import {
-  createLoopAnimation,
-  createScriptAnimation,
   createSpriteAnimation,
   createTileTextureAnimator,
-  tiledToR3FTextureTranspiler,
 } from '../../utils/tiles';
-// import { wait } from '../../utils/wait';
 
 export default function Sprite({
   tileRef,
@@ -21,16 +18,12 @@ export default function Sprite({
   color?: Color;
 }) {
   const texture = useTexture('/tile-sets/hero.png');
-
-  texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-
-  const { offset, repeat } = tiledToR3FTextureTranspiler(18, texture, [32, 64]);
-
-  texture.repeat.set(repeat.x, repeat.y);
-  texture.offset.x = offset.x;
-  texture.offset.y = offset.y;
-
   texture.magFilter = THREE.NearestFilter;
+
+  const animator = createTileTextureAnimator(texture, [32, 64]);
+
+  animator(18);
+
   return (
     <sprite ref={tileRef} {...props} position={[0, 0, 0]}>
       <planeGeometry args={[1, 2]} />
@@ -49,67 +42,77 @@ export function MainCharacter({
 }) {
   const controls = useControls();
 
-  const charRef = useRef<MutableRefObject<THREE.Sprite | undefined>>();
-
-  let animator;
-
-  let runRight;
-
-  let runLeft;
-
-  let runUp;
-
-  let runDown;
-
-  let spin;
-
-  useEffect(() => {
-    console.log('load');
-  }, [charRef]);
+  const charRef = useRef<THREE.Sprite>();
+  const animationsRef = useRef<{
+    runRight?: SpriteAnimationHandler;
+    runLeft?: SpriteAnimationHandler;
+    runUp?: SpriteAnimationHandler;
+    runDown?: SpriteAnimationHandler;
+    spin?: SpriteAnimationHandler;
+  }>({});
+  const animatorRef = useRef<{
+    animator?: (value: number) => void;
+  }>({});
 
   useFrame((clock, d) => {
-    if (!charRef.current?.material.map) return;
+    if (!charRef.current || !charRef.current.material.map) return;
 
-    if (!runRight) {
-      runRight = createSpriteAnimation(charRef.current, [20, 21, 22, 23], {
-        tileSize: [32, 64],
-        frameDuration: 120,
-        constantMove: { x: 0.05 },
-      });
-    }
-
-    if (!runLeft) {
-      runLeft = createSpriteAnimation(charRef.current, [14, 15, 16, 17], {
-        tileSize: [32, 64],
-        frameDuration: 120,
-        constantMove: { x: -0.05 },
-      });
-    }
-    if (!runUp) {
-      runUp = createSpriteAnimation(charRef.current, [8, 9, 10, 11], {
-        tileSize: [32, 64],
-        frameDuration: 120,
-        constantMove: { y: 0.05 },
-      });
-    }
-    if (!runDown) {
-      runDown = createSpriteAnimation(charRef.current, [2, 3, 4, 5], {
-        tileSize: [32, 64],
-        frameDuration: 120,
-        constantMove: { y: -0.05 },
-      });
+    if (!animationsRef.current.runRight) {
+      animationsRef.current.runRight = createSpriteAnimation(
+        charRef.current,
+        [20, 21, 22, 23],
+        {
+          tileSize: [32, 64],
+          frameDuration: 120,
+          constantMove: { x: 0.05 },
+        },
+      );
     }
 
-    if (!animator) {
-      animator = createTileTextureAnimator(
+    if (!animationsRef.current.runLeft) {
+      animationsRef.current.runLeft = createSpriteAnimation(
+        charRef.current,
+        [14, 15, 16, 17],
+        {
+          tileSize: [32, 64],
+          frameDuration: 120,
+          constantMove: { x: -0.05 },
+        },
+      );
+    }
+    if (!animationsRef.current.runUp) {
+      animationsRef.current.runUp = createSpriteAnimation(
+        charRef.current,
+        [8, 9, 10, 11],
+        {
+          tileSize: [32, 64],
+          frameDuration: 120,
+          constantMove: { y: 0.05 },
+        },
+      );
+    }
+    if (!animationsRef.current.runDown) {
+      animationsRef.current.runDown = createSpriteAnimation(
+        charRef.current,
+        [2, 3, 4, 5],
+        {
+          tileSize: [32, 64],
+          frameDuration: 120,
+          constantMove: { y: -0.05 },
+        },
+      );
+    }
+
+    if (!animatorRef.current.animator) {
+      animatorRef.current.animator = createTileTextureAnimator(
         charRef.current.material.map,
         [32, 64],
       );
       return;
     }
 
-    if (!spin) {
-      spin = createSpriteAnimation(
+    if (!animationsRef.current.spin) {
+      animationsRef.current.spin = createSpriteAnimation(
         charRef.current,
         [
           { duration: 50, move: { x: 0.05 } },
@@ -133,12 +136,12 @@ export function MainCharacter({
       );
     }
 
-    runRight(d, controls.current.right);
-    runLeft(d, controls.current.left);
-    runUp(d, controls.current.forward);
-    runDown(d, controls.current.backward);
+    animationsRef.current.runRight(d, controls.current.right);
+    animationsRef.current.runLeft(d, controls.current.left);
+    animationsRef.current.runUp(d, controls.current.forward);
+    animationsRef.current.runDown(d, controls.current.backward);
 
-    const on = spin(d, controls.current.jump);
+    const on = animationsRef.current.spin(d, controls.current.jump);
     console.log(on);
 
     if (
@@ -149,14 +152,8 @@ export function MainCharacter({
       !controls.current.jump &&
       !on
     ) {
-      animator(0);
-      // charRef.current.position.x = Math.floor(charRef.current.position.x) + 0.5;
-      // charRef.current.position.y = Math.floor(charRef.current.position.y) + 0.5;
+      animatorRef.current.animator(0);
     }
-
-    // console.log(d);
-    // check clock get elapsed time
-    // https://codesandbox.io/s/getting-started-01-forked-qnbqio?file=/src/App.js
   });
   return (
     <Suspense fallback={null}>
