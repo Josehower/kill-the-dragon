@@ -57,6 +57,14 @@ export function MainCharacter({
   useFrame((clock, d) => {
     if (!charRef.current || !charRef.current.material.map) return;
 
+    if (!animatorRef.current.animator) {
+      animatorRef.current.animator = createTileTextureAnimator(
+        charRef.current.material.map,
+        [32, 64],
+      );
+      return;
+    }
+
     if (!animationsRef.current.runRight) {
       animationsRef.current.runRight = createSpriteAnimation(
         charRef.current,
@@ -103,14 +111,6 @@ export function MainCharacter({
       );
     }
 
-    if (!animatorRef.current.animator) {
-      animatorRef.current.animator = createTileTextureAnimator(
-        charRef.current.material.map,
-        [32, 64],
-      );
-      return;
-    }
-
     if (!animationsRef.current.spin) {
       animationsRef.current.spin = createSpriteAnimation(
         charRef.current,
@@ -131,26 +131,36 @@ export function MainCharacter({
         {
           tileSize: [32, 64],
           constantMove: { y: -0.005 },
-          type: 'single onPress',
+          type: 'single',
         },
       );
     }
 
-    animationsRef.current.runRight(d, controls.current.right);
-    animationsRef.current.runLeft(d, controls.current.left);
-    animationsRef.current.runUp(d, controls.current.forward);
-    animationsRef.current.runDown(d, controls.current.backward);
+    const spinning = animationsRef.current.spin(d, controls.current.jump);
 
-    const on = animationsRef.current.spin(d, controls.current.jump);
-    console.log(on);
+    const runningRight = animationsRef.current.runRight(
+      d,
+      !spinning && controls.current.right,
+    );
+    const runningLeft = animationsRef.current.runLeft(
+      d,
+      !spinning && controls.current.left,
+    );
+    const runningUp = animationsRef.current.runUp(
+      d,
+      !spinning && controls.current.forward,
+    );
+    const runningDown = animationsRef.current.runDown(
+      d,
+      !spinning && controls.current.backward,
+    );
 
     if (
-      !controls.current.right &&
-      !controls.current.left &&
-      !controls.current.forward &&
-      !controls.current.backward &&
-      !controls.current.jump &&
-      !on
+      !runningRight &&
+      !runningLeft &&
+      !runningUp &&
+      !runningDown &&
+      !spinning
     ) {
       animatorRef.current.animator(0);
     }
