@@ -98,6 +98,13 @@ export function MapComponent({
     >
       <mesh ref={meshRef}>
         {mapData.layers.map((layer) => {
+          if (
+            layer.properties &&
+            layer.properties.some((prop) => prop.name === 'collider')
+          ) {
+            console.log('collider', layer);
+            return null;
+          }
           return (
             <Fragment key={`fragment-${layer.name}`}>
               {layerGrid.map(([x, y], index) => {

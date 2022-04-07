@@ -26,6 +26,9 @@ export type JsonMap = {
   infinite: boolean;
   layers: {
     data: number[];
+    properties?: {
+      [key: string]: number | string | boolean;
+    }[];
     height: number;
     id: number;
     name: string;
