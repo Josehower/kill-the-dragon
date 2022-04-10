@@ -68,7 +68,7 @@ export default function Game() {
         <ambientLight intensity={0.4} />
         <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
         <pointLight position={[-10, -10, -10]} />
-        {/* <GameObject mapRef={currentMap} /> */}
+        <GameObject />
         <Suspense fallback={<LoadingScreen />}>
           <Suspense fallback={null}>
             <MainCharacter currentMapRef={currentMap} />

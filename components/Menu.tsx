@@ -1,16 +1,12 @@
 import { css } from '@emotion/react';
+import { useState } from 'react';
 import { gameItems, GameWeapon } from '../database/inventory';
 import useInventory from '../hooks/useInventory';
 import useParty from '../hooks/useParty';
 import { activeItemOutOfCombat } from '../utils/gameMenuActions';
 
-export default function Menu({
-  toggleMenu,
-}: // setToggleMenu,
-{
-  toggleMenu: boolean;
-  // setToggleMenu: Dispatch<SetStateAction<boolean>>;
-}) {
+export default function Menu() {
+  const [toggleMenu, setToggleMenu] = useState(true);
   const gameInventory = useInventory();
   const [inventory] = gameInventory;
   const [party, setParty] = useParty();
@@ -46,13 +42,13 @@ export default function Menu({
 
   return (
     <>
-      {/* <button
+      <button
         onClick={() => {
           setToggleMenu(!toggleMenu);
         }}
       >
         menu
-      </button> */}
+      </button>
       <h1>Party: [ P ]</h1>
 
       {toggleMenu && (

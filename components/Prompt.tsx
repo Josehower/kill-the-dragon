@@ -10,11 +10,9 @@ import { GameDialog } from '../database/dialogs';
 export default function Prompt({
   promptDialog,
   setPromptDialog,
-  setIsCharacterFreezed,
 }: {
   promptDialog?: GameDialog;
   setPromptDialog: Dispatch<SetStateAction<GameDialog | undefined>>;
-  setIsCharacterFreezed: Dispatch<SetStateAction<boolean>>;
 }) {
   const [dialogPosition, setDialogPosition] = useState(0);
 
@@ -22,12 +20,11 @@ export default function Prompt({
     console.log(promptDialog);
     if (promptDialog && dialogPosition + 1 === promptDialog.dialog.length) {
       setPromptDialog(undefined);
-      setIsCharacterFreezed(false);
       setDialogPosition(0);
     } else {
       setDialogPosition((current) => current + 1);
     }
-  }, [dialogPosition, promptDialog, setIsCharacterFreezed, setPromptDialog]);
+  }, [dialogPosition, promptDialog, setPromptDialog]);
 
   const handleKeyUp = useCallback(
     (e: globalThis.KeyboardEvent) => {
