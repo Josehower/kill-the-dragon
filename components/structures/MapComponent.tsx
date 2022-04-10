@@ -8,7 +8,7 @@ import {
   useState,
 } from 'react';
 import * as THREE from 'three';
-import { GameMap, MapSlug } from '../../database/maps';
+import { MapSlug } from '../../database/maps';
 import { JsonMap, JsonTileset } from '../../types/tiled';
 import { gridGenerator } from '../../utils/map';
 import { tiledToR3FTextureTranspiler } from '../../utils/tiles';
@@ -21,7 +21,7 @@ export function MapComponent({
   stateRef,
 }: {
   slug: MapSlug;
-  stateRef: MutableRefObject<GameMap>;
+  stateRef: MutableRefObject<MapSlug>;
 }) {
   const [mapData, setMapData] = useState<JsonMap | undefined>();
   const [tilesetsData, setTilesetData] = useState<TilesetsData | undefined>();
@@ -60,8 +60,7 @@ export function MapComponent({
 
   useFrame(() => {
     if (meshRef.current) {
-      meshRef.current.position.z =
-        stateRef.current.id === mapData?.properties[0].value ? -1 : 2;
+      meshRef.current.position.z = slug === stateRef.current ? -1 : 2;
     }
   });
 
@@ -69,21 +68,25 @@ export function MapComponent({
     return null;
   }
 
-  const offsetX = mapData.properties.find((prop) => prop.name === 'offsetX') as
-    | {
-        name: 'offsetX';
-        type: 'int';
-        value: number;
-      }
-    | undefined;
+  const offsetX =
+    mapData.properties &&
+    (mapData.properties.find((prop) => prop.name === 'offsetX') as
+      | {
+          name: 'offsetX';
+          type: 'int';
+          value: number;
+        }
+      | undefined);
 
-  const offsetY = mapData.properties.find((prop) => prop.name === 'offsetY') as
-    | {
-        name: 'offsetY';
-        type: 'int';
-        value: number;
-      }
-    | undefined;
+  const offsetY =
+    mapData.properties &&
+    (mapData.properties.find((prop) => prop.name === 'offsetY') as
+      | {
+          name: 'offsetY';
+          type: 'int';
+          value: number;
+        }
+      | undefined);
 
   const layerGrid = gridGenerator(
     mapData.width,
@@ -186,6 +189,7 @@ function Tile({
 
     return (
       <sprite {...props} position={pos}>
+        <planeGeometry />
         <spriteMaterial map={textureClone} color="#e0e0e0" />
       </sprite>
     );

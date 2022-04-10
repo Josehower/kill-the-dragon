@@ -1,5 +1,6 @@
 import { useTexture } from '@react-three/drei';
 import { Color, MeshProps, useFrame } from '@react-three/fiber';
+import { klona } from 'klona';
 import { MutableRefObject, Suspense, useRef } from 'react';
 import * as THREE from 'three';
 import useControls from '../../hooks/useControls';
@@ -41,6 +42,7 @@ export function MainCharacter({
   isCharacterFreezed: boolean;
 }) {
   const controls = useControls();
+  const collitionSpriteOffset = { x: 0.15, y: 0.5 };
 
   const charRef = useRef<THREE.Sprite>();
   const animationsRef = useRef<{
@@ -56,6 +58,8 @@ export function MainCharacter({
 
   useFrame((clock, d) => {
     if (!charRef.current || !charRef.current.material.map) return;
+
+    const startPos = klona(charRef.current.position);
 
     if (!animatorRef.current.animator) {
       animatorRef.current.animator = createTileTextureAnimator(
@@ -166,11 +170,42 @@ export function MainCharacter({
       animatorRef.current.animator(0);
     }
 
+    const endPosition = klona(charRef.current.position);
+
+    const deltaX = endPosition.x - startPos.x;
+    const deltaY = endPosition.y - startPos.y;
+
+    // Check de directions
+    deltaX !== 0 && console.log(deltaX < 0 ? 'left' : 'right');
+    deltaY !== 0 && console.log(deltaY < 0 ? 'down' : 'up');
+
+    const movement = {
+      right: deltaX !== 0 && deltaX > 0,
+      left: deltaX !== 0 && deltaX < 0,
+      up: deltaY !== 0 && deltaY > 0,
+      down: deltaY !== 0 && deltaY < 0,
+    };
+
     // TODO: add sprite colliders and collisions. This seems to be a way to achieve it
-    const collition = charRef.current.position.y < -2;
-    if (runningDown && collition) {
-      charRef.current.position.y += 0.05;
-    }
+    const collition = [
+      [0, 1],
+      [-1, 1],
+      [-2, 1],
+    ];
+
+    const nextRefx = movement.right ? 1 : movement.left ? -1 : 0;
+    const nextRefy = movement.up ? 1 : movement.down ? -1 : 0;
+    const lastPosVector = [
+      Math.floor(endPosition.x + collitionSpriteOffset.x),
+      Math.floor(endPosition.y),
+    ];
+
+    // const next =
+
+    let log = ` pos: ${endPosition.y}, current: ${lastPosVector}`;
+    // let log = `nextx: ${nextRefx}, nexty: ${nextRefy}, current: ${lastPosVector}`;
+
+    console.log(log);
   });
   return (
     <Suspense fallback={null}>

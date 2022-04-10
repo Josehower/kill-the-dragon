@@ -42,7 +42,7 @@ export type JsonMap = {
   nextlayerid: number;
   nextobjectid: number;
   orientation: string;
-  properties:
+  properties?:
     | [
         {
           name: 'id';

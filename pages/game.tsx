@@ -50,7 +50,7 @@ function Dolly() {
 }
 
 export default function Game() {
-  const currentMap = useRef(maps[0]);
+  const currentMap = useRef(MapSlug.test);
   console.log('canvas render');
   return (
     <div css={canvas}>
@@ -72,6 +72,11 @@ export default function Game() {
         <Suspense fallback={<LoadingScreen />}>
           <Suspense fallback={null}>
             <MainCharacter />
+            <sprite position={[0, 0, 0]}>
+              <planeGeometry />
+              <spriteMaterial color="#db2121" />
+            </sprite>
+            <MapComponent slug={MapSlug.test} stateRef={currentMap} />
             <MapComponent slug={MapSlug.town} stateRef={currentMap} />
             <MapComponent slug={MapSlug.store} stateRef={currentMap} />
           </Suspense>
