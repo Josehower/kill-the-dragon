@@ -105,7 +105,6 @@ export function MapComponent({
             layer.properties &&
             layer.properties.some((prop) => prop.name === 'collider')
           ) {
-            console.log('collider', layer);
             return null;
           }
           return (
@@ -175,7 +174,8 @@ function Tile({
 
     const { offset, repeat } = tiledToR3FTextureTranspiler(
       tileValueOnTileset,
-      textureClone,
+      textureClone.image.width,
+      textureClone.image.height,
       [tileTilesetSource.module.tilewidth, tileTilesetSource.module.tileheight],
     );
 

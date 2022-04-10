@@ -3,7 +3,8 @@ import { GameSpriteAnimation } from '../types/tiled';
 
 export function tiledToR3FTextureTranspiler(
   tileValue: number,
-  texture: THREE.Texture,
+  imageWidth: number,
+  imageHeight: number,
   tileSize: number | [number, number],
 ) {
   const tileSizeVector = Array.isArray(tileSize)
@@ -11,8 +12,8 @@ export function tiledToR3FTextureTranspiler(
     : [tileSize, tileSize];
 
   // image width and height size (e.g 512px) / tile width and height size (e.g. 32px)
-  const tilesAmountX = texture.image.width / tileSizeVector[0];
-  const tilesAmountY = texture.image.height / tileSizeVector[1];
+  const tilesAmountX = imageWidth / tileSizeVector[0];
+  const tilesAmountY = imageHeight / tileSizeVector[1];
 
   // X coordinate position of the texture based on the tilesetValue for this tile
   const texturePositionX = Math.floor(tileValue % tilesAmountX);
@@ -63,7 +64,12 @@ export function createTileTextureAnimator(
   texture.offset.y = texturePositionY / tilesAmountY;
 
   return (value: number) => {
-    const { offset } = tiledToR3FTextureTranspiler(value, texture, tileSize);
+    const { offset } = tiledToR3FTextureTranspiler(
+      value,
+      texture.image.width,
+      texture.image.height,
+      tileSize,
+    );
 
     texture.offset.x = offset.x;
     texture.offset.y = offset.y;

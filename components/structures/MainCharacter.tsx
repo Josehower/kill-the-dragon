@@ -1,10 +1,19 @@
 import { useTexture } from '@react-three/drei';
 import { Color, MeshProps, useFrame } from '@react-three/fiber';
 import { klona } from 'klona';
-import { MutableRefObject, Suspense, useRef } from 'react';
+import {
+  MutableRefObject,
+  Suspense,
+  useCallback,
+  useEffect,
+  useRef,
+} from 'react';
 import * as THREE from 'three';
+import { MapSlug } from '../../database/maps';
 import useControls from '../../hooks/useControls';
-import { SpriteAnimationHandler } from '../../types/tiled';
+import { JsonMap, SpriteAnimationHandler } from '../../types/tiled';
+import { isInsideTile } from '../../utils/colliders';
+import { gridGenerator } from '../../utils/map';
 import {
   createSpriteAnimation,
   createTileTextureAnimator,
@@ -26,7 +35,7 @@ export default function Sprite({
   animator(18);
 
   return (
-    <sprite ref={tileRef} {...props} position={[0, 0, 0]}>
+    <sprite ref={tileRef} {...props} position={[0, 0.5, 0]}>
       <planeGeometry args={[1, 2]} />
       <spriteMaterial map={texture} />
     </sprite>
@@ -34,15 +43,16 @@ export default function Sprite({
 }
 
 export function MainCharacter({
+  currentMapRef,
   lastPosition,
   isCharacterFreezed,
   ...props
 }: MeshProps & {
+  currentMapRef: MutableRefObject<MapSlug>;
   lastPosition?: { x: number; y: number };
   isCharacterFreezed: boolean;
 }) {
   const controls = useControls();
-  const collitionSpriteOffset = { x: 0.15, y: 0.5 };
 
   const charRef = useRef<THREE.Sprite>();
   const animationsRef = useRef<{
@@ -56,8 +66,70 @@ export function MainCharacter({
     animator?: (value: number) => void;
   }>({});
 
+  const currentSlugRef = useRef<MapSlug>(currentMapRef.current);
+  const coliders = useRef<[number, number][]>([]);
+
+  const getJsonMapData = useCallback(async () => {
+    const { default: file }: { default: JsonMap } = await import(
+      `../../database/maps/${currentMapRef.current}`
+    );
+
+    const offsetX =
+      file.properties &&
+      (file.properties.find((prop) => prop.name === 'offsetX') as
+        | {
+            name: 'offsetX';
+            type: 'int';
+            value: number;
+          }
+        | undefined);
+
+    const offsetY =
+      file.properties &&
+      (file.properties.find((prop) => prop.name === 'offsetY') as
+        | {
+            name: 'offsetY';
+            type: 'int';
+            value: number;
+          }
+        | undefined);
+
+    const layerGrid = gridGenerator(
+      file.width,
+      file.height,
+      // if one offset is undefined it pass 0 as value
+      offsetX || offsetY
+        ? [offsetX?.value ?? 0, offsetY?.value ?? 0]
+        : undefined,
+    );
+
+    currentSlugRef.current = currentMapRef.current;
+
+    coliders.current = layerGrid
+      .map(([x, y], index) => {
+        const mapTileValue = file.layers.find(
+          (layer) => layer.name === 'colliders',
+        );
+        if (mapTileValue && mapTileValue.data[index] > 0) {
+          return [x - file.width / 2, y - file.height / 2];
+        }
+
+        return null;
+      })
+      .filter((cell) => cell !== null) as [number, number][];
+  }, [currentMapRef]);
+
+  useEffect(() => {
+    getJsonMapData().catch(() => {});
+  }, [getJsonMapData]);
+
   useFrame((clock, d) => {
     if (!charRef.current || !charRef.current.material.map) return;
+
+    if (currentMapRef.current !== currentSlugRef.current) {
+      getJsonMapData().catch(() => {});
+      return;
+    }
 
     const startPos = klona(charRef.current.position);
 
@@ -143,21 +215,24 @@ export function MainCharacter({
 
     const spinning = animationsRef.current.spin(d, controls.current.jump);
 
-    const runningRight = animationsRef.current.runRight(
-      d,
-      !spinning && controls.current.right,
-    );
-    const runningLeft = animationsRef.current.runLeft(
-      d,
-      !spinning && controls.current.left,
-    );
     const runningUp = animationsRef.current.runUp(
       d,
       !spinning && controls.current.forward,
     );
+
+    const runningRight = animationsRef.current.runRight(
+      d,
+      !spinning && controls.current.right,
+    );
+
     const runningDown = animationsRef.current.runDown(
       d,
       !spinning && controls.current.backward,
+    );
+
+    const runningLeft = animationsRef.current.runLeft(
+      d,
+      !spinning && controls.current.left,
     );
 
     if (
@@ -172,40 +247,39 @@ export function MainCharacter({
 
     const endPosition = klona(charRef.current.position);
 
-    const deltaX = endPosition.x - startPos.x;
-    const deltaY = endPosition.y - startPos.y;
+    const collition = coliders.current;
 
-    // Check de directions
-    deltaX !== 0 && console.log(deltaX < 0 ? 'left' : 'right');
-    deltaY !== 0 && console.log(deltaY < 0 ? 'down' : 'up');
+    const topLeft = [endPosition.x - 0.3, endPosition.y - 0.2];
+    const topRight = [endPosition.x + 0.3, endPosition.y - 0.2];
+    const bottomLeft = [endPosition.x - 0.3, endPosition.y - 0.8];
+    const bottomRight = [endPosition.x + 0.3, endPosition.y - 0.8];
 
-    const movement = {
-      right: deltaX !== 0 && deltaX > 0,
-      left: deltaX !== 0 && deltaX < 0,
-      up: deltaY !== 0 && deltaY > 0,
-      down: deltaY !== 0 && deltaY < 0,
-    };
+    const topLeftCollition = collition.some((vector) =>
+      isInsideTile(vector, topLeft as [number, number]),
+    );
 
-    // TODO: add sprite colliders and collisions. This seems to be a way to achieve it
-    const collition = [
-      [0, 1],
-      [-1, 1],
-      [-2, 1],
-    ];
+    const topRightCollition = collition.some((vector) =>
+      isInsideTile(vector, topRight as [number, number]),
+    );
 
-    const nextRefx = movement.right ? 1 : movement.left ? -1 : 0;
-    const nextRefy = movement.up ? 1 : movement.down ? -1 : 0;
-    const lastPosVector = [
-      Math.floor(endPosition.x + collitionSpriteOffset.x),
-      Math.floor(endPosition.y),
-    ];
+    const bottomLeftCollition = collition.some((vector) =>
+      isInsideTile(vector, bottomLeft as [number, number]),
+    );
 
-    // const next =
+    const bottomRightCollition = collition.some((vector) =>
+      isInsideTile(vector, bottomRight as [number, number]),
+    );
 
-    let log = ` pos: ${endPosition.y}, current: ${lastPosVector}`;
-    // let log = `nextx: ${nextRefx}, nexty: ${nextRefy}, current: ${lastPosVector}`;
+    const colliding =
+      topLeftCollition ||
+      topRightCollition ||
+      bottomRightCollition ||
+      bottomLeftCollition;
 
-    console.log(log);
+    if (colliding) {
+      charRef.current.position.x = startPos.x;
+      charRef.current.position.y = startPos.y;
+    }
   });
   return (
     <Suspense fallback={null}>
