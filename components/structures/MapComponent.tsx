@@ -1,4 +1,5 @@
 import { MeshProps, useFrame, Vector3 } from '@react-three/fiber';
+import { diffProps } from '@react-three/fiber/dist/declarations/src/core/utils';
 import {
   Fragment,
   MutableRefObject,
@@ -8,9 +9,7 @@ import {
   useState,
 } from 'react';
 import * as THREE from 'three';
-import { GameDialog } from '../../database/dialogs';
 import { Encounter } from '../../database/encounters';
-import { gameMapEvents } from '../../database/maps/mapEvents';
 import { MapSlug } from '../../database/maps/mapList';
 import { JsonMap, JsonTileset } from '../../types/tiled';
 import { isInsidePortal } from '../../utils/colliders';
@@ -25,17 +24,15 @@ export function MapComponent({
   currentMapRef,
   characterRef,
   encounterRef,
-  promptDialogRef,
-  toggleStoreRef,
-  toggleMenuRef,
+  eventIdQueueRef,
+  children,
 }: {
   slug: MapSlug;
   currentMapRef: MutableRefObject<MapSlug>;
   characterRef: MutableRefObject<THREE.Sprite | undefined>;
   encounterRef: MutableRefObject<Encounter | null>;
-  promptDialogRef: MutableRefObject<GameDialog | null>;
-  toggleStoreRef: MutableRefObject<boolean>;
-  toggleMenuRef: MutableRefObject<boolean>;
+  eventIdQueueRef: MutableRefObject<number[]>;
+  children?: JSX.Element;
 }) {
   const [mapData, setMapData] = useState<JsonMap | undefined>();
   const tilesetsData = useRef<TilesetsData>([]);
@@ -161,15 +158,7 @@ export function MapComponent({
     )?.value;
 
     if (eventId !== undefined) {
-      // TODO: think if this may be better  with useContext
-      gameMapEvents[eventId].handler({
-        characterRef: characterRef as MutableRefObject<THREE.Sprite>,
-        currentMapRef,
-        promptDialogRef: promptDialogRef,
-        encounterRef,
-        toggleStoreRef,
-        toggleMenuRef,
-      });
+      eventIdQueueRef.current.push(eventId);
     }
   });
 
@@ -209,6 +198,7 @@ export function MapComponent({
       texturePath={tilesetsData.current.map((tileset) => tileset.module.image)}
     >
       <mesh ref={meshRef}>
+        {children}
         {mapData.layers.map((layer) => {
           if (
             (layer.properties &&

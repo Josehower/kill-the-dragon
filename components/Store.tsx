@@ -14,16 +14,19 @@ export default function Store({
 
   return (
     <>
-      <button
-        onClick={() => {
-          setToggleStore(!toggleStore);
-        }}
-      >
-        Store
-      </button>
-      <h1>Store: [ L ]</h1>
+      {toggleStore && (
+        <button
+          onClick={() => {
+            setToggleStore(false);
+          }}
+        >
+          Close
+        </button>
+      )}
+
       {toggleStore && (
         <div>
+          <h1>Store: </h1>
           {Object.entries(gameItems).map(([item, object]) => {
             return (
               <div

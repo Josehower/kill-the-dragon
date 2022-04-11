@@ -9,7 +9,9 @@ import {
   useRef,
 } from 'react';
 import * as THREE from 'three';
+import { GameDialog } from '../../database/dialogs';
 import { Encounter } from '../../database/encounters';
+import { gameMapEvents } from '../../database/maps/mapEvents';
 import { MapSlug } from '../../database/maps/mapList';
 import useControls from '../../hooks/useControls';
 import { JsonMap, SpriteAnimationHandler } from '../../types/tiled';
@@ -47,12 +49,20 @@ export function MainCharacter({
   characterRef,
   isCharacterFreezed,
   encounterRef,
+  promptDialogRef,
+  toggleStoreRef,
+  toggleMenuRef,
+  eventIdQueueRef,
   ...props
 }: MeshProps & {
   currentMapRef: MutableRefObject<MapSlug>;
   characterRef: MutableRefObject<THREE.Sprite | undefined>;
   isCharacterFreezed: MutableRefObject<boolean>;
   encounterRef: MutableRefObject<Encounter | null>;
+  promptDialogRef: MutableRefObject<GameDialog | null>;
+  toggleStoreRef: MutableRefObject<boolean>;
+  toggleMenuRef: MutableRefObject<boolean>;
+  eventIdQueueRef: MutableRefObject<number[]>;
 }) {
   const controls = useControls();
   const animationsRef = useRef<{
@@ -122,6 +132,29 @@ export function MainCharacter({
   useEffect(() => {
     getJsonMapData().catch(() => {});
   }, [getJsonMapData]);
+
+  useFrame(() => {
+    if (
+      !isCharacterFreezed.current &&
+      !encounterRef.current &&
+      !promptDialogRef.current &&
+      !toggleStoreRef.current &&
+      !toggleMenuRef.current
+    ) {
+      const eventId = eventIdQueueRef.current.shift();
+
+      if (eventId === undefined) return;
+
+      gameMapEvents[eventId].handler({
+        characterRef: characterRef as MutableRefObject<THREE.Sprite>,
+        currentMapRef,
+        promptDialogRef: promptDialogRef,
+        encounterRef,
+        toggleStoreRef,
+        toggleMenuRef,
+      });
+    }
+  });
 
   useFrame((clock, d) => {
     if (!characterRef.current || !characterRef.current.material.map) return;
@@ -205,11 +238,11 @@ export function MainCharacter({
           { duration: 80, move: { x: 0.05 } },
           { duration: 110, move: { x: 0.05 } },
           { duration: 150, move: { x: 0.05 } },
-          { tileid: 0, duration: 180, move: { x: -0.05 }, port: { x: 1.05 } },
+          { tileid: 0, duration: 180, move: { x: -0.05 } },
           { tileid: 0, duration: 180, move: { x: 0.05 }, port: { x: 100.05 } },
           { tileid: 0, duration: 180, port: { x: -100.05 } },
           { tileid: 0, duration: 180, move: { x: 0.05 } },
-          { tileid: 6, duration: 200, move: { x: -0.05 }, port: { x: -1.05 } },
+          { tileid: 6, duration: 200, move: { x: -0.05 } },
           { tileid: 12, duration: 250, move: { x: -0.05 } },
           { tileid: 18, duration: 400 },
         ],
