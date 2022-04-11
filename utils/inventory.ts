@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from 'react';
-import { PlayerInventory } from '../components/GameObject';
+import { PlayerInventory } from '../components/structures/DomBasedComponent';
 import { CombatAction } from '../database/actions';
 
 export function getUseItemFunc(id: number, action: CombatAction) {

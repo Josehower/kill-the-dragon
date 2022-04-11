@@ -11,15 +11,15 @@ export default function Prompt({
   promptDialog,
   setPromptDialog,
 }: {
-  promptDialog?: GameDialog;
-  setPromptDialog: Dispatch<SetStateAction<GameDialog | undefined>>;
+  promptDialog: GameDialog | null;
+  setPromptDialog: Dispatch<SetStateAction<GameDialog | null>>;
 }) {
   const [dialogPosition, setDialogPosition] = useState(0);
 
   const test = useCallback(() => {
     console.log(promptDialog);
     if (promptDialog && dialogPosition + 1 === promptDialog.dialog.length) {
-      setPromptDialog(undefined);
+      setPromptDialog(null);
       setDialogPosition(0);
     } else {
       setDialogPosition((current) => current + 1);

@@ -9,7 +9,8 @@ import {
   useRef,
 } from 'react';
 import * as THREE from 'three';
-import { MapSlug } from '../../database/maps';
+import { Encounter } from '../../database/encounters';
+import { MapSlug } from '../../database/maps/mapList';
 import useControls from '../../hooks/useControls';
 import { JsonMap, SpriteAnimationHandler } from '../../types/tiled';
 import { isInsideTile } from '../../utils/colliders';
@@ -23,7 +24,6 @@ export default function Sprite({
   tileRef,
   ...props
 }: {
-  position: MeshProps['position'];
   tileRef: MutableRefObject<THREE.Sprite | undefined>;
   color?: Color;
 }) {
@@ -35,7 +35,7 @@ export default function Sprite({
   animator(18);
 
   return (
-    <sprite ref={tileRef} {...props} position={[0, 0.5, 0]}>
+    <sprite ref={tileRef} {...props} position={[8, -4.5, 0]}>
       <planeGeometry args={[1, 2]} />
       <spriteMaterial map={texture} />
     </sprite>
@@ -44,17 +44,17 @@ export default function Sprite({
 
 export function MainCharacter({
   currentMapRef,
-  lastPosition,
+  characterRef,
   isCharacterFreezed,
+  encounterRef,
   ...props
 }: MeshProps & {
   currentMapRef: MutableRefObject<MapSlug>;
-  lastPosition?: { x: number; y: number };
-  isCharacterFreezed: boolean;
+  characterRef: MutableRefObject<THREE.Sprite | undefined>;
+  isCharacterFreezed: MutableRefObject<boolean>;
+  encounterRef: MutableRefObject<Encounter | null>;
 }) {
   const controls = useControls();
-
-  const charRef = useRef<THREE.Sprite>();
   const animationsRef = useRef<{
     runRight?: SpriteAnimationHandler;
     runLeft?: SpriteAnimationHandler;
@@ -124,18 +124,27 @@ export function MainCharacter({
   }, [getJsonMapData]);
 
   useFrame((clock, d) => {
-    if (!charRef.current || !charRef.current.material.map) return;
+    if (!characterRef.current || !characterRef.current.material.map) return;
+
+    if (encounterRef.current) {
+      characterRef.current.position.z = 2;
+      return;
+    } else {
+      characterRef.current.position.z = 0;
+    }
 
     if (currentMapRef.current !== currentSlugRef.current) {
       getJsonMapData().catch(() => {});
       return;
     }
 
-    const startPos = klona(charRef.current.position);
+    if (isCharacterFreezed.current) return;
+
+    const startPos = klona(characterRef.current.position);
 
     if (!animatorRef.current.animator) {
       animatorRef.current.animator = createTileTextureAnimator(
-        charRef.current.material.map,
+        characterRef.current.material.map,
         [32, 64],
       );
       return;
@@ -143,7 +152,7 @@ export function MainCharacter({
 
     if (!animationsRef.current.runRight) {
       animationsRef.current.runRight = createSpriteAnimation(
-        charRef.current,
+        characterRef.current,
         [20, 21, 22, 23],
         {
           tileSize: [32, 64],
@@ -155,7 +164,7 @@ export function MainCharacter({
 
     if (!animationsRef.current.runLeft) {
       animationsRef.current.runLeft = createSpriteAnimation(
-        charRef.current,
+        characterRef.current,
         [14, 15, 16, 17],
         {
           tileSize: [32, 64],
@@ -166,7 +175,7 @@ export function MainCharacter({
     }
     if (!animationsRef.current.runUp) {
       animationsRef.current.runUp = createSpriteAnimation(
-        charRef.current,
+        characterRef.current,
         [8, 9, 10, 11],
         {
           tileSize: [32, 64],
@@ -177,7 +186,7 @@ export function MainCharacter({
     }
     if (!animationsRef.current.runDown) {
       animationsRef.current.runDown = createSpriteAnimation(
-        charRef.current,
+        characterRef.current,
         [2, 3, 4, 5],
         {
           tileSize: [32, 64],
@@ -189,7 +198,7 @@ export function MainCharacter({
 
     if (!animationsRef.current.spin) {
       animationsRef.current.spin = createSpriteAnimation(
-        charRef.current,
+        characterRef.current,
         [
           { tileid: 3, duration: 500, move: { x: 0.05 } },
           { duration: 800, move: { x: 0.05 } },
@@ -245,7 +254,7 @@ export function MainCharacter({
       animatorRef.current.animator(0);
     }
 
-    const endPosition = klona(charRef.current.position);
+    const endPosition = klona(characterRef.current.position);
 
     const collition = coliders.current;
 
@@ -277,20 +286,14 @@ export function MainCharacter({
       bottomLeftCollition;
 
     if (colliding) {
-      charRef.current.position.x = startPos.x;
-      charRef.current.position.y = startPos.y;
+      characterRef.current.position.x = startPos.x;
+      characterRef.current.position.y = startPos.y;
     }
   });
   return (
     <Suspense fallback={null}>
       <mesh {...props} onClick={() => console.log('click')}>
-        <Sprite
-          position={
-            lastPosition ? [lastPosition.x, lastPosition.y, 0] : [0, 0, 0]
-          }
-          tileRef={charRef}
-          color="blue"
-        />
+        <Sprite tileRef={characterRef} />
       </mesh>
     </Suspense>
   );

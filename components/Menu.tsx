@@ -1,12 +1,17 @@
 import { css } from '@emotion/react';
-import { useState } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 import { gameItems, GameWeapon } from '../database/inventory';
 import useInventory from '../hooks/useInventory';
 import useParty from '../hooks/useParty';
 import { activeItemOutOfCombat } from '../utils/gameMenuActions';
 
-export default function Menu() {
-  const [toggleMenu, setToggleMenu] = useState(true);
+export default function Menu({
+  toggleMenu,
+  setToggleMenu,
+}: {
+  toggleMenu: boolean;
+  setToggleMenu: Dispatch<SetStateAction<boolean>>;
+}) {
   const gameInventory = useInventory();
   const [inventory] = gameInventory;
   const [party, setParty] = useParty();

@@ -8,8 +8,12 @@ import {
   useState,
 } from 'react';
 import * as THREE from 'three';
-import { MapSlug } from '../../database/maps';
+import { GameDialog } from '../../database/dialogs';
+import { Encounter } from '../../database/encounters';
+import { gameMapEvents } from '../../database/maps/mapEvents';
+import { MapSlug } from '../../database/maps/mapList';
 import { JsonMap, JsonTileset } from '../../types/tiled';
+import { isInsidePortal } from '../../utils/colliders';
 import { gridGenerator } from '../../utils/map';
 import { tiledToR3FTextureTranspiler } from '../../utils/tiles';
 import AssetsLoader, { textureContext } from '../AssetsLoader';
@@ -18,14 +22,27 @@ type TilesetsData = { module: JsonTileset; firstgid: number }[];
 
 export function MapComponent({
   slug,
-  stateRef,
+  currentMapRef,
+  characterRef,
+  encounterRef,
+  promptDialogRef,
+  toggleStoreRef,
+  toggleMenuRef,
 }: {
   slug: MapSlug;
-  stateRef: MutableRefObject<MapSlug>;
+  currentMapRef: MutableRefObject<MapSlug>;
+  characterRef: MutableRefObject<THREE.Sprite | undefined>;
+  encounterRef: MutableRefObject<Encounter | null>;
+  promptDialogRef: MutableRefObject<GameDialog | null>;
+  toggleStoreRef: MutableRefObject<boolean>;
+  toggleMenuRef: MutableRefObject<boolean>;
 }) {
   const [mapData, setMapData] = useState<JsonMap | undefined>();
-  const [tilesetsData, setTilesetData] = useState<TilesetsData | undefined>();
+  const tilesetsData = useRef<TilesetsData>([]);
   const meshRef = useRef<THREE.Mesh>();
+
+  const portals =
+    mapData && mapData.layers.find((layer) => layer.name === 'portals');
 
   useEffect(() => {
     async function get() {
@@ -52,19 +69,111 @@ export function MapComponent({
         ),
       );
 
-      setTilesetData(texturesSourcePaths);
+      tilesetsData.current = texturesSourcePaths;
       setMapData(file);
     }
+
     get().catch(() => {});
   }, [slug]);
 
   useFrame(() => {
     if (meshRef.current) {
-      meshRef.current.position.z = slug === stateRef.current ? -1 : 2;
+      meshRef.current.position.z =
+        slug !== currentMapRef.current ? 2 : encounterRef.current ? 2 : -1;
+    }
+
+    if (
+      !characterRef.current ||
+      !meshRef.current ||
+      meshRef.current.position.z === 2
+    ) {
+      return;
+    }
+
+    const topLeft = [
+      characterRef.current.position.x - 0.3,
+      characterRef.current.position.y - 0.2,
+    ];
+
+    const topRight = [
+      characterRef.current.position.x + 0.3,
+      characterRef.current.position.y - 0.2,
+    ];
+    const bottomLeft = [
+      characterRef.current.position.x - 0.3,
+      characterRef.current.position.y - 0.8,
+    ];
+    const bottomRight = [
+      characterRef.current.position.x + 0.3,
+      characterRef.current.position.y - 0.8,
+    ];
+
+    if (
+      !mapData ||
+      !mapData.tilewidth ||
+      !portals ||
+      !mapData.tileheight ||
+      !portals.objects
+    ) {
+      return;
+    }
+
+    const test = portals.objects.find((portal) =>
+      [topLeft, topRight, bottomLeft, bottomRight].some((edge) =>
+        isInsidePortal({
+          portal: {
+            position: {
+              x: portal.x,
+              y: portal.y,
+            },
+            size: {
+              pixelsWidth: portal.width,
+              pixelsHeight: portal.height,
+            },
+          },
+          tileMap: {
+            mapSize: {
+              tilesWidth: mapData.width,
+              tilesHeight: mapData.height,
+            },
+            tileSize: {
+              pixelsWidth: mapData.tilewidth,
+              pixelsHeight: mapData.tileheight,
+            },
+            offset: {
+              x:
+                ((mapData.properties &&
+                  mapData.properties.find((prop) => prop.name === 'offsetX')
+                    ?.value) as number) || 0,
+              y:
+                ((mapData.properties &&
+                  mapData.properties.find((prop) => prop.name === 'offsetY')
+                    ?.value) as number) || 0,
+            },
+          },
+          XYPositionToCheck: { x: edge[0], y: edge[1] },
+        }),
+      ),
+    );
+
+    const eventId: number | undefined = test?.properties.find(
+      (prop) => prop.name === 'eventId',
+    )?.value;
+
+    if (eventId !== undefined) {
+      // TODO: think if this may be better  with useContext
+      gameMapEvents[eventId].handler({
+        characterRef: characterRef as MutableRefObject<THREE.Sprite>,
+        currentMapRef,
+        promptDialogRef: promptDialogRef,
+        encounterRef,
+        toggleStoreRef,
+        toggleMenuRef,
+      });
     }
   });
 
-  if (!tilesetsData || !mapData) {
+  if (!mapData) {
     return null;
   }
 
@@ -97,13 +206,14 @@ export function MapComponent({
 
   return (
     <AssetsLoader
-      texturePath={tilesetsData.map((tileset) => tileset.module.image)}
+      texturePath={tilesetsData.current.map((tileset) => tileset.module.image)}
     >
       <mesh ref={meshRef}>
         {mapData.layers.map((layer) => {
           if (
-            layer.properties &&
-            layer.properties.some((prop) => prop.name === 'collider')
+            (layer.properties &&
+              layer.properties.some((prop) => prop.name === 'collider')) ||
+            layer.name === 'portals'
           ) {
             return null;
           }
@@ -118,7 +228,7 @@ export function MapComponent({
                       key={`tile-x:${x}-y:${y}-${layer.name}`}
                       pos={[x - mapData.width / 2, y - mapData.height / 2, -1]}
                       mapTileValue={mapTileValue}
-                      tilesetsData={tilesetsData}
+                      tilesetsData={tilesetsData.current}
                     />
                   );
                 }

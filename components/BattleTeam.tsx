@@ -1,8 +1,8 @@
 import { css } from '@emotion/react';
 import { Dispatch, SetStateAction } from 'react';
-import { PlayerInventory } from '../components/GameObject';
 import { ActionToPerform } from './Battle';
 import BattlePersona, { Persona } from './BattlePersona';
+import { PlayerInventory } from './structures/DomBasedComponent';
 
 type Props<T, O> = {
   team: T[];

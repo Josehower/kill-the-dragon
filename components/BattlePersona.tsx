@@ -1,9 +1,9 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { PlayerInventory } from '../components/GameObject';
 import { Enemy } from '../database/enemies';
 import { Ally } from '../database/party';
 import ActionControls from './ActionControls';
 import { ActionToPerform } from './Battle';
+import { PlayerInventory } from './structures/DomBasedComponent';
 import TimedBar from './TimedBar';
 
 export type Persona = Enemy | Ally;

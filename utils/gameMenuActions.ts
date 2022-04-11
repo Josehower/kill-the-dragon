@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from 'react';
-import { PlayerInventory } from '../components/GameObject';
+import { PlayerInventory } from '../components/structures/DomBasedComponent';
 import { GameItem } from '../database/inventory';
 import { Ally } from '../database/party';
 import { performOutCombatAllyAction } from './outCombat';
