@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useEffect } from 'react';
 import { gameItems, GameWeapon } from '../database/inventory';
 import useInventory from '../hooks/useInventory';
 import useParty from '../hooks/useParty';
@@ -18,6 +18,22 @@ export default function Menu({
   const weaponState = party.map((ally) =>
     ally.weapon?.id ? ally.weapon.id : '',
   );
+
+  useEffect(() => {
+    document.addEventListener('keydown', (e: globalThis.KeyboardEvent) => {
+      if (e.code === 'KeyP') {
+        setToggleMenu(!toggleMenu);
+      }
+    });
+
+    return () => {
+      document.removeEventListener('keydown', (e: globalThis.KeyboardEvent) => {
+        if (e.code === 'KeyP') {
+          setToggleMenu(!toggleMenu);
+        }
+      });
+    };
+  }, [setToggleMenu, toggleMenu]);
 
   const equippedWeapon = weaponState
     .filter((wep) => wep !== '')
@@ -47,13 +63,6 @@ export default function Menu({
 
   return (
     <>
-      <button
-        onClick={() => {
-          setToggleMenu(!toggleMenu);
-        }}
-      >
-        menu
-      </button>
       <h1>Party: [ P ]</h1>
 
       {toggleMenu && (
@@ -62,6 +71,13 @@ export default function Menu({
             background-color: black;
           `}
         >
+          <button
+            onClick={() => {
+              setToggleMenu(false);
+            }}
+          >
+            [ X ]
+          </button>
           <hr />
           <hr />
           <span>--- GOLD: {inventory.gold} ---</span>

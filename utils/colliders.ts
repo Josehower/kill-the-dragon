@@ -54,7 +54,6 @@ export function isInsidePortal({
     y2: y + portal.size.pixelsHeight / 32 + 0.5 - 1,
   };
 
-  // console.log(x, x2, y, y2);
   return (
     XYPositionToCheck.x > x1 &&
     XYPositionToCheck.x < x2 &&

@@ -1,9 +1,11 @@
 import { css } from '@emotion/react';
 import { Canvas, useThree } from '@react-three/fiber';
-import { Suspense, useRef } from 'react';
+import { Suspense, useEffect, useRef } from 'react';
+import { Vector3, Vector3Tuple } from 'three';
 import DomBasedComponent from '../components/structures/DomBasedComponent';
 import { MainCharacter } from '../components/structures/MainCharacter';
 import { MapComponent } from '../components/structures/MapComponent';
+import { Npc } from '../components/structures/Npc';
 import { GameDialog } from '../database/dialogs';
 import { Encounter } from '../database/encounters';
 import { MapSlug } from '../database/maps/mapList';
@@ -59,6 +61,7 @@ export default function Game() {
   const promptDialogRef = useRef<GameDialog | null>(null);
   const toggleStoreRef = useRef<boolean>(false);
   const toggleMenuRef = useRef<boolean>(false);
+  const eventIdQueueRef = useRef<number[]>([]);
 
   return (
     <div css={canvas}>
@@ -90,7 +93,12 @@ export default function Game() {
               characterRef={characterRef}
               isCharacterFreezed={isCharacterFreezed}
               encounterRef={encounterRef}
+              promptDialogRef={promptDialogRef}
+              toggleStoreRef={toggleStoreRef}
+              toggleMenuRef={toggleMenuRef}
+              eventIdQueueRef={eventIdQueueRef}
             />
+
             {[MapSlug.town, MapSlug.store, MapSlug.test, MapSlug.dragon].map(
               (mapSlug) => (
                 <MapComponent
@@ -99,10 +107,21 @@ export default function Game() {
                   currentMapRef={currentMapRef}
                   characterRef={characterRef}
                   encounterRef={encounterRef}
-                  promptDialogRef={promptDialogRef}
-                  toggleStoreRef={toggleStoreRef}
-                  toggleMenuRef={toggleMenuRef}
-                />
+                  eventIdQueueRef={eventIdQueueRef}
+                >
+                  {mapSlug === MapSlug.store ? (
+                    <Npc
+                      spriteSheet="/tile-sets/npc/taur-walk.png"
+                      position={[1, 5, 0]}
+                      tileSize={128}
+                      argsValue={[3, 3, undefined]}
+                      characterRef={characterRef}
+                      onCollitionEventIds={[3]}
+                      collidingSpots={[[0, 4]]}
+                      eventIdQueueRef={eventIdQueueRef}
+                    />
+                  ) : undefined}
+                </MapComponent>
               ),
             )}
           </Suspense>

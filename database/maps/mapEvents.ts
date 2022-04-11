@@ -51,8 +51,24 @@ export const gameMapEvents: MapEvent[] = [
     types: [EventType.portal],
     handler: (scene) => {
       scene.currentMapRef.current = MapSlug.test;
-      scene.characterRef.current.position.x += 1;
-      scene.characterRef.current.position.y += 1;
+      scene.characterRef.current.position.x = 0;
+      scene.characterRef.current.position.y = 0;
+    },
+  },
+  {
+    name: 'store-open',
+    id: 3,
+    types: [EventType.portal],
+    handler: (scene) => {
+      scene.toggleStoreRef.current = true;
+    },
+  },
+  {
+    name: 'menu-open',
+    id: 4,
+    types: [EventType.portal],
+    handler: (scene) => {
+      scene.toggleMenuRef.current = true;
     },
   },
 ];
