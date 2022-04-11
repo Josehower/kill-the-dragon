@@ -1,9 +1,12 @@
 import { css } from '@emotion/react';
 import { Canvas, useThree } from '@react-three/fiber';
 import { Suspense, useRef } from 'react';
-import GameObject from '../components/GameObject';
+import DomBasedComponent from '../components/structures/DomBasedComponent';
+import { MainCharacter } from '../components/structures/MainCharacter';
 import { MapComponent } from '../components/structures/MapComponent';
-import { maps, MapSlug } from '../database/maps';
+import { GameDialog } from '../database/dialogs';
+import { Encounter } from '../database/encounters';
+import { MapSlug } from '../database/maps/mapList';
 
 export function LoadingScreen() {
   return (
@@ -49,8 +52,14 @@ function Dolly() {
 }
 
 export default function Game() {
-  const currentMap = useRef(maps[0]);
-  console.log('canvas render');
+  const currentMapRef = useRef(MapSlug.town);
+  const characterRef = useRef<THREE.Sprite>();
+  const isCharacterFreezed = useRef<boolean>(false);
+  const encounterRef = useRef<Encounter | null>(null);
+  const promptDialogRef = useRef<GameDialog | null>(null);
+  const toggleStoreRef = useRef<boolean>(false);
+  const toggleMenuRef = useRef<boolean>(false);
+
   return (
     <div css={canvas}>
       <Canvas
@@ -67,11 +76,35 @@ export default function Game() {
         <ambientLight intensity={0.4} />
         <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
         <pointLight position={[-10, -10, -10]} />
-        {/* <GameObject mapRef={currentMap} /> */}
+        <DomBasedComponent
+          encounterRef={encounterRef}
+          promptDialogRef={promptDialogRef}
+          isCharacterFreezed={isCharacterFreezed}
+          toggleStoreRef={toggleStoreRef}
+          toggleMenuRef={toggleMenuRef}
+        />
         <Suspense fallback={<LoadingScreen />}>
           <Suspense fallback={null}>
-            <MapComponent slug={MapSlug.town} stateRef={currentMap} />
-            <MapComponent slug={MapSlug.store} stateRef={currentMap} />
+            <MainCharacter
+              currentMapRef={currentMapRef}
+              characterRef={characterRef}
+              isCharacterFreezed={isCharacterFreezed}
+              encounterRef={encounterRef}
+            />
+            {[MapSlug.town, MapSlug.store, MapSlug.test, MapSlug.dragon].map(
+              (mapSlug) => (
+                <MapComponent
+                  key={mapSlug}
+                  slug={mapSlug}
+                  currentMapRef={currentMapRef}
+                  characterRef={characterRef}
+                  encounterRef={encounterRef}
+                  promptDialogRef={promptDialogRef}
+                  toggleStoreRef={toggleStoreRef}
+                  toggleMenuRef={toggleMenuRef}
+                />
+              ),
+            )}
           </Suspense>
         </Suspense>
       </Canvas>

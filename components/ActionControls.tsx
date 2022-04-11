@@ -11,7 +11,7 @@ import { getCombatAction } from '../utils/combat';
 import { getRandomFromArray } from '../utils/miscelaneous';
 import { ActionToPerform } from './Battle';
 import { Foes, Persona } from './BattlePersona';
-import { PlayerInventory } from './GameObject';
+import { PlayerInventory } from './structures/DomBasedComponent';
 
 type Props<T, O> = {
   setIsSelectingAction: Dispatch<SetStateAction<boolean>>;
@@ -36,7 +36,7 @@ export default function ActionControls<T extends Persona, O extends Persona>({
 
   const setAction = useCallback(
     (action: CombatAction, foe: Persona) => {
-      setActionArr(current => [
+      setActionArr((current) => [
         ...current,
         {
           action,
@@ -46,10 +46,10 @@ export default function ActionControls<T extends Persona, O extends Persona>({
       ]);
       setIsSelectingAction(false);
       if (setAllyActionQueue) {
-        setAllyActionQueue(current => current.filter((a, i) => i !== 0));
+        setAllyActionQueue((current) => current.filter((a, i) => i !== 0));
       }
     },
-    [persona, setActionArr, setAllyActionQueue, setIsSelectingAction]
+    [persona, setActionArr, setAllyActionQueue, setIsSelectingAction],
   );
 
   useEffect(() => {
@@ -80,7 +80,7 @@ export default function ActionControls<T extends Persona, O extends Persona>({
     <>
       {/* action selection */}
       {!selectedAction &&
-        (persona as Ally).actions.map(action => {
+        (persona as Ally).actions.map((action) => {
           return (
             <button
               key={'button-action-' + persona.id + action.id}
@@ -114,7 +114,7 @@ export default function ActionControls<T extends Persona, O extends Persona>({
       {/* foe selection */}
       {selectedAction &&
         (selectedAction.isFriendly
-          ? foeOptions.friendly.map(foe => {
+          ? foeOptions.friendly.map((foe) => {
               return (
                 <button
                   key={'button-foe-friend-' + persona.id + foe.id}
@@ -124,7 +124,7 @@ export default function ActionControls<T extends Persona, O extends Persona>({
                 </button>
               );
             })
-          : foeOptions.unfriendly.map(foe => {
+          : foeOptions.unfriendly.map((foe) => {
               return (
                 <button
                   key={'button-foe-unfriend-' + persona.id + foe.id}

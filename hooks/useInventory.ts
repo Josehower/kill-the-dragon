@@ -3,7 +3,7 @@ import {
   gameStateContext,
   GameStateContext,
   PlayerInventory,
-} from '../components/GameObject';
+} from '../components/structures/DomBasedComponent';
 
 export default function useInventory() {
   const { partyInventory, setPartyInventory } = useContext(

@@ -26,6 +26,9 @@ export type JsonMap = {
   infinite: boolean;
   layers: {
     data: number[];
+    properties?: {
+      [key: string]: number | string | boolean;
+    }[];
     height: number;
     id: number;
     name: string;
@@ -35,11 +38,23 @@ export type JsonMap = {
     width: number;
     x: number;
     y: number;
+    objects?: {
+      height: number;
+      id: number;
+      name: string;
+      properties: any[];
+      rotation: number;
+      type: string;
+      visible: boolean;
+      width: number;
+      x: number;
+      y: number;
+    }[];
   }[];
   nextlayerid: number;
   nextobjectid: number;
   orientation: string;
-  properties:
+  properties?:
     | [
         {
           name: 'id';
@@ -86,3 +101,27 @@ export type JsonMap = {
   version: string;
   width: number;
 };
+
+type TiledAnimationStep = {
+  duration: number;
+  tileid: number;
+};
+
+type GameAnimationStep = Omit<TiledAnimationStep, 'tileid'> & {
+  port?: {
+    x?: number;
+    y?: number;
+  };
+  move?: {
+    x?: number;
+    y?: number;
+  };
+  tileid?: number;
+};
+
+export type GameSpriteAnimation = GameAnimationStep[];
+
+export type SpriteAnimationHandler = (
+  delta: number,
+  control?: boolean,
+) => boolean;
