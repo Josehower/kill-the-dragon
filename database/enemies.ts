@@ -31,6 +31,7 @@ export type Enemy = {
   actions: EnemyActions;
   stats: CombatStats;
   weapon: GameWeapon | null;
+  image?: string;
 };
 
 export type GameEnemies = {
@@ -66,6 +67,7 @@ export const gameEnemies: GameEnemies = {
     },
     isAlly: false,
     weapon: null,
+    image: '/tile-sets/creatures/wolf-60x60.png',
   },
   mageInitiate: {
     id: 2,
@@ -91,6 +93,7 @@ export const gameEnemies: GameEnemies = {
     },
     isAlly: false,
     weapon: null,
+    image: '/tile-sets/creatures/wolf-60x60.png',
   },
   mageAdept: {
     id: 3,
@@ -115,6 +118,7 @@ export const gameEnemies: GameEnemies = {
     },
     isAlly: false,
     weapon: null,
+    image: '/tile-sets/creatures/wolf-60x60.png',
   },
   sorcererAdept: {
     id: 4,
@@ -140,6 +144,7 @@ export const gameEnemies: GameEnemies = {
     },
     isAlly: false,
     weapon: null,
+    image: '/tile-sets/creatures/wolf-60x60.png',
   },
   crusaderAdept: {
     id: 5,
@@ -165,6 +170,7 @@ export const gameEnemies: GameEnemies = {
     },
     isAlly: false,
     weapon: null,
+    image: '/tile-sets/creatures/wolf-60x60.png',
   },
   dragon: {
     id: 6,
@@ -191,5 +197,6 @@ export const gameEnemies: GameEnemies = {
     },
     isAlly: false,
     weapon: null,
+    image: '/tile-sets/creatures/wolf-60x60.png',
   },
 };

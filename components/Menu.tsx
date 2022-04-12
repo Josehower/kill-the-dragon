@@ -107,16 +107,16 @@ export default function Menu({
   setToggleMenu: Dispatch<SetStateAction<boolean>>;
 }) {
   const gameInventory = useInventory();
-  const [inventory, setInventory] = gameInventory;
+  const [inventory] = gameInventory;
   const [party, setParty] = useParty();
   const weaponState = party.map((ally) =>
     ally.weapon?.id ? ally.weapon.id : '',
   );
 
   useEffect(() => {
-    setInventory((inv) => {
-      return { ...inv, gold: inv.gold + 100 };
-    });
+    // setInventory((inv) => {
+    //   return { ...inv, gold: inv.gold + 100 };
+    // });
     document.addEventListener('keydown', (e: globalThis.KeyboardEvent) => {
       if (e.code === 'KeyP') {
         setToggleMenu(!toggleMenu);
@@ -130,7 +130,7 @@ export default function Menu({
         }
       });
     };
-  }, [setToggleMenu, toggleMenu, setInventory]);
+  }, [setToggleMenu, toggleMenu]);
 
   const equippedWeapon = weaponState
     .filter((wep) => wep !== '')

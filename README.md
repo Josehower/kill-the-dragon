@@ -41,3 +41,4 @@ aq-dark: rgba(16, 117, 128, 255)
 red: rgba(252, 53, 76, 255)
 black: rgba(43,34,27,255)
 white: rgb(245, 245, 229);
+green: '#1bcf3f'

@@ -5,6 +5,7 @@ export type Encounter = {
   enemyTeam: Enemy[];
   expReward: number;
   goldReward: number;
+  background?: string;
 };
 
 export const gameEncounters: Encounter[] = [
@@ -34,6 +35,7 @@ export const gameEncounters: Encounter[] = [
     ],
     expReward: 40,
     goldReward: 20,
+    background: '/backgrounds/dragons-cave.jpg',
   },
   {
     id: 2,

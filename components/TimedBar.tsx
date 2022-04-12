@@ -32,10 +32,10 @@ export default function TimedBar({ endTime, startTime, callback }: Props) {
   return (
     <div
       css={css`
-        background-color: ${'#000000'};
+        background-color: rgba(43, 34, 27, 255);
         width: ${200}px;
+        border-radius: 20px;
         padding: 0;
-        height: 1.5em;
         overflow: hidden;
         border: ${'black'} solid 1px;
         color: ${'white'};
@@ -44,16 +44,15 @@ export default function TimedBar({ endTime, startTime, callback }: Props) {
       <div
         ref={barRef}
         css={css`
-          background-color: ${'white'};
-          border: ${'white'} solid 1px;
+          background-color: rgba(252, 53, 76, 255);
+          border: rgba(43, 34, 27, 255) solid 1px;
           transform-origin: 0% 50%;
           width: 100%;
           transform: scaleX(0);
           padding: 0;
           margin: 0;
-          height: 1em;
+          height: 1rem;
           font-size: 0.3em;
-          color: blue;
           transition: all 0.05s;
         `}
       />

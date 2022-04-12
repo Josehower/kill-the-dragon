@@ -55,7 +55,11 @@ export default function Battle({
     BattleState.active,
   );
 
-  const [activeId, setActiveId] = useState<number>();
+  const [activeAction, setActiveAction] = useState<{
+    performerId: number;
+    foeId: number;
+    action: CombatAction;
+  }>();
 
   const isActionHappening = useRef(false);
   const isBattleActive = useRef(true);
@@ -71,7 +75,11 @@ export default function Battle({
 
     isActionHappening.current = true;
 
-    setActiveId(performer.id);
+    setActiveAction({
+      performerId: performer.id,
+      foeId: foe.id,
+      action: action,
+    });
 
     if (action.isFlee) {
       if (performer.isAlly) {
@@ -143,7 +151,7 @@ export default function Battle({
     }
 
     isActionHappening.current = false;
-    setActiveId(undefined);
+    setActiveAction(undefined);
   }
 
   // Update the isDead property in the team
@@ -285,39 +293,47 @@ export default function Battle({
   }
 
   return (
-    <div>
+    <>
       <div
         css={css`
+          background-image: ${encounter.background
+            ? `url(${encounter.background})`
+            : 'none'};
+          background-repeat: no-repeat;
+          background-size: cover;
           display: flex;
+          flex-direction: column;
+          justify-content: center;
+          width: 100vw;
+          height: 100vh;
+          margin-left: -30px;
         `}
       >
-        <BattleTeam
-          team={enemyTeam}
-          // setTeam={setEnemyTeam}
-          opponentTeam={party}
-          actionArr={actionArr}
-          setActionArr={setActionArr}
-          activeId={activeId}
-        />
+        <div>
+          <BattleTeam
+            team={enemyTeam}
+            // setTeam={setEnemyTeam}
+            opponentTeam={party}
+            actionArr={actionArr}
+            setActionArr={setActionArr}
+            activeAction={activeAction}
+          />
+        </div>
+        <div>
+          <BattleTeam
+            team={party}
+            // setTeam={setParty}
+            opponentTeam={enemyTeam}
+            actionArr={actionArr}
+            setActionArr={setActionArr}
+            allyActionQueue={allyActionQueue}
+            setAllyActionQueue={setAllyActionQueue}
+            inventory={partyInventory}
+            activeAction={activeAction}
+          />
+        </div>
       </div>
-      <div
-        css={css`
-          display: flex;
-        `}
-      >
-        <BattleTeam
-          team={party}
-          // setTeam={setParty}
-          opponentTeam={enemyTeam}
-          actionArr={actionArr}
-          setActionArr={setActionArr}
-          allyActionQueue={allyActionQueue}
-          setAllyActionQueue={setAllyActionQueue}
-          inventory={partyInventory}
-          activeId={activeId}
-        />
-      </div>
-      <button
+      {/* <button
         onClick={() => {
           setEnemyTeam((team) =>
             team.map((enemy) => {
@@ -328,7 +344,7 @@ export default function Battle({
         }}
       >
         win
-      </button>
-    </div>
+      </button> */}
+    </>
   );
 }
