@@ -98,7 +98,7 @@ export const gameEnemies: GameEnemies = {
   magePolymorphist: {
     id: 3,
     name: 'Mage Polymorphist',
-    currentHp: 80,
+    currentHp: 250,
     actions: [
       { action: actions.strike, frequency: 0.8 },
       { action: actions.shock, frequency: 1 },
