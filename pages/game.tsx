@@ -1,7 +1,6 @@
 import { css } from '@emotion/react';
 import { Canvas, useThree } from '@react-three/fiber';
-import { Suspense, useEffect, useRef } from 'react';
-import { Vector3, Vector3Tuple } from 'three';
+import { Suspense, useRef } from 'react';
 import DomBasedComponent from '../components/structures/DomBasedComponent';
 import { MainCharacter } from '../components/structures/MainCharacter';
 import { MapComponent } from '../components/structures/MapComponent';
@@ -54,7 +53,7 @@ function Dolly() {
 }
 
 export default function Game() {
-  const currentMapRef = useRef(MapSlug.dragon);
+  const currentMapRef = useRef(MapSlug.town);
   const characterRef = useRef<THREE.Sprite>();
   const isCharacterFreezed = useRef<boolean>(false);
   const encounterRef = useRef<Encounter | null>(null);
