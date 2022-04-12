@@ -175,7 +175,7 @@ export const gameEnemies: GameEnemies = {
   dragon: {
     id: 6,
     name: 'Dragon',
-    currentHp: 700,
+    currentHp: 1200,
     actions: [
       { action: actions.blast, frequency: 0.4 },
       { action: actions.earthquake, frequency: 0.8 },
