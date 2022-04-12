@@ -1,6 +1,6 @@
 import { MutableRefObject } from 'react';
 import { GameDialog } from '../dialogs';
-import { Encounter } from '../encounters';
+import { Encounter, gameEncounters } from '../encounters';
 import { MapSlug } from './mapList';
 
 export enum EventType {
@@ -50,9 +50,9 @@ export const gameMapEvents: MapEvent[] = [
     id: 2,
     types: [EventType.portal],
     handler: (scene) => {
-      scene.currentMapRef.current = MapSlug.test;
-      scene.characterRef.current.position.x = 0;
-      scene.characterRef.current.position.y = 0;
+      scene.currentMapRef.current = MapSlug.dragon;
+      scene.characterRef.current.position.x = 11;
+      scene.characterRef.current.position.y = -1.5;
     },
   },
   {
@@ -69,6 +69,40 @@ export const gameMapEvents: MapEvent[] = [
     types: [EventType.portal],
     handler: (scene) => {
       scene.toggleMenuRef.current = true;
+    },
+  },
+  {
+    name: 'dragon-cave-town-portal',
+    id: 5,
+    types: [EventType.portal],
+    handler: (scene) => {
+      scene.currentMapRef.current = MapSlug.town;
+      scene.characterRef.current.position.x = -7;
+      scene.characterRef.current.position.y = -4;
+    },
+  },
+  {
+    name: 'wolf-encounter',
+    id: 6,
+    types: [EventType.encounter],
+    handler: (scene) => {
+      scene.encounterRef.current = gameEncounters[0];
+    },
+  },
+  {
+    name: 'cockatrice-encounter',
+    id: 7,
+    types: [EventType.encounter],
+    handler: (scene) => {
+      scene.encounterRef.current = gameEncounters[1];
+    },
+  },
+  {
+    name: 'dragon-encounter',
+    id: 8,
+    types: [EventType.encounter],
+    handler: (scene) => {
+      scene.encounterRef.current = gameEncounters[2];
     },
   },
 ];

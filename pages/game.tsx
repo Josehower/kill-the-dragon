@@ -54,7 +54,7 @@ function Dolly() {
 }
 
 export default function Game() {
-  const currentMapRef = useRef(MapSlug.town);
+  const currentMapRef = useRef(MapSlug.dragon);
   const characterRef = useRef<THREE.Sprite>();
   const isCharacterFreezed = useRef<boolean>(false);
   const encounterRef = useRef<Encounter | null>(null);
@@ -76,8 +76,8 @@ export default function Game() {
         gl={{ alpha: false, antialias: false }}
       >
         <Dolly />
-        <ambientLight intensity={0.4} />
-        <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
+        <ambientLight intensity={1} />
+        <spotLight position={[5, 5, 5]} angle={0.15} penumbra={1} />
         <pointLight position={[-10, -10, -10]} />
         <DomBasedComponent
           encounterRef={encounterRef}
@@ -98,6 +98,14 @@ export default function Game() {
               toggleMenuRef={toggleMenuRef}
               eventIdQueueRef={eventIdQueueRef}
             />
+            {/* <sprite position={[-5, -6, 0]}>
+              <planeGeometry />
+              <spriteMaterial color="red" />
+            </sprite>
+            <sprite position={[-5, -2, 0]}>
+              <planeGeometry />
+              <spriteMaterial color="red" />
+            </sprite> */}
 
             {[MapSlug.town, MapSlug.store, MapSlug.test, MapSlug.dragon].map(
               (mapSlug) => (
@@ -109,18 +117,64 @@ export default function Game() {
                   encounterRef={encounterRef}
                   eventIdQueueRef={eventIdQueueRef}
                 >
-                  {mapSlug === MapSlug.store ? (
-                    <Npc
-                      spriteSheet="/tile-sets/npc/taur-walk.png"
-                      position={[1, 5, 0]}
-                      tileSize={128}
-                      argsValue={[3, 3, undefined]}
-                      characterRef={characterRef}
-                      onCollitionEventIds={[3]}
-                      collidingSpots={[[0, 4]]}
-                      eventIdQueueRef={eventIdQueueRef}
-                    />
-                  ) : undefined}
+                  <>
+                    {mapSlug === MapSlug.store ? (
+                      <Npc
+                        spriteSheet="/tile-sets/npc/taur-walk.png"
+                        position={[1, 5, 0]}
+                        imageSize={128}
+                        argsValue={[3, 3, undefined]}
+                        characterRef={characterRef}
+                        onCollitionEventIds={[3]}
+                        collidingSpots={[[0, 4]]}
+                        eventIdQueueRef={eventIdQueueRef}
+                        frameNumber={6}
+                      />
+                    ) : undefined}
+                    {mapSlug === MapSlug.dragon ? (
+                      <>
+                        <Npc
+                          spriteSheet="/tile-sets/creatures/dragon.png"
+                          position={[-9, -2, 0]}
+                          imageSize={[192, 124]}
+                          argsValue={[10, 6, undefined]}
+                          characterRef={characterRef}
+                          onCollitionEventIds={[8]}
+                          collidingSpots={[
+                            [-5, -7],
+                            [-5, -6],
+                            [-5, -5],
+                            [-5, -4],
+                            [-5, -3],
+                            [-5, -2],
+                            [-5, -1],
+                            [-4, -1],
+                          ]}
+                          eventIdQueueRef={eventIdQueueRef}
+                        />
+                        <Npc
+                          spriteSheet="/tile-sets/creatures/cockatrice.png"
+                          position={[0, -3, 0]}
+                          imageSize={[60, 90]}
+                          argsValue={[2, 3, undefined]}
+                          characterRef={characterRef}
+                          onCollitionEventIds={[7]}
+                          collidingSpots={[[0, -4]]}
+                          eventIdQueueRef={eventIdQueueRef}
+                        />
+                        <Npc
+                          spriteSheet="/tile-sets/creatures/wolf-60x60.png"
+                          position={[6, -3.3, 0]}
+                          imageSize={[60, 60]}
+                          argsValue={[2, 2, undefined]}
+                          characterRef={characterRef}
+                          onCollitionEventIds={[6]}
+                          collidingSpots={[[6, -4]]}
+                          eventIdQueueRef={eventIdQueueRef}
+                        />
+                      </>
+                    ) : undefined}
+                  </>
                 </MapComponent>
               ),
             )}

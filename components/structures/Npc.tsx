@@ -3,10 +3,7 @@ import { MeshProps, useFrame } from '@react-three/fiber';
 import { MutableRefObject, Suspense, useRef } from 'react';
 import * as THREE from 'three';
 import { Vector3 } from 'three';
-import { GameDialog } from '../../database/dialogs';
-import { Encounter } from '../../database/encounters';
 import { gameMapEvents } from '../../database/maps/mapEvents';
-import { MapSlug } from '../../database/maps/mapList';
 import { isInsideTile } from '../../utils/colliders';
 import { createTileTextureAnimator } from '../../utils/tiles';
 
@@ -15,12 +12,14 @@ export default function Sprite({
   position,
   tileSize,
   args,
+  frameNumber,
   ...props
 }: {
   spriteSheet: string;
   tileSize: [number, number] | number;
   position?: [number, number, number] | Vector3;
   args: [number | undefined, number | undefined, number | undefined];
+  frameNumber: number;
 }) {
   const texture = useTexture(spriteSheet);
 
@@ -28,7 +27,7 @@ export default function Sprite({
 
   const animator = createTileTextureAnimator(texture, tileSize);
 
-  animator(6);
+  animator(frameNumber);
 
   return (
     <sprite {...props} position={position}>
@@ -40,23 +39,25 @@ export default function Sprite({
 
 export function Npc({
   spriteSheet,
-  tileSize,
+  imageSize,
   position,
   argsValue,
   eventIdQueueRef,
   characterRef,
   onCollitionEventIds,
   collidingSpots = [],
+  frameNumber = 0,
   ...props
 }: MeshProps & {
   spriteSheet: string;
   position: [number, number, number] | Vector3;
-  tileSize: [number, number] | number;
+  imageSize: [number, number] | number;
   argsValue: [number | undefined, number | undefined, number | undefined];
   characterRef: MutableRefObject<THREE.Sprite | undefined>;
   onCollitionEventIds: typeof gameMapEvents[number]['id'][];
   collidingSpots?: [number, number][];
   eventIdQueueRef: MutableRefObject<number[]>;
+  frameNumber?: number;
 }) {
   const meshRef = useRef<THREE.Mesh>();
   const canCollide = useRef<boolean>(true);
@@ -129,9 +130,10 @@ export function Npc({
       <mesh ref={meshRef} {...props}>
         <Sprite
           spriteSheet={spriteSheet}
-          tileSize={tileSize}
+          tileSize={imageSize}
           position={position}
           args={argsValue}
+          frameNumber={frameNumber}
         />
       </mesh>
     </Suspense>
