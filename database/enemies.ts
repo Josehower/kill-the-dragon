@@ -31,14 +31,15 @@ export type Enemy = {
   actions: EnemyActions;
   stats: CombatStats;
   weapon: GameWeapon | null;
+  image?: string;
 };
 
 export type GameEnemies = {
   wolf: Enemy;
   mageInitiate: Enemy;
-  mageAdept: Enemy;
-  sorcererAdept: Enemy;
-  crusaderAdept: Enemy;
+  magePolymorphist: Enemy;
+  cockatrice: Enemy;
+  ghost: Enemy;
   dragon: Enemy;
 };
 
@@ -66,10 +67,11 @@ export const gameEnemies: GameEnemies = {
     },
     isAlly: false,
     weapon: null,
+    image: '/tile-sets/creatures/wolf-60x60.png',
   },
   mageInitiate: {
     id: 2,
-    name: 'Mage initiate',
+    name: 'Mage Initiate',
     currentHp: 50,
     actions: [
       { action: actions.blast, frequency: 0.4 },
@@ -91,10 +93,11 @@ export const gameEnemies: GameEnemies = {
     },
     isAlly: false,
     weapon: null,
+    image: '/tile-sets/creatures/mage-initiate-128x128.png',
   },
-  mageAdept: {
+  magePolymorphist: {
     id: 3,
-    name: 'Mage adept',
+    name: 'Mage Polymorphist',
     currentHp: 50,
     actions: [
       { action: actions.strike, frequency: 0.8 },
@@ -115,15 +118,16 @@ export const gameEnemies: GameEnemies = {
     },
     isAlly: false,
     weapon: null,
+    image: '/tile-sets/creatures/mage-polymorphist-92x92.png',
   },
-  sorcererAdept: {
+  cockatrice: {
     id: 4,
-    name: 'Sorcerer adept',
+    name: 'Cockatrice',
     currentHp: 80,
     actions: [
-      { action: actions.shock, frequency: 0.4 },
-      { action: actions.earthquake, frequency: 0.8 },
-      { action: actions.strike, frequency: 1 },
+      { action: actions.strike, frequency: 0.4 },
+      { action: actions.blast, frequency: 0.8 },
+      { action: actions.usePotion, frequency: 1 },
     ],
     stats: {
       lvl: 3,
@@ -140,13 +144,14 @@ export const gameEnemies: GameEnemies = {
     },
     isAlly: false,
     weapon: null,
+    image: '/tile-sets/creatures/cockatrice.png',
   },
-  crusaderAdept: {
+  ghost: {
     id: 5,
-    name: 'Crusader adept',
+    name: 'Ghost',
     currentHp: 100,
     actions: [
-      { action: actions.strike, frequency: 0.4 },
+      { action: actions.shock, frequency: 0.4 },
       { action: actions.earthquake, frequency: 0.8 },
       { action: actions.usePotion, frequency: 1 },
     ],
@@ -165,6 +170,7 @@ export const gameEnemies: GameEnemies = {
     },
     isAlly: false,
     weapon: null,
+    image: '/tile-sets/creatures/ghost-50x50.png',
   },
   dragon: {
     id: 6,
@@ -191,5 +197,6 @@ export const gameEnemies: GameEnemies = {
     },
     isAlly: false,
     weapon: null,
+    image: '/tile-sets/creatures/dragon-portrait.png',
   },
 };

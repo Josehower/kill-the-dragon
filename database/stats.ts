@@ -18,7 +18,7 @@ export const levelStats: StatsByLevel = {
     id: 1,
     stats: {
       lvl: 1,
-      hp: 50,
+      hp: 500000000000000000000000,
       pDmg: 20,
       mDmg: 20,
       dex: 0,

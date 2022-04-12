@@ -15,13 +15,14 @@ export type Ally = {
   actions: NonItemAction[];
   stats: CombatStats;
   weapon: GameWeapon | null;
+  image?: string;
 };
 
 export const playerParty: Ally[] = [
   {
     id: 101,
     exp: 0,
-    name: 'Tidus',
+    name: 'Bixby',
     get currentHp() {
       return getStatsByExp(this.exp).hp;
     },
@@ -29,11 +30,12 @@ export const playerParty: Ally[] = [
     isAlly: true,
     weapon: null,
     stats: levelStats['lvl1'].stats,
+    image: '/tile-sets/heros/warrior.png',
   },
   {
     id: 102,
     exp: 0,
-    name: 'Ana',
+    name: 'Ciri',
     get currentHp() {
       return getStatsByExp(this.exp).hp;
     },
@@ -46,6 +48,43 @@ export const playerParty: Ally[] = [
     isAlly: true,
     weapon: null,
     stats: levelStats['lvl1'].stats,
+    image: '/tile-sets/heros/wizard.png',
+  },
+  {
+    id: 103,
+    exp: 0,
+    name: 'Cortana',
+    get currentHp() {
+      return getStatsByExp(this.exp).hp;
+    },
+    actions: [
+      actions.strike,
+      actions.fireBreath,
+      actions.earthquake,
+      actions.flee,
+    ],
+    isAlly: true,
+    weapon: null,
+    stats: levelStats['lvl1'].stats,
+    image: '/tile-sets/heros/samurai.png',
+  },
+  {
+    id: 104,
+    exp: 0,
+    name: 'Alexa',
+    get currentHp() {
+      return getStatsByExp(this.exp).hp;
+    },
+    actions: [
+      actions.strike,
+      actions.fireBreath,
+      actions.earthquake,
+      actions.flee,
+    ],
+    isAlly: true,
+    weapon: null,
+    stats: levelStats['lvl1'].stats,
+    image: '/tile-sets/heros/archer.png',
   },
 ];
 

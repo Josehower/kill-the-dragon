@@ -33,6 +33,7 @@ export const gameMapEvents: MapEvent[] = [
     handler: (scene) => {
       scene.currentMapRef.current = MapSlug.store;
       scene.characterRef.current.position.x -= 1;
+      scene.characterRef.current.position.y -= 1;
     },
   },
   {
@@ -42,7 +43,7 @@ export const gameMapEvents: MapEvent[] = [
     handler: (scene) => {
       scene.currentMapRef.current = MapSlug.town;
       scene.characterRef.current.position.x += 1;
-      scene.characterRef.current.position.y -= 0.02;
+      scene.characterRef.current.position.y += 0.99;
     },
   },
   {

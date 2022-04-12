@@ -60,12 +60,11 @@ export default function BattlePersona<T extends Persona, O extends Persona>({
 
   return (
     <div>
-      actionStatus:
       {isGettingReady
-        ? ' Action is Loading'
+        ? ''
         : isSelectingAction
-        ? 'Selecting Action'
-        : ' Action in Queue'}
+        ? 'Thinking...'
+        : 'ready to attack...'}
       {isGettingReady ? (
         <TimedBar
           endTime={loadActionEndTime}

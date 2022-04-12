@@ -191,7 +191,7 @@
         {
          "name":"offsetY",
          "type":"int",
-         "value":5
+         "value":4
         }, 
         {
          "name":"slug",

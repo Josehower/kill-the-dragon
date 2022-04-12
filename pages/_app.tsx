@@ -9,6 +9,7 @@ function App({ Component, pageProps }: AppProps) {
           html,
           body {
             margin: 0;
+            padding: 0;
             background-color: #000008;
             color: #ededee;
             min-height: 100vh;

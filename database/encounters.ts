@@ -5,6 +5,7 @@ export type Encounter = {
   enemyTeam: Enemy[];
   expReward: number;
   goldReward: number;
+  background?: string;
 };
 
 export const gameEncounters: Encounter[] = [
@@ -13,59 +14,62 @@ export const gameEncounters: Encounter[] = [
     enemyTeam: [
       {
         ...gameEnemies.wolf,
-        name: 'wolf 1',
+        name: 'wolf I',
         id: 1,
       },
       {
         ...gameEnemies.wolf,
-        name: 'wolf 2',
+        name: 'wolf II',
         id: 2,
       },
       {
         ...gameEnemies.mageInitiate,
-        name: 'mage 1',
+        name: 'Mage Initiate',
         id: 3,
       },
       {
         ...gameEnemies.wolf,
-        name: 'wolf 3',
+        name: 'wolf III',
         id: 4,
       },
     ],
     expReward: 40,
     goldReward: 20,
+    background: '/backgrounds/dragons-cave.jpg',
   },
   {
     id: 2,
     enemyTeam: [
       {
-        ...gameEnemies.mageAdept,
-        name: 'Fiona',
+        ...gameEnemies.magePolymorphist,
+        name: 'Fiona, The Polymorphist',
         id: 1,
       },
       {
-        ...gameEnemies.sorcererAdept,
-        name: 'Louis',
+        ...gameEnemies.cockatrice,
+        name: 'Cockatrice I',
         id: 2,
       },
       {
-        ...gameEnemies.sorcererAdept,
-        name: 'Martha',
+        ...gameEnemies.cockatrice,
+        name: 'Cockatrice II',
         id: 3,
       },
       {
-        ...gameEnemies.mageAdept,
-        name: 'Peter',
+        ...gameEnemies.ghost,
+        name: 'Peter Ghost',
         id: 4,
       },
     ],
     expReward: 40,
     goldReward: 20,
+    background: '/backgrounds/dragons-cave.jpg',
   },
   {
     id: 3,
     enemyTeam: [{ ...gameEnemies.dragon }],
     expReward: 400,
     goldReward: 20,
+    background: '/backgrounds/dragons-cave.jpg',
   },
 ];
