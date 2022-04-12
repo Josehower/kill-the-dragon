@@ -184,7 +184,7 @@ export const gameEnemies: GameEnemies = {
     ],
     stats: {
       lvl: 5,
-      hp: 700,
+      hp: 1200,
       pDmg: 50,
       mDmg: 40,
       dex: 0.2,
