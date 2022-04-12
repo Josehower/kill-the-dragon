@@ -47,14 +47,14 @@ export const gameEnemies: GameEnemies = {
   wolf: {
     id: 1,
     name: 'Wolf',
-    currentHp: 20,
+    currentHp: 30,
     actions: [
       { action: actions.flee, frequency: 0.05 },
       { action: actions.strike, frequency: 1 },
     ],
     stats: {
       lvl: 1,
-      hp: 20,
+      hp: 30,
       pDmg: 5,
       mDmg: 0,
       dex: 0,
@@ -72,7 +72,7 @@ export const gameEnemies: GameEnemies = {
   mageInitiate: {
     id: 2,
     name: 'Mage Initiate',
-    currentHp: 50,
+    currentHp: 200,
     actions: [
       { action: actions.blast, frequency: 0.4 },
       { action: actions.tsunami, frequency: 0.8 },
@@ -80,7 +80,7 @@ export const gameEnemies: GameEnemies = {
     ],
     stats: {
       lvl: 2,
-      hp: 50,
+      hp: 200,
       pDmg: 10,
       mDmg: 20,
       dex: 0,
@@ -98,16 +98,16 @@ export const gameEnemies: GameEnemies = {
   magePolymorphist: {
     id: 3,
     name: 'Mage Polymorphist',
-    currentHp: 50,
+    currentHp: 80,
     actions: [
       { action: actions.strike, frequency: 0.8 },
       { action: actions.shock, frequency: 1 },
     ],
     stats: {
       lvl: 2,
-      hp: 50,
-      pDmg: 25,
-      mDmg: 10,
+      hp: 250,
+      pDmg: 30,
+      mDmg: 40,
       dex: 0,
       acc: 0,
       pDef: 1,
@@ -132,7 +132,7 @@ export const gameEnemies: GameEnemies = {
     stats: {
       lvl: 3,
       hp: 80,
-      pDmg: 15,
+      pDmg: 50,
       mDmg: 25,
       dex: 0.15,
       acc: 0.2,
@@ -159,7 +159,7 @@ export const gameEnemies: GameEnemies = {
       lvl: 4,
       hp: 100,
       pDmg: 25,
-      mDmg: 15,
+      mDmg: 25,
       dex: 0.2,
       acc: 0.15,
       pDef: 0.9,
