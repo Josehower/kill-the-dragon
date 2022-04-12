@@ -8,13 +8,13 @@ import { PlayerInventory } from './structures/DomBasedComponent';
 const imageDivStyle = css`
   display: flex;
   justify-content: center;
+  background-color: rgba(11, 191, 188, 255);
   margin-top: 10px;
-  img {
-    width: 100px;
-    border: solid 2px rgba(43, 34, 27, 255);
-    border-radius: 5px;
-    background-color: rgba(11, 191, 188, 255);
-  }
+  height: 100px;
+  width: 100px;
+  overflow: hidden;
+  border: solid 2px rgba(43, 34, 27, 255);
+  border-radius: 5px;
 `;
 
 const personaBoxStyle = (isActive: boolean, isFoe: boolean) => css`

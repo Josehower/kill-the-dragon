@@ -85,18 +85,11 @@ const imageDivStyle = css`
   width: 100px;
   height: 100px;
   margin: 0 auto;
-
   display: flex;
-  align-items: center;
   justify-content: center;
   border-radius: 50%;
   border: 2px solid rgba(43, 34, 27, 255);
-
-  img {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-  }
+  overflow: hidden;
 `;
 
 export default function Menu({
