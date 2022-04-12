@@ -34,12 +34,17 @@ export default function BattleTeam<T extends Persona, O extends Persona>({
           <div
             key={'dead-box-' + persona.id}
             css={css`
-              background-color: ${isActive ? 'orange' : 'transparent'};
+              background-color: ${isActive ? 'orange' : 'red'};
             `}
           >
-            name: {persona.name}
+            <h2>{persona.name}</h2>
             <br />
-            hp: {persona.currentHp}
+            {persona.currentHp / persona.stats.hp > 0.4
+              ? `💗`
+              : persona.currentHp !== 0
+              ? `💔`
+              : `💀`}
+            {persona.currentHp} / {persona.stats.hp}
             <br />
             <br />
             {persona.stats.isDead ? (

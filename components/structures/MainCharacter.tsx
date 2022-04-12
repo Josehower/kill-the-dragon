@@ -29,7 +29,7 @@ export default function Sprite({
   tileRef: MutableRefObject<THREE.Sprite | undefined>;
   color?: Color;
 }) {
-  const texture = useTexture('/tile-sets/hero.png');
+  const texture = useTexture('/tile-sets/heros/hero.png');
   texture.magFilter = THREE.NearestFilter;
 
   const animator = createTileTextureAnimator(texture, [32, 64]);

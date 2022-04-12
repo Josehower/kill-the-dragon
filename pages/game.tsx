@@ -120,12 +120,12 @@ export default function Game() {
                     {mapSlug === MapSlug.store ? (
                       <Npc
                         spriteSheet="/tile-sets/npc/taur-walk.png"
-                        position={[1, 5, 0]}
+                        position={[1, 4, 0]}
                         imageSize={128}
                         argsValue={[3, 3, undefined]}
                         characterRef={characterRef}
                         onCollitionEventIds={[3]}
-                        collidingSpots={[[0, 4]]}
+                        collidingSpots={[[0, 3]]}
                         eventIdQueueRef={eventIdQueueRef}
                         frameNumber={6}
                       />
