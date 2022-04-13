@@ -83,13 +83,11 @@ export default function Battle({
 
     if (action.isFlee) {
       if (performer.isAlly) {
-        console.log('team flee');
         setBattleState(BattleState.flee);
       } else {
         setEnemyTeam((enemy) =>
           enemy.filter((person) => person.id !== performer.id),
         );
-        console.log(performer.name + ' is scared and scaped!');
       }
       isActionHappening.current = false;
       return;
@@ -102,16 +100,6 @@ export default function Battle({
       performer.weapon,
     );
 
-    console.log(
-      performer.name,
-      'is using',
-      action.name,
-      'over',
-      foe.name,
-      '...',
-    );
-
-    console.log('waiting ', action.duration / 1000, ' seconds');
     await wait(action.duration);
     // TODO: solve this in a better way
     // This is indeed necessary but the pattern is weird
@@ -189,7 +177,6 @@ export default function Battle({
         if (!partyRef) return false;
         return !partyRef.stats.isDead;
       });
-      console.log(newArr);
       return newArr;
     });
   }, [party]);
@@ -224,9 +211,7 @@ export default function Battle({
           };
         }),
       );
-      console.log(
-        `the team earned ${gold} gold and each alive ally earned ${exp} exp`,
-      );
+
       setBattleState(BattleState.win);
       return;
     }

@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useEffect } from 'react';
 import { CombatAction } from '../database/actions';
 import { ActionToPerform } from './Battle';
 import BattlePersona, { Persona } from './BattlePersona';
@@ -76,6 +76,22 @@ export default function BattleTeam<T extends Persona, O extends Persona>({
   inventory,
   activeAction,
 }: Props<T, O>) {
+  useEffect(() => {
+    team.forEach((persona) => {
+      if (persona.stats.isDead) {
+        setActionArr((current) => {
+          if (current.some((action) => action.performer.id === persona.id)) {
+            return current.filter(
+              (action) => action.performer.id !== persona.id,
+            );
+          } else {
+            return current;
+          }
+        });
+      }
+    });
+  });
+
   return (
     <div
       css={css`
