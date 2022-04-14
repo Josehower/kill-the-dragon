@@ -149,8 +149,8 @@ export default function DomBasedComponent({
             promptDialog={promptDialog}
             setPromptDialog={setPromptDialog}
           />
-          <Menu toggleMenu={toggleMenu} setToggleMenu={setToggleMenu} />
           <Store toggleStore={toggleStore} setToggleStore={setToggleStore} />
+          <Menu toggleMenu={toggleMenu} setToggleMenu={setToggleMenu} />
         </div>
       </gameStateContext.Provider>
     </Html>
