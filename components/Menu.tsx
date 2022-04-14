@@ -26,7 +26,6 @@ const playerBarStyle = css`
   gap: 50px;
   border: 2px solid rgba(43, 34, 27, 255);
   border-radius: 5px;
-  margin: 30px auto;
   justify-content: center;
   padding: 5px;
   width: 700px;
@@ -37,7 +36,7 @@ const closeButtonStyle = css`
   background: transparent;
   border: none;
   border-radius: 50%;
-  font-size: 40px;
+  font-size: 1em;
   padding: 5px;
 
   :hover {
@@ -54,17 +53,25 @@ const toggleMenuStyle = css`
   align-items: center;
   justify-content: center;
   gap: 20px;
-  width: 1200px;
-  margin: 2vw auto;
-  padding: 50px;
+  width: 80vw;
+  padding: 10px;
   color: rgb(245, 245, 229);
 `;
 
 const partyMemberBoxStyle = css`
   background: rgba(252, 53, 76, 255);
   padding: 12px;
+
   border: 2px solid rgba(43, 34, 27, 255);
   border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  h2 {
+    font-size: 1.2em;
+  }
+
   ul {
     column-count: 2;
     column-gap: 20px;
@@ -73,17 +80,28 @@ const partyMemberBoxStyle = css`
     li {
       border: 2px solid rgba(43, 34, 27, 255);
       border-radius: 5px;
-      margin-bottom: 10px;
+      margin-bottom: 5px;
       background-color: rgba(16, 117, 128, 255);
-      padding: 5px;
+      padding: 2px;
     }
   }
+
+  @media (max-width: 900px) {
+    ul {
+      display: none;
+    }
+  }
+  @media (max-height: 700px) {
+    ul {
+      display: none;
+    }
+  } ;
 `;
 
 const imageDivStyle = css`
   background: rgba(11, 191, 188, 255);
-  width: 100px;
-  height: 100px;
+  min-width: 15px;
+  height: 5em;
   margin: 0 auto;
   display: flex;
   justify-content: center;
@@ -152,7 +170,15 @@ export default function Menu({
     .filter((obj) => obj.qty !== 0);
 
   return (
-    <>
+    <div
+      css={css`
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        height: 100vh;
+      `}
+    >
       <div css={playerBarStyle}>
         <div>💰 : {inventory.gold} </div>
         <div>🧔🧙‍♀️🧙‍♂️🦹‍♀️: [ P ] </div>
@@ -291,6 +317,6 @@ export default function Menu({
           </button>
         </div>
       )}
-    </>
+    </div>
   );
 }

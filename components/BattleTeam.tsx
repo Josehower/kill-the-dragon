@@ -48,6 +48,16 @@ const personaBoxStyle = (isActive: boolean, isFoe: boolean) => css`
     margin: 0;
     margin-bottom: 5px;
   }
+  @media (max-height: 700px) {
+    font-size: 10px;
+    padding: 0;
+    height: 45vh;
+
+    div,
+    button {
+      transform: scale(0.9);
+    }
+  }
 `;
 
 type Props<T, O> = {
