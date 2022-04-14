@@ -97,14 +97,6 @@ export default function Game() {
               toggleMenuRef={toggleMenuRef}
               eventIdQueueRef={eventIdQueueRef}
             />
-            {/* <sprite position={[-5, -6, 0]}>
-              <planeGeometry />
-              <spriteMaterial color="red" />
-            </sprite>
-            <sprite position={[-5, -2, 0]}>
-              <planeGeometry />
-              <spriteMaterial color="red" />
-            </sprite> */}
 
             {[MapSlug.town, MapSlug.store, MapSlug.test, MapSlug.dragon].map(
               (mapSlug) => (

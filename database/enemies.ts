@@ -48,6 +48,7 @@ export const gameEnemies: GameEnemies = {
     id: 1,
     name: 'Wolf',
     currentHp: 30,
+    // wolf should have a flee action
     actions: [{ action: actions.strike, frequency: 1 }],
     stats: {
       lvl: 1,

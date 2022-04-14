@@ -36,9 +36,9 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
 colors:
-aq: rgba(11,191,188,255)
-aq-dark: rgba(16, 117, 128, 255)
-red: rgba(252, 53, 76, 255)
-black: rgba(43,34,27,255)
-white: rgb(245, 245, 229);
+aq: rgba(11,191,188,255) 0BBFBC
+aq-dark: rgba(16, 117, 128, 255) 107580
+red: rgba(252, 53, 76, 255) FC354C
+black: rgba(43,34,27,255) 2B221B
+white: rgb(245, 245, 229); F5F5E5
 green: '#1bcf3f'
