@@ -67,11 +67,8 @@ export default function Game() {
       <Canvas
         camera={{
           position: [0, 0, 1],
-          zoom: 70,
-          near: 0.1,
-          far: 64,
+          zoom: 0.1,
         }}
-        orthographic
         gl={{ alpha: false, antialias: false }}
       >
         <Dolly />

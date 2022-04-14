@@ -1,5 +1,4 @@
 import { MeshProps, useFrame, Vector3 } from '@react-three/fiber';
-import { diffProps } from '@react-three/fiber/dist/declarations/src/core/utils';
 import {
   Fragment,
   MutableRefObject,
@@ -76,7 +75,7 @@ export function MapComponent({
   useFrame(() => {
     if (meshRef.current) {
       meshRef.current.position.z =
-        slug !== currentMapRef.current ? 2 : encounterRef.current ? 2 : -1;
+        slug !== currentMapRef.current ? 2 : encounterRef.current ? 2 : -0.001;
     }
 
     if (
@@ -216,7 +215,11 @@ export function MapComponent({
                   return (
                     <Tile
                       key={`tile-x:${x}-y:${y}-${layer.name}`}
-                      pos={[x - mapData.width / 2, y - mapData.height / 2, -1]}
+                      pos={[
+                        x - mapData.width / 2,
+                        y - mapData.height / 2,
+                        -0.001,
+                      ]}
                       mapTileValue={mapTileValue}
                       tilesetsData={tilesetsData.current}
                     />

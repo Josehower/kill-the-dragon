@@ -55,7 +55,7 @@ const toggleMenuStyle = css`
   justify-content: center;
   gap: 20px;
   width: 1200px;
-  margin: 100px auto;
+  margin: 2vw auto;
   padding: 50px;
   color: rgb(245, 245, 229);
 `;
