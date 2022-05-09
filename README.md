@@ -2,7 +2,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 Author: Jose Höwer
 
-## Getting-Started
+## Getting Started
 
 First, run the development server:
 
