@@ -236,7 +236,7 @@ export default function Battle({
         YOU LOSE{' '}
         <button
           onClick={() => {
-            window.location.reload();
+            console.log('you lost please reload');
           }}
         >
           stop

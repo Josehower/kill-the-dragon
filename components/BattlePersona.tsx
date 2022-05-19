@@ -34,7 +34,7 @@ export default function BattlePersona<T extends Persona, O extends Persona>({
 }: Props<T, O>) {
   const [isGettingReady, setIsGettingReady] = useState(true);
   const [isSelectingAction, setIsSelectingAction] = useState(false);
-  const [loadActionBeginTime, setTime] = useState(+Date.now());
+  const [loadActionBeginTime, setLoadActionBeginTime] = useState(+Date.now());
 
   const loadActionEndTime =
     loadActionBeginTime + 8000 - persona.stats.speed * 1000;
@@ -46,7 +46,7 @@ export default function BattlePersona<T extends Persona, O extends Persona>({
       !isSelectingAction &&
       !isGettingReady
     ) {
-      setTime(+Date.now());
+      setLoadActionBeginTime(+Date.now());
       setIsGettingReady(true);
     }
   }, [actionArr, isGettingReady, isSelectingAction, persona.id]);
