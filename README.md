@@ -42,3 +42,5 @@ red: rgba(252, 53, 76, 255) FC354C
 black: rgba(43,34,27,255) 2B221B
 white: rgb(245, 245, 229); F5F5E5
 green: '#1bcf3f'
+
+changes
