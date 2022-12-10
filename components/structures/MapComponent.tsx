@@ -28,14 +28,14 @@ export function MapComponent({
 }: {
   slug: MapSlug;
   currentMapRef: MutableRefObject<MapSlug>;
-  characterRef: MutableRefObject<THREE.Sprite | undefined>;
+  characterRef: MutableRefObject<THREE.Sprite | null>;
   encounterRef: MutableRefObject<Encounter | null>;
   eventIdQueueRef: MutableRefObject<number[]>;
   children?: JSX.Element;
 }) {
   const [mapData, setMapData] = useState<JsonMap | undefined>();
   const tilesetsData = useRef<TilesetsData>([]);
-  const meshRef = useRef<THREE.Mesh>();
+  const meshRef = useRef<THREE.Mesh>(null);
 
   const portals =
     mapData && mapData.layers.find((layer) => layer.name === 'portals');
@@ -147,7 +147,7 @@ export function MapComponent({
                     ?.value) as number) || 0,
             },
           },
-          XYPositionToCheck: { x: edge[0], y: edge[1] },
+          XYPositionToCheck: { x: edge[0]!, y: edge[1]! },
         }),
       ),
     );
@@ -209,15 +209,15 @@ export function MapComponent({
           return (
             <Fragment key={`fragment-${layer.name}`}>
               {layerGrid.map(([x, y], index) => {
-                const mapTileValue = layer.data[index];
+                const mapTileValue = layer.data[index]!;
 
                 if (mapTileValue > 0) {
                   return (
                     <Tile
                       key={`tile-x:${x}-y:${y}-${layer.name}`}
                       pos={[
-                        x - mapData.width / 2,
-                        y - mapData.height / 2,
+                        x! - mapData.width / 2,
+                        y! - mapData.height / 2,
                         -0.001,
                       ]}
                       mapTileValue={mapTileValue}
@@ -254,7 +254,7 @@ function Tile({
     .find((a_a, index, arr) => {
       if (index !== arr.length - 1) {
         // if is not the last tilesetSource in the array compare against the next source
-        return arr[index + 1].firstgid > mapTileValue;
+        return arr[index + 1]!.firstgid > mapTileValue;
       } else {
         return true;
       }

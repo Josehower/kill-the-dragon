@@ -3,7 +3,7 @@ import { Color, MeshProps, useFrame } from '@react-three/fiber';
 import { klona } from 'klona';
 import {
   MutableRefObject,
-  Suspense,
+  RefObject,
   useCallback,
   useEffect,
   useRef,
@@ -26,7 +26,7 @@ export default function Sprite({
   tileRef,
   ...props
 }: {
-  tileRef: MutableRefObject<THREE.Sprite | undefined>;
+  tileRef: MutableRefObject<THREE.Sprite>;
   color?: Color;
 }) {
   const texture = useTexture('/tile-sets/heros/hero.png');
@@ -56,7 +56,7 @@ export function MainCharacter({
   ...props
 }: MeshProps & {
   currentMapRef: MutableRefObject<MapSlug>;
-  characterRef: MutableRefObject<THREE.Sprite | undefined>;
+  characterRef: RefObject<THREE.Sprite>;
   isCharacterFreezed: MutableRefObject<boolean>;
   encounterRef: MutableRefObject<Encounter | null>;
   promptDialogRef: MutableRefObject<GameDialog | null>;
@@ -120,8 +120,8 @@ export function MainCharacter({
         const mapTileValue = file.layers.find(
           (layer) => layer.name === 'colliders',
         );
-        if (mapTileValue && mapTileValue.data[index] > 0) {
-          return [x - file.width / 2, y - file.height / 2];
+        if (mapTileValue && mapTileValue.data[index]! > 0) {
+          return [x! - file.width / 2, y! - file.height / 2];
         }
 
         return null;
@@ -145,7 +145,7 @@ export function MainCharacter({
 
       if (eventId === undefined) return;
 
-      gameMapEvents[eventId].handler({
+      gameMapEvents[eventId]!.handler({
         characterRef: characterRef as MutableRefObject<THREE.Sprite>,
         currentMapRef,
         promptDialogRef: promptDialogRef,
@@ -324,10 +324,8 @@ export function MainCharacter({
     }
   });
   return (
-    <Suspense fallback={null}>
-      <mesh {...props} onClick={() => console.log('click')}>
-        <Sprite tileRef={characterRef} />
-      </mesh>
-    </Suspense>
+    <mesh {...props}>
+      <Sprite tileRef={characterRef as MutableRefObject<THREE.Sprite>} />
+    </mesh>
   );
 }

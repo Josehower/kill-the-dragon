@@ -1,6 +1,6 @@
 import { useTexture } from '@react-three/drei';
 import { MeshProps, useFrame } from '@react-three/fiber';
-import { MutableRefObject, Suspense, useRef } from 'react';
+import { MutableRefObject, RefObject, useRef } from 'react';
 import * as THREE from 'three';
 import { Vector3 } from 'three';
 import { gameMapEvents } from '../../database/maps/mapEvents';
@@ -53,13 +53,13 @@ export function Npc({
   position: [number, number, number] | Vector3;
   imageSize: [number, number] | number;
   argsValue: [number | undefined, number | undefined, number | undefined];
-  characterRef: MutableRefObject<THREE.Sprite | undefined>;
+  characterRef: RefObject<THREE.Sprite>;
   onCollitionEventIds: typeof gameMapEvents[number]['id'][];
   collidingSpots?: [number, number][];
   eventIdQueueRef: MutableRefObject<number[]>;
   frameNumber?: number;
 }) {
-  const meshRef = useRef<THREE.Mesh>();
+  const meshRef = useRef<THREE.Mesh>(null);
   const canCollide = useRef<boolean>(true);
 
   useFrame(() => {
@@ -126,16 +126,14 @@ export function Npc({
   });
 
   return (
-    <Suspense fallback={null}>
-      <mesh ref={meshRef} {...props}>
-        <Sprite
-          spriteSheet={spriteSheet}
-          tileSize={imageSize}
-          position={position}
-          args={argsValue}
-          frameNumber={frameNumber}
-        />
-      </mesh>
-    </Suspense>
+    <mesh ref={meshRef} {...props}>
+      <Sprite
+        spriteSheet={spriteSheet}
+        tileSize={imageSize}
+        position={position}
+        args={argsValue}
+        frameNumber={frameNumber}
+      />
+    </mesh>
   );
 }

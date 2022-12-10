@@ -12,18 +12,17 @@ export default function Home() {
         align-items: center;
       `}
     >
-      <Link href="/game">
-        <a
-          css={css`
-            font-size: 30px;
-            :hover {
-              transform: scale(1.2);
-              cursor: pointer;
-            }
-          `}
-        >
-          Start Game
-        </a>
+      <Link
+        css={css`
+          font-size: 30px;
+          :hover {
+            transform: scale(1.2);
+            cursor: pointer;
+          }
+        `}
+        href="/game"
+      >
+        Start Game
       </Link>
     </div>
   );

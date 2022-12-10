@@ -1,5 +1,6 @@
 import { css, Global } from '@emotion/react';
 import { AppProps } from 'next/app';
+import { Suspense } from 'react';
 
 function App({ Component, pageProps }: AppProps) {
   return (
@@ -25,8 +26,9 @@ function App({ Component, pageProps }: AppProps) {
           }
         `}
       />
-
-      <Component {...pageProps} />
+      <Suspense fallback={<div>div</div>}>
+        <Component {...pageProps} />
+      </Suspense>
     </>
   );
 }

@@ -87,7 +87,7 @@ export const gameMapEvents: MapEvent[] = [
     id: 6,
     types: [EventType.encounter],
     handler: (scene) => {
-      scene.encounterRef.current = gameEncounters[0];
+      scene.encounterRef.current = gameEncounters[0]!;
     },
   },
   {
@@ -95,7 +95,7 @@ export const gameMapEvents: MapEvent[] = [
     id: 7,
     types: [EventType.encounter],
     handler: (scene) => {
-      scene.encounterRef.current = gameEncounters[1];
+      scene.encounterRef.current = gameEncounters[1]!;
     },
   },
   {
@@ -103,7 +103,7 @@ export const gameMapEvents: MapEvent[] = [
     id: 8,
     types: [EventType.encounter],
     handler: (scene) => {
-      scene.encounterRef.current = gameEncounters[2];
+      scene.encounterRef.current = gameEncounters[2]!;
     },
   },
 ];
