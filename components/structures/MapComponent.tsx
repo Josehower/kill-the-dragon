@@ -7,13 +7,13 @@ import {
   useRef,
   useState,
 } from 'react';
+import { tiledToR3FTextureTranspiler } from 'sprite-three-animation';
 import * as THREE from 'three';
 import { Encounter } from '../../database/encounters';
 import { MapSlug } from '../../database/maps/mapList';
 import { JsonMap, JsonTileset } from '../../types/tiled';
 import { isInsidePortal } from '../../utils/colliders';
 import { gridGenerator } from '../../utils/map';
-import { tiledToR3FTextureTranspiler } from '../../utils/tiles';
 import AssetsLoader, { textureContext } from '../AssetsLoader';
 
 type TilesetsData = { module: JsonTileset; firstgid: number }[];

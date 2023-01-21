@@ -1,11 +1,11 @@
 import { useTexture } from '@react-three/drei';
 import { MeshProps, useFrame } from '@react-three/fiber';
 import { MutableRefObject, RefObject, useRef } from 'react';
+import { createTileTextureAnimator } from 'sprite-three-animation';
 import * as THREE from 'three';
 import { Vector3 } from 'three';
 import { gameMapEvents } from '../../database/maps/mapEvents';
 import { isInsideTile } from '../../utils/colliders';
-import { createTileTextureAnimator } from '../../utils/tiles';
 
 export default function Sprite({
   spriteSheet,

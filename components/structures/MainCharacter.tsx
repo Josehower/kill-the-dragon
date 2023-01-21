@@ -8,6 +8,10 @@ import {
   useEffect,
   useRef,
 } from 'react';
+import {
+  createSpriteAnimation,
+  createTileTextureAnimator,
+} from 'sprite-three-animation';
 import * as THREE from 'three';
 import { GameDialog } from '../../database/dialogs';
 import { Encounter } from '../../database/encounters';
@@ -17,10 +21,6 @@ import useControls from '../../hooks/useControls';
 import { JsonMap, SpriteAnimationHandler } from '../../types/tiled';
 import { isInsideTile } from '../../utils/colliders';
 import { gridGenerator } from '../../utils/map';
-import {
-  createSpriteAnimation,
-  createTileTextureAnimator,
-} from '../../utils/tiles';
 
 export default function Sprite({
   tileRef,

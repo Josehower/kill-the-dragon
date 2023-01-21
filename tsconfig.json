@@ -4,5 +4,10 @@
   "compilerOptions": {
     "jsx": "preserve",
     "jsxImportSource": "@emotion/react"
-  }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
+  ]
 }
