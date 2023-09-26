@@ -18,5 +18,5 @@ export function gridGenerator(
   }
 
   // Sort the grid to match react three fiber grid layout
-  return grid.sort((a, b) => (a[1] > b[1] ? -1 : 1));
+  return grid.sort((a, b) => (a[1]! > b[1]! ? -1 : 1));
 }

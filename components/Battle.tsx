@@ -158,7 +158,7 @@ export default function Battle({
 
       setActionArr((current) => {
         if (current.length === 0) return current;
-        performAction(current[0]).catch(console.log);
+        performAction(current[0]!).catch(console.log);
         return current.filter((a_a, i) => i !== 0);
       });
     }
