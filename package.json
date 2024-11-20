@@ -10,7 +10,7 @@
   "dependencies": {
     "@emotion/babel-plugin": "^11.7.2",
     "@emotion/react": "^11.10.5",
-    "@react-three/drei": "^9.46.4",
+    "@react-three/drei": "^9.115.0",
     "@react-three/fiber": "^8.9.1",
     "klona": "^2.0.4",
     "next": "^13.0.6",
